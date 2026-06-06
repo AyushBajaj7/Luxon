@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request
-from app.models import Product, Category
+from app.models import Product, Category, Subcategory
 
 main_bp = Blueprint('main', __name__)
 
@@ -24,9 +24,13 @@ def products():
         except ValueError:
             pass
     if category_name:
-        query = query.join(Category).filter(Category.name.ilike(category_name))
+        category = Category.query.filter(Category.name.ilike(category_name)).first()
+        if category:
+            query = query.filter(Product.category_id == category.id)
     if subcategory_name:
-        query = query.join(Subcategory).filter(Subcategory.name.ilike(subcategory_name))
+        subcategory = Subcategory.query.filter(Subcategory.name.ilike(subcategory_name)).first()
+        if subcategory:
+            query = query.filter(Product.subcategory_id == subcategory.id)
     if max_price:
         try:
             query = query.filter(Product.price <= float(max_price))

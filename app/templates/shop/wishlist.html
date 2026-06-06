@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}Wishlist | Luxon{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4 page-title" style="font-family: 'Playfair Display', serif;">My Wishlist</h2>
+    
+    {% if not items %}
+    <div class="text-center py-5">
+        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 100px; height: 100px;">
+            <i class="bi bi-heart fs-1 text-muted"></i>
+        </div>
+        <h4 class="text-muted mb-2">Your wishlist is empty</h4>
+        <p class="text-muted small mb-4">Save items you love to your wishlist and revisit them anytime.</p>
+        <a href="{{ url_for('main.products') }}" class="btn btn-navy px-5 rounded-pill py-2">Explore Collection</a>
+    </div>
+    {% else %}
+    <div class="row g-4">
+        {% for item in items %}
+        <div class="col-6 col-md-4 col-lg-3 wishlist-item" id="wishlist-item-{{ item.product.id }}">
+            <div class="card product-card border-0 shadow-sm h-100">
+                <div class="card-img-wrapper position-relative">
+                    <img src="{{ item.product.image_url or 'https://via.placeholder.com/400x500' }}" class="card-img-top object-fit-cover" style="height: 300px;" alt="{{ item.product.name }}">
+                    <button class="btn btn-light rounded-circle position-absolute top-0 end-0 m-3 shadow-sm toggle-wishlist" style="width: 36px; height: 36px;" data-id="{{ item.product.id }}">
+                        <i class="bi bi-heart-fill text-danger"></i>
+                    </button>
+                    {% if item.product.stock == 0 %}
+                        <span class="badge bg-danger position-absolute top-0 start-0 m-3 rounded-pill">Sold Out</span>
+                    {% endif %}
+                </div>
+                <div class="card-body px-3">
+                    <p class="text-muted mb-1" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;">{{ item.product.brand or 'Luxon' }}</p>
+                    <h6 class="fw-semibold mb-2 text-truncate" style="font-size: 0.9rem;"><a href="{{ url_for('main.product_detail', id=item.product.id) }}" class="text-dark text-decoration-none">{{ item.product.name }}</a></h6>
+                    <span class="price-current">₹{{ "{:,.0f}".format(item.product.price) }}</span>
+                </div>
+                <div class="card-footer bg-white border-0 p-3 pt-0">
+                    <button class="btn btn-navy w-100 rounded-pill py-2 add-to-cart" data-id="{{ item.product.id }}" {% if item.product.stock == 0 %}disabled{% endif %}>
+                        {% if item.product.stock > 0 %}<i class="bi bi-bag-plus me-1"></i> Move to Bag{% else %}Out of Stock{% endif %}
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<script type="module">
+    import { animate, stagger } from "https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm";
+    animate(".page-title", { opacity: [0, 1], x: [-20, 0] }, { duration: 0.5, easing: "ease-out" });
+    animate(".wishlist-item", { opacity: [0, 1], y: [30, 0] }, { duration: 0.4, delay: stagger(0.08), easing: "ease-out" });
+</script>
+<style>.page-title, .wishlist-item { opacity: 0; }</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productId = this.getAttribute('data-id');
+            const originalText = this.innerHTML;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Adding...';
+            this.disabled = true;
+            fetch(`/api/cart/add/${productId}`, { method: 'POST', headers: {'Content-Type': 'application/json'} })
+            .then(r => r.json()).then(data => {
+                if (data.success) {
+                    this.innerHTML = '<i class="bi bi-check2"></i> Added';
+                    this.classList.replace('btn-navy', 'btn-success');
+                    fetch(`/api/wishlist/toggle/${productId}`, { method: 'POST', headers: {'Content-Type': 'application/json'} })
+                    .then(() => { setTimeout(() => { document.getElementById(`wishlist-item-${productId}`).remove(); if(!document.querySelectorAll('.wishlist-item').length) window.location.reload(); }, 1000); });
+                } else { alert(data.error); this.innerHTML = originalText; this.disabled = false; }
+            });
+        });
+    });
+    document.querySelectorAll('.toggle-wishlist').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productId = this.getAttribute('data-id');
+            fetch(`/api/wishlist/toggle/${productId}`, { method: 'POST', headers: {'Content-Type': 'application/json'} })
+            .then(r => r.json()).then(data => {
+                if (data.success && !data.added) {
+                    document.getElementById(`wishlist-item-${productId}`).remove();
+                    if(!document.querySelectorAll('.wishlist-item').length) window.location.reload();
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

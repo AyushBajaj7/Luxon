@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block title %}Shopping Bag | Luxon{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4 page-title" style="font-family: 'Playfair Display', serif;">Shopping Bag</h2>
+    
+    {% if not cart.items %}
+    <div class="text-center py-5">
+        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 100px; height: 100px;">
+            <i class="bi bi-bag fs-1 text-muted"></i>
+        </div>
+        <h4 class="text-muted mb-2">Your bag is empty</h4>
+        <p class="text-muted small mb-4">Looks like you haven't added anything to your bag yet.</p>
+        <a href="{{ url_for('main.products') }}" class="btn btn-navy px-5 rounded-pill py-2">Continue Shopping</a>
+    </div>
+    {% else %}
+    <div class="row g-5">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-body p-4">
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead class="text-uppercase text-muted small" style="letter-spacing: 1px;">
+                                <tr>
+                                    <th scope="col">Product</th>
+                                    <th scope="col" class="text-center">Qty</th>
+                                    <th scope="col" class="text-end">Total</th>
+                                    <th scope="col" width="40"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="border-top-0">
+                                {% for item in cart.items %}
+                                <tr id="cart-item-{{ item.id }}">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ item.product.image_url or 'https://via.placeholder.com/80' }}" class="rounded-3 object-fit-cover me-3" style="width: 80px; height: 80px;" alt="{{ item.product.name }}">
+                                            <div>
+                                                <p class="text-muted mb-0" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;">{{ item.product.brand or 'Luxon' }}</p>
+                                                <h6 class="fw-bold mb-1"><a href="{{ url_for('main.product_detail', id=item.product.id) }}" class="text-dark text-decoration-none">{{ item.product.name }}</a></h6>
+                                                <p class="text-muted small mb-0">₹{{ "{:,.0f}".format(item.product.price) }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <button class="btn btn-sm btn-light rounded-circle update-cart" style="width: 32px; height: 32px;" data-id="{{ item.id }}" data-action="decrease"><i class="bi bi-dash"></i></button>
+                                            <span class="fw-bold px-3 item-quantity">{{ item.quantity }}</span>
+                                            <button class="btn btn-sm btn-light rounded-circle update-cart" style="width: 32px; height: 32px;" data-id="{{ item.id }}" data-action="increase"><i class="bi bi-plus"></i></button>
+                                        </div>
+                                    </td>
+                                    <td class="text-end fw-bold item-total">₹{{ "{:,.0f}".format(item.quantity * item.product.price) }}</td>
+                                    <td class="text-end">
+                                        <button class="btn btn-sm text-muted update-cart" data-id="{{ item.id }}" data-action="remove"><i class="bi bi-x-lg"></i></button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-3 bg-light">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">Price Details</h5>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Subtotal</span>
+                        <span class="fw-bold" id="cart-subtotal">₹{{ "{:,.0f}".format(subtotal) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">GST (18%)</span>
+                        <span class="fw-bold" id="cart-gst">₹{{ "{:,.0f}".format(gst) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Delivery</span>
+                        <span class="fw-bold text-success">FREE</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="fw-bold">Total Amount</span>
+                        <span class="fw-bold fs-5 text-gold" id="cart-total">₹{{ "{:,.0f}".format(total) }}</span>
+                    </div>
+                    <a href="{{ url_for('shop.checkout') }}" class="btn btn-navy w-100 rounded-pill py-3 fw-bold">Place Order</a>
+                    <div class="text-center mt-3">
+                        <small class="text-muted"><i class="bi bi-shield-lock me-1"></i>Safe and Secure Payments</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script type="module">
+    import { animate } from "https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm";
+    animate(".page-title", { opacity: [0, 1], x: [-20, 0] }, { duration: 0.5, easing: "ease-out" });
+</script>
+<style>.page-title { opacity: 0; }</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.update-cart').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const itemId = this.getAttribute('data-id');
+            const action = this.getAttribute('data-action');
+            fetch(`/api/cart/update/${itemId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: action })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    if (action === 'remove' || data.item_quantity === 0) {
+                        document.getElementById(`cart-item-${itemId}`).remove();
+                    } else {
+                        const row = document.getElementById(`cart-item-${itemId}`);
+                        row.querySelector('.item-quantity').textContent = data.item_quantity;
+                        row.querySelector('.item-total').textContent = `₹${Number(data.item_total).toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
+                    }
+                    document.getElementById('cart-subtotal').textContent = `₹${Number(data.subtotal).toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
+                    document.getElementById('cart-gst').textContent = `₹${Number(data.gst).toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
+                    document.getElementById('cart-total').textContent = `₹${Number(data.total).toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
+                    if (data.total_items === 0) window.location.reload();
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

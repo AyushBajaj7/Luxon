@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Order Confirmed | Luxon{% endblock %}
+{% block content %}
+<div class="container py-5 text-center my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-0 shadow-lg rounded-4 p-5 confirm-card">
+                <div class="mb-4 confirm-icon">
+                    <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                        <i class="bi bi-check2 fs-1"></i>
+                    </div>
+                </div>
+                <h1 class="fw-bold mb-3 text-navy confirm-text" style="font-family: 'Playfair Display', serif;">Thank You!</h1>
+                <p class="text-muted mb-5 confirm-text">Your luxury order has been placed successfully. A confirmation email will be sent shortly.</p>
+                
+                <div class="bg-light p-4 rounded-4 text-start mb-5 confirm-details">
+                    <div class="d-flex justify-content-between mb-3 border-bottom pb-3">
+                        <span class="text-muted fw-semibold">Order Number</span>
+                        <span class="fw-bold text-navy">#{{ order.id }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3 border-bottom pb-3">
+                        <span class="text-muted fw-semibold">Date</span>
+                        <span class="fw-bold text-navy">{{ order.created_at.strftime('%B %d, %Y') }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3 border-bottom pb-3">
+                        <span class="text-muted fw-semibold">Total Paid</span>
+                        <span class="fw-bold text-gold fs-5">₹{{ "{:,.0f}".format(order.total_amount) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted fw-semibold">Payment ID</span>
+                        <span class="fw-bold text-navy small font-monospace">{{ order.payment.razorpay_payment_id if order.payment else 'Pending' }}</span>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-center gap-3 confirm-actions">
+                    <a href="{{ url_for('shop.profile') }}" class="btn btn-outline-navy rounded-pill px-4 py-2 fw-semibold">View Order Status</a>
+                    <a href="{{ url_for('main.products') }}" class="btn btn-gold rounded-pill px-4 py-2 fw-semibold">Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="module">
+    import { animate, stagger } from "https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm";
+    animate(".confirm-card", { opacity: [0, 1], scale: [0.95, 1] }, { duration: 0.6, easing: "ease-out" });
+    animate(".confirm-icon", { opacity: [0, 1], y: [20, 0] }, { duration: 0.5, delay: 0.2, easing: "ease-out" });
+    animate(".confirm-text", { opacity: [0, 1], y: [20, 0] }, { duration: 0.5, delay: stagger(0.1, { start: 0.3 }), easing: "ease-out" });
+    animate(".confirm-details", { opacity: [0, 1], y: [20, 0] }, { duration: 0.5, delay: 0.6, easing: "ease-out" });
+    animate(".confirm-actions", { opacity: [0, 1], y: [20, 0] }, { duration: 0.5, delay: 0.8, easing: "ease-out" });
+</script>
+<style>
+.confirm-card, .confirm-icon, .confirm-text, .confirm-details, .confirm-actions { opacity: 0; }
+</style>
+{% endblock %}

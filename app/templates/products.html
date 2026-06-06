@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}Shop Collection | Luxon{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="mb-5">
+        <h1 class="fw-bold page-title" style="font-family: 'Playfair Display', serif;">The Collection</h1>
+        <p class="text-muted">Explore our curated selection of luxury items from the world's finest brands.</p>
+    </div>
+    
+    <div class="row">
+        <!-- Sidebar Filters -->
+        <div class="col-lg-3 mb-4">
+            <div class="card border-0 shadow-sm rounded-3 p-4 sticky-top" style="top: 100px;">
+                <h5 class="fw-bold mb-4"><i class="bi bi-funnel me-2"></i>Filters</h5>
+                <form method="GET" action="{{ url_for('main.products') }}">
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-muted text-uppercase" style="letter-spacing: 1px;">Category</label>
+                        <select class="form-select bg-light border-0 rounded-3" name="category">
+                            <option value="">All Categories</option>
+                            {% for c in categories %}
+                                <option value="{{ c.id }}" {% if request.args.get('category')|string == c.id|string %}selected{% endif %}>{{ c.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-muted text-uppercase" style="letter-spacing: 1px;">Max Price</label>
+                        <input type="range" class="form-range" name="max_price" min="0" max="500000" step="5000" value="{{ request.args.get('max_price', 500000) }}" oninput="this.nextElementSibling.value = '₹' + Number(this.value).toLocaleString('en-IN')">
+                        <output class="small text-muted d-block text-end">₹{{ "{:,}".format(request.args.get('max_price', 500000)|int) }}</output>
+                    </div>
+                    <button type="submit" class="btn btn-navy w-100 py-2 rounded-pill">Apply Filters</button>
+                    {% if request.args %}
+                        <a href="{{ url_for('main.products') }}" class="btn btn-link text-muted w-100 mt-2 text-decoration-none small">Clear All</a>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+        
+        <!-- Products Grid -->
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <p class="text-muted mb-0 small">Showing <strong>{{ pagination.total }}</strong> products</p>
+            </div>
+            <div class="row g-4 mb-5">
+                {% for p in pagination.items %}
+                <div class="col-6 col-lg-4 product-grid-item">
+                    <div class="card product-card border-0 shadow-sm h-100">
+                        <a href="{{ url_for('main.product_detail', id=p.id) }}" class="text-decoration-none text-dark">
+                            <div class="card-img-wrapper">
+                                <img src="{{ p.image_url or 'https://via.placeholder.com/400x400' }}" class="card-img-top object-fit-cover" style="height: 280px;" alt="{{ p.name }}">
+                                {% if p.stock == 0 %}
+                                    <span class="badge bg-danger position-absolute top-0 start-0 m-3 rounded-pill">Out of Stock</span>
+                                {% elif p.is_featured %}
+                                    <span class="badge badge-offer position-absolute top-0 start-0 m-3">TRENDING</span>
+                                {% endif %}
+                            </div>
+                            <div class="card-body px-3 pb-3">
+                                <p class="text-muted mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">{{ p.brand or 'Luxon' }}</p>
+                                <h6 class="fw-semibold mb-2 text-truncate" style="font-size: 0.9rem;">{{ p.name }}</h6>
+                                <span class="price-current">₹{{ "{:,.0f}".format(p.price) }}</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-12 text-center py-5">
+                    <i class="bi bi-search display-1 text-muted mb-3 d-block opacity-25"></i>
+                    <h4 class="text-muted">No products found matching your criteria.</h4>
+                    <a href="{{ url_for('main.products') }}" class="btn btn-outline-navy rounded-pill mt-3">View All Products</a>
+                </div>
+                {% endfor %}
+            </div>
+            
+            {% if pagination.pages > 1 %}
+            {% set page_args = request.args.to_dict() %}
+            {% set _ = page_args.pop('page', None) %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center gap-2">
+                    <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                        <a class="page-link border-0 shadow-sm rounded-circle text-navy" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" href="{{ url_for('main.products', page=pagination.prev_num, **page_args) }}"><i class="bi bi-chevron-left"></i></a>
+                    </li>
+                    {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                        {% if page_num %}
+                            <li class="page-item {% if pagination.page == page_num %}active{% endif %}">
+                                <a class="page-link border-0 shadow-sm rounded-circle {% if pagination.page == page_num %}bg-navy{% else %}text-navy{% endif %}" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" href="{{ url_for('main.products', page=page_num, **page_args) }}">{{ page_num }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link border-0 bg-transparent text-muted">...</span></li>
+                        {% endif %}
+                    {% endfor %}
+                    <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                        <a class="page-link border-0 shadow-sm rounded-circle text-navy" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" href="{{ url_for('main.products', page=pagination.next_num, **page_args) }}"><i class="bi bi-chevron-right"></i></a>
+                    </li>
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { animate, stagger, inView } from "https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm";
+    
+    animate(".page-title", { opacity: [0, 1], x: [-30, 0] }, { duration: 0.6, easing: "ease-out" });
+    
+    inView(".product-grid-item", (info) => {
+        animate(info.target, { opacity: [0, 1], y: [30, 0] }, { duration: 0.4, easing: "ease-out" });
+    }, { amount: 0.1 });
+</script>
+<style>
+.page-title, .product-grid-item { opacity: 0; }
+</style>
+{% endblock %}

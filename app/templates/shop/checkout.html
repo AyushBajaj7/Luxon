@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Checkout | Luxon{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-5">
+        <div class="col-lg-7 checkout-form">
+            <h2 class="fw-bold mb-4" style="font-family: 'Playfair Display', serif;">Checkout</h2>
+            <form method="POST" action="{{ url_for('shop.checkout') }}">
+                <div class="card border-0 shadow-sm rounded-3 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4"><i class="bi bi-geo-alt me-2 text-gold"></i>Delivery Address</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small text-uppercase" style="letter-spacing: 1px;">Full Name</label>
+                                <input type="text" class="form-control bg-light border-0 py-2 rounded-3" value="{{ current_user.full_name }}" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small text-uppercase" style="letter-spacing: 1px;">Email</label>
+                                <input type="email" class="form-control bg-light border-0 py-2 rounded-3" value="{{ current_user.email }}" readonly>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label text-muted small text-uppercase" style="letter-spacing: 1px;">Complete Address</label>
+                                <textarea class="form-control bg-light border-0 rounded-3" name="shipping_address" rows="3" required placeholder="House No, Street, Landmark, City, State, PIN Code"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-navy w-100 rounded-pill py-3 fw-bold shadow">Proceed to Payment — ₹{{ "{:,.0f}".format(total) }}</button>
+                <p class="text-center text-muted mt-3 small"><i class="bi bi-shield-lock-fill me-1"></i> Your transaction is secured with Razorpay encryption</p>
+            </form>
+        </div>
+        <div class="col-lg-5 checkout-summary">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">Order Summary ({{ cart.items|length }} items)</h5>
+                    <div class="mb-4" style="max-height: 300px; overflow-y: auto;">
+                        {% for item in cart.items %}
+                        <div class="d-flex align-items-center justify-content-between mb-3 pb-3 {% if not loop.last %}border-bottom{% endif %}">
+                            <div class="d-flex align-items-center">
+                                <div class="position-relative me-3">
+                                    <img src="{{ item.product.image_url or 'https://via.placeholder.com/60' }}" class="rounded-3 object-fit-cover" style="width: 56px; height: 56px;">
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-navy" style="font-size: 0.6rem;">{{ item.quantity }}</span>
+                                </div>
+                                <div>
+                                    <p class="fw-semibold mb-0 small text-truncate" style="max-width: 180px;">{{ item.product.name }}</p>
+                                    <p class="text-muted mb-0" style="font-size: 0.7rem;">{{ item.product.brand or 'Luxon' }}</p>
+                                </div>
+                            </div>
+                            <span class="fw-bold small">₹{{ "{:,.0f}".format(item.product.price * item.quantity) }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-2"><span class="text-muted small">Subtotal</span><span class="fw-bold small">₹{{ "{:,.0f}".format(subtotal) }}</span></div>
+                    <div class="d-flex justify-content-between mb-2"><span class="text-muted small">GST (18%)</span><span class="fw-bold small">₹{{ "{:,.0f}".format(gst) }}</span></div>
+                    <div class="d-flex justify-content-between mb-3"><span class="text-muted small">Delivery</span><span class="fw-bold text-success small">FREE</span></div>
+                    <hr>
+                    <div class="d-flex justify-content-between"><span class="fw-bold">Total</span><span class="fw-bold fs-5 text-gold">₹{{ "{:,.0f}".format(total) }}</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { animate } from "https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm";
+    animate(".checkout-form", { opacity: [0, 1], x: [-30, 0] }, { duration: 0.5, easing: "ease-out" });
+    animate(".checkout-summary", { opacity: [0, 1], x: [30, 0] }, { duration: 0.5, delay: 0.1, easing: "ease-out" });
+</script>
+<style>.checkout-form, .checkout-summary { opacity: 0; }</style>
+{% endblock %}

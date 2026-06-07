@@ -1,3 +1,4 @@
+import os
 import random
 import urllib.parse
 from app import create_app, db, bcrypt
@@ -1189,7 +1190,7 @@ def seed_db():
                 first_name="Admin",
                 last_name="User",
                 email="admin@luxon.com",
-                password_hash=bcrypt.generate_password_hash("Luxon_Secure!Admin2026").decode('utf-8'),
+                password_hash=bcrypt.generate_password_hash(os.environ.get('ADMIN_PASSWORD', 'change_me_in_production')).decode('utf-8'),
                 role="admin"
             )
             db.session.add(admin)

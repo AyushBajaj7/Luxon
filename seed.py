@@ -844,229 +844,229 @@ PRODUCTS_DATA = json.loads('''[
         "desc": "An exclusive limited edition luxury piece."
     },
     {
-        "name": "Limited Edition Item 5",
-        "brand": "Exclusive",
+        "name": "Bvlgari Serpenti Necklace",
+        "brand": "Bvlgari",
         "cat": "Fashion",
-        "gender": "Unisex",
+        "gender": "Women",
         "sub": "Accessories",
-        "price": 90000,
-        "desc": "An exclusive limited edition luxury piece."
+        "price": 450000,
+        "desc": "18k rose gold necklace set with pavé diamonds mimicking a serpent."
     },
     {
-        "name": "Limited Edition Item 6",
-        "brand": "Exclusive",
+        "name": "Chopard Happy Diamonds Watch",
+        "brand": "Chopard",
+        "cat": "Watches",
+        "gender": "Women",
+        "sub": "Watches",
+        "price": 850000,
+        "desc": "Iconic watch featuring dancing diamonds inside the case."
+    },
+    {
+        "name": "Cartier Panthere Ring",
+        "brand": "Cartier",
         "cat": "Fashion",
-        "gender": "Unisex",
+        "gender": "Women",
+        "sub": "Accessories",
+        "price": 320000,
+        "desc": "Sculptural panther ring in yellow gold with emerald eyes."
+    },
+    {
+        "name": "Rolex Daytona Rose Gold",
+        "brand": "Rolex",
+        "cat": "Watches",
+        "gender": "Men",
+        "sub": "Watches",
+        "price": 4200000,
+        "desc": "18ct Everose gold chronograph watch with a black dial."
+    },
+    {
+        "name": "Fendi Baguette Bag",
+        "brand": "Fendi",
+        "cat": "Fashion",
+        "gender": "Women",
         "sub": "Bags",
-        "price": 100000,
-        "desc": "An exclusive limited edition luxury piece."
+        "price": 280000,
+        "desc": "Classic FF canvas baguette shoulder bag with gold-tone hardware."
     },
     {
-        "name": "Limited Edition Item 7",
-        "brand": "Exclusive",
+        "name": "Saint Laurent Tuxedo",
+        "brand": "YSL",
         "cat": "Fashion",
-        "gender": "Unisex",
-        "sub": "Accessories",
-        "price": 110000,
-        "desc": "An exclusive limited edition luxury piece."
+        "gender": "Men",
+        "sub": "Clothing",
+        "price": 350000,
+        "desc": "Iconic 'Le Smoking' tailored grain de poudre tuxedo."
     },
     {
-        "name": "Limited Edition Item 8",
-        "brand": "Exclusive",
+        "name": "Prada Cleo Bag",
+        "brand": "Prada",
         "cat": "Fashion",
-        "gender": "Unisex",
+        "gender": "Women",
         "sub": "Bags",
-        "price": 120000,
-        "desc": "An exclusive limited edition luxury piece."
-    },
-    {
-        "name": "Limited Edition Item 9",
-        "brand": "Exclusive",
-        "cat": "Fashion",
-        "gender": "Unisex",
-        "sub": "Accessories",
-        "price": 130000,
-        "desc": "An exclusive limited edition luxury piece."
-    },
-    {
-        "name": "Limited Edition Item 10",
-        "brand": "Exclusive",
-        "cat": "Fashion",
-        "gender": "Unisex",
-        "sub": "Bags",
-        "price": 140000,
-        "desc": "An exclusive limited edition luxury piece."
-    },
-    {
-        "name": "Limited Edition Item 11",
-        "brand": "Exclusive",
-        "cat": "Fashion",
-        "gender": "Unisex",
-        "sub": "Accessories",
-        "price": 150000,
-        "desc": "An exclusive limited edition luxury piece."
-    },
-    {
-        "name": "Limited Edition Item 12",
-        "brand": "Exclusive",
-        "cat": "Fashion",
-        "gender": "Unisex",
-        "sub": "Bags",
-        "price": 160000,
-        "desc": "An exclusive limited edition luxury piece."
-    },
-    {
-        "name": "Limited Edition Item 13",
-        "brand": "Exclusive",
-        "cat": "Fashion",
-        "gender": "Unisex",
-        "sub": "Accessories",
-        "price": 170000,
-        "desc": "An exclusive limited edition luxury piece."
-    },
-    {
-        "name": "Limited Edition Item 14",
-        "brand": "Exclusive",
-        "cat": "Fashion",
-        "gender": "Unisex",
-        "sub": "Bags",
-        "price": 180000,
-        "desc": "An exclusive limited edition luxury piece."
-    },
-    {
-        "name": "Limited Edition Item 15",
-        "brand": "Exclusive",
-        "cat": "Fashion",
-        "gender": "Unisex",
-        "sub": "Accessories",
-        "price": 190000,
-        "desc": "An exclusive limited edition luxury piece."
-    },
-    {
-        "name": "Limited Edition Item 16",
-        "brand": "Exclusive",
-        "cat": "Fashion",
-        "gender": "Unisex",
-        "sub": "Bags",
-        "price": 200000,
-        "desc": "An exclusive limited edition luxury piece."
-    },
-    {
-        "name": "Limited Edition Item 17",
-        "brand": "Exclusive",
-        "cat": "Fashion",
-        "gender": "Unisex",
-        "sub": "Accessories",
         "price": 210000,
-        "desc": "An exclusive limited edition luxury piece."
+        "desc": "Sleek brushed leather hobo bag with a curved silhouette."
     },
     {
-        "name": "Limited Edition Item 18",
-        "brand": "Exclusive",
+        "name": "Balmain Blazer",
+        "brand": "Balmain",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Clothing",
+        "price": 180000,
+        "desc": "Structured double-breasted wool blazer with embossed gold buttons."
+    },
+    {
+        "name": "Valentino Rockstud Pumps",
+        "brand": "Valentino",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Shoes",
+        "price": 85000,
+        "desc": "Patent leather stiletto heels adorned with signature pyramid studs."
+    },
+    {
+        "name": "Givenchy Antigona Bag",
+        "brand": "Givenchy",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Bags",
+        "price": 195000,
+        "desc": "Trapezoid-shaped medium duffel bag in glossy goatskin."
+    },
+    {
+        "name": "Versace Medusa Belt",
+        "brand": "Versace",
+        "cat": "Fashion",
+        "gender": "Men",
+        "sub": "Accessories",
+        "price": 45000,
+        "desc": "Smooth calf leather belt featuring the iconic gold Medusa buckle."
+    },
+    {
+        "name": "Hermes H Belt",
+        "brand": "Hermes",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Accessories",
+        "price": 75000,
+        "desc": "Reversible leather belt strap with the classic H buckle."
+    },
+    {
+        "name": "Burberry Cashmere Scarf",
+        "brand": "Burberry",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Accessories",
+        "price": 42000,
+        "desc": "Classic vintage check scarf made from ultra-soft Scottish cashmere."
+    },
+    {
+        "name": "Tom Ford Aviator Sunglasses",
+        "brand": "Tom Ford",
+        "cat": "Fashion",
+        "gender": "Men",
+        "sub": "Accessories",
+        "price": 38000,
+        "desc": "Sleek metal aviator sunglasses with the signature T logo hinge."
+    },
+    {
+        "name": "Louboutin Kate Pumps",
+        "brand": "Louboutin",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Shoes",
+        "price": 78000,
+        "desc": "Classic pointed-toe stiletto pumps showcasing the iconic red sole."
+    },
+    {
+        "name": "Maison Margiela Tabi Boots",
+        "brand": "Maison Margiela",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Shoes",
+        "price": 95000,
+        "desc": "Avant-garde split-toe ankle boots in smooth calf leather."
+    },
+    {
+        "name": "Goyard Belvedere Bag",
+        "brand": "Goyard",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Bags",
+        "price": 260000,
+        "desc": "Saddle-shaped crossbody bag featuring Goyardine canvas."
+    },
+    {
+        "name": "Louis Vuitton Keepall",
+        "brand": "Louis Vuitton",
         "cat": "Fashion",
         "gender": "Unisex",
         "sub": "Bags",
         "price": 220000,
-        "desc": "An exclusive limited edition luxury piece."
+        "desc": "Classic monogram canvas duffel bag perfect for weekend travel."
     },
     {
-        "name": "Limited Edition Item 19",
-        "brand": "Exclusive",
-        "cat": "Fashion",
+        "name": "Rimowa Cabin Suitcase",
+        "brand": "Rimowa",
+        "cat": "Lifestyle",
         "gender": "Unisex",
         "sub": "Accessories",
-        "price": 230000,
-        "desc": "An exclusive limited edition luxury piece."
+        "price": 110000,
+        "desc": "Iconic grooved aluminum hard-shell carry-on luggage."
     },
     {
-        "name": "Limited Edition Item 20",
-        "brand": "Exclusive",
+        "name": "Dior Saddle Bag",
+        "brand": "Dior",
         "cat": "Fashion",
-        "gender": "Unisex",
-        "sub": "Bags",
-        "price": 240000,
-        "desc": "An exclusive limited edition luxury piece."
-    },
-    {
-        "name": "Limited Edition Item 21",
-        "brand": "Exclusive",
-        "cat": "Fashion",
-        "gender": "Unisex",
-        "sub": "Accessories",
-        "price": 250000,
-        "desc": "An exclusive limited edition luxury piece."
-    },
-    {
-        "name": "Limited Edition Item 22",
-        "brand": "Exclusive",
-        "cat": "Fashion",
-        "gender": "Unisex",
-        "sub": "Bags",
-        "price": 260000,
-        "desc": "An exclusive limited edition luxury piece."
-    },
-    {
-        "name": "Limited Edition Item 23",
-        "brand": "Exclusive",
-        "cat": "Fashion",
-        "gender": "Unisex",
-        "sub": "Accessories",
-        "price": 270000,
-        "desc": "An exclusive limited edition luxury piece."
-    },
-    {
-        "name": "Limited Edition Item 24",
-        "brand": "Exclusive",
-        "cat": "Fashion",
-        "gender": "Unisex",
-        "sub": "Bags",
-        "price": 280000,
-        "desc": "An exclusive limited edition luxury piece."
-    },
-    {
-        "name": "Limited Edition Item 25",
-        "brand": "Exclusive",
-        "cat": "Fashion",
-        "gender": "Unisex",
-        "sub": "Accessories",
-        "price": 290000,
-        "desc": "An exclusive limited edition luxury piece."
-    },
-    {
-        "name": "Limited Edition Item 26",
-        "brand": "Exclusive",
-        "cat": "Fashion",
-        "gender": "Unisex",
-        "sub": "Bags",
-        "price": 300000,
-        "desc": "An exclusive limited edition luxury piece."
-    },
-    {
-        "name": "Limited Edition Item 27",
-        "brand": "Exclusive",
-        "cat": "Fashion",
-        "gender": "Unisex",
-        "sub": "Accessories",
-        "price": 310000,
-        "desc": "An exclusive limited edition luxury piece."
-    },
-    {
-        "name": "Limited Edition Item 28",
-        "brand": "Exclusive",
-        "cat": "Fashion",
-        "gender": "Unisex",
+        "gender": "Women",
         "sub": "Bags",
         "price": 320000,
-        "desc": "An exclusive limited edition luxury piece."
+        "desc": "Equestrian-inspired handbag in blue Oblique jacquard canvas."
     },
     {
-        "name": "Limited Edition Item 29",
-        "brand": "Exclusive",
+        "name": "Bottega Veneta Jodie",
+        "brand": "Bottega Veneta",
         "cat": "Fashion",
-        "gender": "Unisex",
-        "sub": "Accessories",
-        "price": 330000,
-        "desc": "An exclusive limited edition luxury piece."
+        "gender": "Women",
+        "sub": "Bags",
+        "price": 215000,
+        "desc": "Mini knotted hobo bag crafted in signature Intrecciato leather."
+    },
+    {
+        "name": "Jacquemus Le Chiquito",
+        "brand": "Jacquemus",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Bags",
+        "price": 65000,
+        "desc": "Famous micro handbag with a highly exaggerated top handle."
+    },
+    {
+        "name": "Rolex Datejust 41",
+        "brand": "Rolex",
+        "cat": "Watches",
+        "gender": "Men",
+        "sub": "Watches",
+        "price": 1100000,
+        "desc": "Classic Oystersteel and white gold watch with a fluted bezel."
+    },
+    {
+        "name": "Patek Philippe Aquanaut",
+        "brand": "Patek Philippe",
+        "cat": "Watches",
+        "gender": "Men",
+        "sub": "Watches",
+        "price": 5500000,
+        "desc": "Modern luxury sports watch with a rounded octagon steel case."
+    },
+    {
+        "name": "Cartier Santos",
+        "brand": "Cartier",
+        "cat": "Watches",
+        "gender": "Men",
+        "sub": "Watches",
+        "price": 750000,
+        "desc": "Square-faced stainless steel watch with exposed screws on the bezel."
     }
 ]''')
 

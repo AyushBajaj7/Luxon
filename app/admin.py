@@ -206,3 +206,29 @@ def delete_promo(id):
     db.session.commit()
     flash('Promo code deleted.', 'success')
     return redirect(url_for('admin.dashboard', tab='promos'))
+
+@admin_bp.route('/change_password', methods=['POST'])
+@login_required
+@admin_required
+def change_password():
+    from app import bcrypt
+    current_password = request.form.get('current_password')
+    new_password = request.form.get('new_password')
+    confirm_password = request.form.get('confirm_password')
+    
+    if not current_password or not new_password or not confirm_password:
+        flash('All fields are required.', 'danger')
+        return redirect(url_for('admin.dashboard', tab='settings'))
+        
+    if new_password != confirm_password:
+        flash('New passwords do not match.', 'danger')
+        return redirect(url_for('admin.dashboard', tab='settings'))
+        
+    if not bcrypt.check_password_hash(current_user.password_hash, current_password):
+        flash('Incorrect current password.', 'danger')
+        return redirect(url_for('admin.dashboard', tab='settings'))
+        
+    current_user.password_hash = bcrypt.generate_password_hash(new_password).decode('utf-8')
+    db.session.commit()
+    flash('Admin password changed successfully!', 'success')
+    return redirect(url_for('admin.dashboard', tab='settings'))

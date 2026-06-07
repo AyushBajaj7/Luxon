@@ -1,0 +1,21 @@
+/* Premium page transitions */
+main { animation: fadeIn 0.3s ease-out; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Smoother image rendering */
+img { image-rendering: auto; }
+
+/* GPU-accelerated scroll */
+* { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+/* Premium product card hover lift */
+.product-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.product-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.15); }
+
+/* Elegant link underline animation */
+.nav-link-underline { position: relative; }
+.nav-link-underline::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 1px; background: #D4AF37; transition: width 0.3s ease; }
+.nav-link-underline:hover::after { width: 100%; }
+
+/* Optimized transitions - use GPU compositing */
+.transition-gpu { will-change: transform; transform: translateZ(0); }

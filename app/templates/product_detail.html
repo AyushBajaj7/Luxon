@@ -2,108 +2,154 @@
 {% block title %}{{ product.name }} | Luxon{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb small">
-            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}" class="text-navy text-decoration-none">Home</a></li>
-            <li class="breadcrumb-item"><a href="{{ url_for('main.products') }}" class="text-navy text-decoration-none">Collection</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
-        </ol>
+<div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    
+    <!-- Breadcrumb -->
+    <nav class="flex items-center text-xs font-bold uppercase tracking-widest text-slate-400 mb-10">
+        <a href="{{ url_for('main.index') }}" class="hover:text-navy transition-colors">Home</a>
+        <span class="mx-3 text-slate-300">/</span>
+        <a href="{{ url_for('main.products') }}" class="hover:text-navy transition-colors">Collection</a>
+        <span class="mx-3 text-slate-300">/</span>
+        <span class="text-navy truncate max-w-xs">{{ product.name }}</span>
     </nav>
 
-    <div class="row g-5">
-        <div class="col-lg-6 product-image-section">
-            <div class="product-detail-img position-sticky" style="top: 100px;">
-                <img src="{{ product.image_url or 'https://via.placeholder.com/600x600' }}" class="img-fluid w-100 object-fit-cover rounded-4" style="max-height: 600px;" alt="{{ product.name }}">
+    <div class="flex flex-col lg:flex-row gap-16">
+        
+        <!-- Image Gallery -->
+        <div class="w-full lg:w-1/2 product-image-section">
+            <div class="sticky top-28 bg-gradient-to-br from-slate-50 to-white rounded-[2.5rem] overflow-hidden border border-slate-100 aspect-square flex items-center justify-center p-8 shadow-sm group relative">
+                <!-- Decorative Glow -->
+                <div class="absolute inset-0 bg-gold/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                <!-- Ribbon -->
+                <div class="absolute top-8 left-0 bg-gold text-navy text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-r-md shadow-md z-10">
+                    Luxon Exclusive
+                </div>
+                <!-- Image with CSS Zoom -->
+                <div class="w-full h-full relative overflow-hidden flex items-center justify-center">
+                    <img src="{{ product.image_url or 'https://via.placeholder.com/600x600' }}" loading="lazy" class="max-w-full max-h-full object-contain drop-shadow-2xl transition-transform duration-[1.5s] ease-out group-hover:scale-[1.35] origin-center" alt="{{ product.name }}">
+                </div>
             </div>
         </div>
         
-        <div class="col-lg-6 product-info-section">
-            <p class="text-uppercase text-gold fw-bold mb-2" style="letter-spacing: 3px; font-size: 0.8rem;">{{ product.brand or 'Luxon Exclusive' }}</p>
-            <h1 class="display-6 fw-bold mb-3" style="font-family: 'Playfair Display', serif;">{{ product.name }}</h1>
+        <!-- Product Info -->
+        <div class="w-full lg:w-1/2 py-4 product-info-section flex flex-col">
+            <p class="text-xs font-bold text-gold uppercase tracking-[0.25em] mb-4">{{ product.brand or 'Luxon Exclusive' }}</p>
+            <h1 class="text-4xl md:text-5xl font-serif font-bold text-navy mb-6 leading-tight">{{ product.name }}</h1>
             
-            <div class="d-flex align-items-baseline gap-3 mb-4">
-                <span class="fs-3 fw-bold">₹{{ "{:,.0f}".format(product.price) }}</span>
-                <span class="text-muted small">Inclusive of all taxes</span>
+            <div class="flex flex-wrap items-baseline gap-4 mb-8">
+                <span class="text-3xl font-extrabold text-navy">₹{{ "{:,.0f}".format(product.price) }}</span>
+                {% if product.original_price and product.original_price > product.price %}
+                    <span class="text-xl text-slate-400 font-medium line-through">₹{{ "{:,.0f}".format(product.original_price) }}</span>
+                    <span class="text-sm font-bold text-red-500 bg-red-50 px-3 py-1 rounded-lg border border-red-100">
+                        {{ "{:.0f}".format(((product.original_price - product.price) / product.original_price) * 100) }}% OFF
+                    </span>
+                {% endif %}
+                <span class="w-full text-xs font-bold text-slate-400 tracking-widest uppercase mt-2">Inclusive of all taxes</span>
             </div>
             
-            <p class="text-muted lh-lg mb-4" style="font-size: 0.95rem;">{{ product.description or 'Experience the ultimate luxury with this exclusive piece crafted with unparalleled attention to detail.' }}</p>
+            <p class="text-slate-500 text-lg leading-relaxed mb-10">{{ product.description or 'Experience the ultimate luxury with this exclusive piece crafted with unparalleled attention to detail.' }}</p>
             
-            <div class="d-flex align-items-center gap-3 mb-4">
-                <span class="fw-semibold text-muted small text-uppercase">Availability:</span>
-                {% if product.stock > 0 %}
-                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2"><i class="bi bi-check-circle me-1"></i> In Stock ({{ product.stock }} left)</span>
+            <div class="flex items-center gap-4 mb-4 pb-4 border-b border-slate-100">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Availability:</span>
+                {% if product.stock > 1 %}
+                    <span class="inline-flex items-center bg-green-50 text-green-600 text-xs font-bold px-4 py-2 rounded-full border border-green-100">
+                        <i class="bi bi-check-circle-fill mr-2"></i> In Stock ({{ product.stock }} left)
+                    </span>
+                {% elif product.stock == 1 %}
+                    <span class="inline-flex items-center bg-orange-50 text-orange-600 text-xs font-bold px-4 py-2 rounded-full border border-orange-100">
+                        <i class="bi bi-exclamation-circle-fill mr-2"></i> Only 1 Left
+                    </span>
                 {% else %}
-                    <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-2"><i class="bi bi-x-circle me-1"></i> Out of Stock</span>
+                    <span class="inline-flex items-center bg-red-50 text-red-600 text-xs font-bold px-4 py-2 rounded-full border border-red-100">
+                        <i class="bi bi-x-circle-fill mr-2"></i> Sold Out
+                    </span>
+                {% endif %}
+            </div>
+
+            <!-- Delivery Estimate -->
+            <div class="flex items-center gap-4 mb-10 pb-8 border-b border-slate-100">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Delivery:</span>
+                <span class="inline-flex items-center text-navy text-sm font-medium">
+                    <i class="bi bi-truck text-gold mr-2 text-lg"></i>
+                    Estimated by <span id="delivery-date" class="font-bold ml-1"></span>
+                </span>
+            </div>
+            
+            <div class="flex flex-wrap sm:flex-nowrap gap-4 mb-12">
+                {% if current_user.is_authenticated %}
+                    <button class="flex-1 bg-navy hover:bg-gold text-white hover:text-navy py-4 sm:py-5 rounded-2xl font-bold uppercase tracking-widest text-sm transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center gap-3 add-to-cart" data-id="{{ product.id }}" {% if product.stock <= 0 %}disabled{% endif %}>
+                        <i class="bi bi-bag text-lg"></i> {% if product.stock > 0 %}Add to Bag{% else %}Sold Out{% endif %}
+                    </button>
+                    <button class="w-full sm:w-20 h-16 sm:h-auto border-2 border-slate-200 text-slate-400 hover:text-gold hover:border-gold rounded-2xl flex items-center justify-center transition-all toggle-wishlist" data-id="{{ product.id }}" title="Wishlist">
+                        <i class="bi bi-heart text-xl"></i>
+                    </button>
+                {% else %}
+                    <a href="{{ url_for('auth.login', next=request.full_path) }}" class="flex-1 bg-navy hover:bg-gold text-white hover:text-navy py-4 sm:py-5 rounded-2xl font-bold uppercase tracking-widest text-sm transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center text-center">
+                        Sign in to Buy
+                    </a>
+                    <a href="{{ url_for('auth.login', next=request.full_path) }}" class="w-full sm:w-20 h-16 sm:h-auto border-2 border-slate-200 text-slate-400 hover:text-navy hover:border-navy rounded-2xl flex items-center justify-center transition-all" title="Wishlist">
+                        <i class="bi bi-heart text-xl"></i>
+                    </a>
                 {% endif %}
             </div>
             
-            <div class="d-flex gap-3 mb-4">
-                <button class="btn btn-navy btn-lg px-5 py-3 rounded-pill fw-bold flex-grow-1 add-to-cart" data-id="{{ product.id }}" {% if product.stock == 0 %}disabled{% endif %}>
-                    <i class="bi bi-bag-plus me-2"></i> Add to Bag
-                </button>
-                <button class="btn btn-outline-secondary btn-lg rounded-pill px-4 toggle-wishlist" data-id="{{ product.id }}" title="Wishlist">
-                    <i class="bi bi-heart"></i>
-                </button>
-            </div>
-            
-            <div class="row g-3 mb-4">
-                <div class="col-6">
-                    <div class="d-flex align-items-center gap-2 p-3 bg-light rounded-3">
-                        <i class="bi bi-truck text-gold"></i>
-                        <small class="fw-medium">Free Delivery</small>
-                    </div>
+            <div class="grid grid-cols-2 gap-4 mb-10">
+                <div class="flex items-center gap-4 p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                    <i class="bi bi-truck text-gold text-xl"></i>
+                    <span class="text-xs font-bold text-navy uppercase tracking-widest">Free Delivery</span>
                 </div>
-                <div class="col-6">
-                    <div class="d-flex align-items-center gap-2 p-3 bg-light rounded-3">
-                        <i class="bi bi-arrow-repeat text-gold"></i>
-                        <small class="fw-medium">30-Day Returns</small>
-                    </div>
+                <div class="flex items-center gap-4 p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                    <i class="bi bi-arrow-repeat text-gold text-xl"></i>
+                    <span class="text-xs font-bold text-navy uppercase tracking-widest">30-Day Returns</span>
                 </div>
-                <div class="col-6">
-                    <div class="d-flex align-items-center gap-2 p-3 bg-light rounded-3">
-                        <i class="bi bi-shield-check text-gold"></i>
-                        <small class="fw-medium">100% Authentic</small>
-                    </div>
+                <div class="flex items-center gap-4 p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                    <i class="bi bi-shield-check text-gold text-xl"></i>
+                    <span class="text-xs font-bold text-navy uppercase tracking-widest">100% Authentic</span>
                 </div>
-                <div class="col-6">
-                    <div class="d-flex align-items-center gap-2 p-3 bg-light rounded-3">
-                        <i class="bi bi-credit-card text-gold"></i>
-                        <small class="fw-medium">Secure Payment</small>
-                    </div>
+                <div class="flex items-center gap-4 p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                    <i class="bi bi-credit-card text-gold text-xl"></i>
+                    <span class="text-xs font-bold text-navy uppercase tracking-widest">Secure Payment</span>
                 </div>
             </div>
 
-            <div class="border-top pt-4">
-                <div class="d-flex align-items-start gap-3 p-3 border-start border-4 border-gold bg-light rounded-end">
-                    <i class="bi bi-gem fs-4 text-gold"></i>
+            <div class="mt-auto pt-6">
+                <div class="flex items-start gap-5 p-6 border-l-4 border-gold bg-gradient-to-r from-gold/10 to-transparent rounded-r-2xl">
+                    <i class="bi bi-gem text-3xl text-gold pt-1"></i>
                     <div>
-                        <h6 class="fw-bold mb-1">Luxon Authenticity Guarantee</h6>
-                        <p class="small text-muted mb-0">This item is verified authentic and comes with a certificate of authenticity, complimentary luxury packaging, and priority customer support.</p>
+                        <h6 class="font-serif font-bold text-navy text-lg mb-2">Luxon Authenticity Guarantee</h6>
+                        <p class="text-sm text-slate-600 leading-relaxed">This item is verified authentic and comes with a certificate of authenticity, complimentary luxury packaging, and priority customer support.</p>
                     </div>
                 </div>
             </div>
+            
         </div>
     </div>
 </div>
 
 <script type="module">
     import { animate } from "https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm";
-    animate(".product-image-section", { opacity: [0, 1], x: [-40, 0] }, { duration: 0.6, easing: "ease-out" });
-    animate(".product-info-section", { opacity: [0, 1], x: [40, 0] }, { duration: 0.6, delay: 0.15, easing: "ease-out" });
+    animate(".product-image-section", { opacity: [0, 1], x: [-40, 0] }, { duration: 0.8, easing: [0.22, 1, 0.36, 1] });
+    animate(".product-info-section", { opacity: [0, 1], x: [40, 0] }, { duration: 0.8, delay: 0.2, easing: [0.22, 1, 0.36, 1] });
+    
+    // Set dynamic delivery date (3-5 days from today)
+    const delDate = new Date();
+    delDate.setDate(delDate.getDate() + 4);
+    document.getElementById('delivery-date').textContent = delDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 </script>
 <style>
 .product-image-section, .product-info-section { opacity: 0; }
 </style>
 
+{% if current_user.is_authenticated %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const cartBtn = document.querySelector('.add-to-cart');
     if(cartBtn) {
-        cartBtn.addEventListener('click', function() {
+        cartBtn.addEventListener('click', function(e) {
+            e.preventDefault();
             const productId = this.getAttribute('data-id');
             const originalText = this.innerHTML;
-            this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Adding...';
+            this.innerHTML = '<span class="inline-block animate-spin mr-2"><i class="bi bi-arrow-repeat"></i></span> Adding';
             this.disabled = true;
             
             fetch(`/api/cart/add/${productId}`, {
@@ -113,12 +159,15 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(res => res.json())
             .then(data => {
                 if(data.success) {
-                    this.innerHTML = '<i class="bi bi-check2"></i> Added to Bag';
-                    this.classList.replace('btn-navy', 'btn-success');
+                    this.innerHTML = '<i class="bi bi-check2 text-xl"></i> Added to Bag';
+                    this.classList.replace('bg-navy', 'bg-green-500');
+                    this.classList.replace('hover:bg-gold', 'hover:bg-green-600');
                     setTimeout(() => {
                         this.innerHTML = originalText;
-                        this.classList.replace('btn-success', 'btn-navy');
+                        this.classList.replace('bg-green-500', 'bg-navy');
+                        this.classList.replace('hover:bg-green-600', 'hover:bg-gold');
                         this.disabled = false;
+                        // Refresh to update cart count
                         window.location.reload();
                     }, 1500);
                 } else {
@@ -132,8 +181,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const wishBtn = document.querySelector('.toggle-wishlist');
     if(wishBtn) {
-        wishBtn.addEventListener('click', function() {
+        wishBtn.addEventListener('click', function(e) {
+            e.preventDefault();
             const productId = this.getAttribute('data-id');
+            
+            // Add a little pop animation
+            this.style.transform = 'scale(1.1)';
+            setTimeout(() => this.style.transform = 'scale(1)', 150);
+            
             fetch(`/api/wishlist/toggle/${productId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }
@@ -144,10 +199,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     const icon = this.querySelector('i');
                     if(data.added) {
                         icon.classList.replace('bi-heart', 'bi-heart-fill');
-                        icon.classList.add('text-danger');
+                        this.classList.replace('text-slate-400', 'text-gold');
+                        this.classList.replace('border-slate-200', 'border-gold');
                     } else {
                         icon.classList.replace('bi-heart-fill', 'bi-heart');
-                        icon.classList.remove('text-danger');
+                        this.classList.replace('text-gold', 'text-slate-400');
+                        this.classList.replace('border-gold', 'border-slate-200');
                     }
                 }
             });
@@ -155,4 +212,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+{% endif %}
 {% endblock %}

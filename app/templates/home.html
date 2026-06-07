@@ -1,62 +1,81 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="hero-section position-relative d-flex align-items-center text-white" style="min-height: 85vh; background: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop') no-repeat center center/cover;">
-    <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(135deg, rgba(15,23,42,0.85), rgba(15,23,42,0.4));"></div>
-    <div class="container position-relative z-1">
-        <div class="row">
-            <div class="col-lg-7">
-                <p class="text-gold text-uppercase fw-semibold mb-3 letter-spacing hero-tag" style="letter-spacing: 4px; font-size: 0.85rem;">India's Premier Luxury Destination</p>
-                <h1 class="display-2 fw-bold mb-4 hero-title" style="font-family: 'Playfair Display', serif; line-height: 1.1;">Discover<br>Timeless Luxury.</h1>
-                <p class="lead mb-4 hero-subtitle" style="font-size: 1.15rem; opacity: 0.85; max-width: 480px;">Curated collections from the world's most prestigious brands, delivered to your doorstep across India.</p>
-                <div class="d-flex gap-3 flex-wrap hero-btns">
-                    <a href="{{ url_for('main.products') }}" class="btn btn-gold btn-lg rounded-pill px-5 py-3 shadow-lg">Shop Now <i class="bi bi-arrow-right ms-2"></i></a>
-                    <a href="#collections" class="btn btn-outline-light btn-lg rounded-pill px-5 py-3">Explore Collections</a>
-                </div>
+<!-- Hero Section with Parallax -->
+<section class="relative flex items-center min-h-[90vh] text-white overflow-hidden bg-navy">
+    <!-- Background Image with Parallax -->
+    <div class="absolute inset-0 z-0">
+        <img src="https://res.cloudinary.com/drzkhibqf/image/upload/v1780806113/luxon_assets/otzl9puuq9fgjvy2htsf.jpg" class="w-full h-full object-cover scale-110 opacity-60 mix-blend-overlay" alt="Luxury Background" id="heroImg">
+        <div class="absolute inset-0 bg-gradient-to-br from-navy/90 via-navy/60 to-navy/40"></div>
+    </div>
+    
+    <!-- Floating Gold Accent Shapes -->
+    <div class="absolute top-20 right-20 w-72 h-72 bg-gold/5 rounded-full blur-3xl animate-float hidden lg:block"></div>
+    <div class="absolute bottom-40 right-40 w-48 h-48 bg-gold/10 rounded-full blur-2xl animate-float hidden lg:block" style="animation-delay: -3s;"></div>
+    
+    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full pt-20 pb-20">
+        <div class="max-w-3xl">
+            <p class="text-gold uppercase font-bold tracking-[0.3em] text-sm mb-6 hero-tag opacity-0 flex items-center gap-3">
+                <span class="w-8 h-px bg-gold"></span> India's Premier Luxury Destination
+            </p>
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-serif font-bold mb-8 leading-[0.95] hero-title opacity-0">
+                <span class="text-white">Discover</span><br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-gold via-champagne to-gold">Timeless Luxury.</span>
+            </h1>
+            <p class="text-lg md:text-xl text-slate-300 mb-12 max-w-lg leading-relaxed hero-subtitle opacity-0">Curated collections from the world's most prestigious brands, delivered to your doorstep across India.</p>
+            
+            <div class="flex flex-wrap gap-4 hero-btns opacity-0">
+                <a href="{{ url_for('main.products') }}" class="btn-shimmer text-navy px-10 py-4 rounded-full font-bold tracking-wider uppercase transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:shadow-[0_0_40px_rgba(212,175,55,0.5)] flex items-center hover:scale-105">
+                    Shop Now <i class="bi bi-arrow-right ml-3"></i>
+                </a>
+                <a href="#collections" class="bg-transparent border-2 border-white/20 hover:border-gold/50 hover:bg-white/5 text-white px-10 py-4 rounded-full font-bold tracking-wider uppercase transition-all hover:scale-105">
+                    Explore Collections
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 hero-scroll opacity-0">
+        <div class="flex flex-col items-center gap-2 text-white/40">
+            <span class="text-[10px] uppercase tracking-widest">Scroll</span>
+            <div class="w-5 h-8 border-2 border-white/20 rounded-full flex justify-center pt-1">
+                <div class="w-1 h-2 bg-gold rounded-full animate-bounce"></div>
             </div>
         </div>
     </div>
 </section>
 
 <!-- Trust Bar -->
-<section class="trust-bar py-3">
-    <div class="container">
-        <div class="row text-center">
-            <div class="col-6 col-md-3">
-                <div class="trust-item justify-content-center">
-                    <div class="trust-icon"><i class="bi bi-shield-check"></i></div>
-                    <div class="text-start">
-                        <p class="fw-bold small mb-0">100% Authentic</p>
-                        <p class="text-muted small mb-0" style="font-size: 0.75rem;">Verified Products</p>
-                    </div>
+<section class="py-10 bg-white border-b border-slate-100">
+    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
+            <div class="trust-item opacity-0 flex items-center justify-center gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors group cursor-default">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold/10 to-gold/5 flex items-center justify-center text-gold text-xl group-hover:scale-110 transition-transform"><i class="bi bi-shield-check"></i></div>
+                <div>
+                    <p class="font-bold text-navy text-sm mb-0.5">100% Authentic</p>
+                    <p class="text-slate-400 text-xs font-medium">Verified Products</p>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="trust-item justify-content-center">
-                    <div class="trust-icon"><i class="bi bi-truck"></i></div>
-                    <div class="text-start">
-                        <p class="fw-bold small mb-0">Free Shipping</p>
-                        <p class="text-muted small mb-0" style="font-size: 0.75rem;">Orders ₹4,999+</p>
-                    </div>
+            <div class="trust-item opacity-0 flex items-center justify-center gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors group cursor-default">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold/10 to-gold/5 flex items-center justify-center text-gold text-xl group-hover:scale-110 transition-transform"><i class="bi bi-truck"></i></div>
+                <div>
+                    <p class="font-bold text-navy text-sm mb-0.5">Free Shipping</p>
+                    <p class="text-slate-400 text-xs font-medium">On All Orders</p>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="trust-item justify-content-center">
-                    <div class="trust-icon"><i class="bi bi-arrow-repeat"></i></div>
-                    <div class="text-start">
-                        <p class="fw-bold small mb-0">Easy Returns</p>
-                        <p class="text-muted small mb-0" style="font-size: 0.75rem;">30-Day Policy</p>
-                    </div>
+            <div class="trust-item opacity-0 flex items-center justify-center gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors group cursor-default">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold/10 to-gold/5 flex items-center justify-center text-gold text-xl group-hover:scale-110 transition-transform"><i class="bi bi-arrow-repeat"></i></div>
+                <div>
+                    <p class="font-bold text-navy text-sm mb-0.5">Easy Returns</p>
+                    <p class="text-slate-400 text-xs font-medium">30-Day Policy</p>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="trust-item justify-content-center">
-                    <div class="trust-icon"><i class="bi bi-lock"></i></div>
-                    <div class="text-start">
-                        <p class="fw-bold small mb-0">Secure Payments</p>
-                        <p class="text-muted small mb-0" style="font-size: 0.75rem;">UPI, Cards, COD</p>
-                    </div>
+            <div class="trust-item opacity-0 flex items-center justify-center gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors group cursor-default">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold/10 to-gold/5 flex items-center justify-center text-gold text-xl group-hover:scale-110 transition-transform"><i class="bi bi-lock"></i></div>
+                <div>
+                    <p class="font-bold text-navy text-sm mb-0.5">Secure Payments</p>
+                    <p class="text-slate-400 text-xs font-medium">UPI, Cards, COD</p>
                 </div>
             </div>
         </div>
@@ -64,179 +83,226 @@
 </section>
 
 <!-- Categories Section -->
-<section class="py-5 bg-white" id="collections">
-    <div class="container py-4">
-        <h2 class="section-header center text-center fw-bold mb-5" style="font-family: 'Playfair Display', serif;">Shop by Category</h2>
-        <div class="row g-4">
-            <div class="col-6 col-md-4">
-                <a href="{{ url_for('main.products', category_name='Fashion') }}" class="text-decoration-none">
-                    <div class="category-card position-relative" style="height: 380px;">
-                        <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=800&auto=format&fit=crop" class="w-100 h-100 object-fit-cover" alt="Fashion">
-                        <div class="position-absolute bottom-0 start-0 w-100 p-4" style="background: linear-gradient(transparent, rgba(0,0,0,0.85));">
-                            <h4 class="text-white fw-bold mb-1">Fashion</h4>
-                            <p class="text-white-50 small mb-0">Watches • Bags • Clothing • Shoes</p>
-                        </div>
+<section class="py-24 bg-slate-50" id="collections">
+    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <p class="text-gold uppercase font-bold tracking-[0.3em] text-xs mb-4">Curated Collections</p>
+            <h2 class="text-4xl md:text-5xl font-serif font-bold text-navy">Shop by Category</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+            
+            <!-- Fashion -->
+            <a href="{{ url_for('main.products', category_name='Fashion') }}" class="group block">
+                <div class="category-card opacity-0 relative h-[420px] rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-slate-200/50 hover:border-gold/30">
+                    <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=800&auto=format&fit=crop" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Fashion">
+                    <div class="absolute inset-0 bg-gradient-to-t from-navy/95 via-navy/30 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 w-full p-8">
+                        <div class="w-10 h-0.5 bg-gold mb-4 group-hover:w-16 transition-all duration-500"></div>
+                        <h4 class="text-white text-2xl font-bold mb-2 font-serif">Fashion</h4>
+                        <p class="text-slate-300 text-sm font-medium">Watches • Bags • Clothing • Shoes</p>
                     </div>
-                </a>
-            </div>
-            <div class="col-6 col-md-4">
-                <a href="{{ url_for('main.products', category_name='Premium Tech') }}" class="text-decoration-none">
-                    <div class="category-card position-relative" style="height: 380px;">
-                        <img src="https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=800&auto=format&fit=crop" class="w-100 h-100 object-fit-cover" alt="Tech">
-                        <div class="position-absolute bottom-0 start-0 w-100 p-4" style="background: linear-gradient(transparent, rgba(0,0,0,0.85));">
-                            <h4 class="text-white fw-bold mb-1">Premium Tech</h4>
-                            <p class="text-white-50 small mb-0">Smartphones • Laptops • Audio</p>
-                        </div>
+                </div>
+            </a>
+            
+            <!-- Tech -->
+            <a href="{{ url_for('main.products', category_name='Premium Tech') }}" class="group block">
+                <div class="category-card opacity-0 relative h-[420px] rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-slate-200/50 hover:border-gold/30">
+                    <img src="https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=800&auto=format&fit=crop" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Tech">
+                    <div class="absolute inset-0 bg-gradient-to-t from-navy/95 via-navy/30 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 w-full p-8">
+                        <div class="w-10 h-0.5 bg-gold mb-4 group-hover:w-16 transition-all duration-500"></div>
+                        <h4 class="text-white text-2xl font-bold mb-2 font-serif">Premium Tech</h4>
+                        <p class="text-slate-300 text-sm font-medium">Smartphones • Laptops • Audio</p>
                     </div>
-                </a>
-            </div>
-            <div class="col-12 col-md-4">
-                <a href="{{ url_for('main.products', category_name='Lifestyle') }}" class="text-decoration-none">
-                    <div class="category-card position-relative" style="height: 380px;">
-                        <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=800&auto=format&fit=crop" class="w-100 h-100 object-fit-cover" alt="Lifestyle">
-                        <div class="position-absolute bottom-0 start-0 w-100 p-4" style="background: linear-gradient(transparent, rgba(0,0,0,0.85));">
-                            <h4 class="text-white fw-bold mb-1">Lifestyle</h4>
-                            <p class="text-white-50 small mb-0">Fragrances • Decor • Art</p>
-                        </div>
+                </div>
+            </a>
+            
+            <!-- Lifestyle -->
+            <a href="{{ url_for('main.products', category_name='Lifestyle') }}" class="group block">
+                <div class="category-card opacity-0 relative h-[420px] rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-slate-200/50 hover:border-gold/30">
+                    <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=800&auto=format&fit=crop" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Lifestyle">
+                    <div class="absolute inset-0 bg-gradient-to-t from-navy/95 via-navy/30 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 w-full p-8">
+                        <div class="w-10 h-0.5 bg-gold mb-4 group-hover:w-16 transition-all duration-500"></div>
+                        <h4 class="text-white text-2xl font-bold mb-2 font-serif">Lifestyle</h4>
+                        <p class="text-slate-300 text-sm font-medium">Fragrances • Decor • Art</p>
                     </div>
-                </a>
-            </div>
+                </div>
+            </a>
+            
         </div>
     </div>
 </section>
 
 <!-- Featured Products -->
-<section class="py-5" style="background: #F8F9FA;">
-    <div class="container py-4">
-        <div class="d-flex justify-content-between align-items-end mb-5">
+<section class="py-24 bg-white">
+    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-end mb-14">
             <div>
-                <h2 class="section-header fw-bold mb-0" style="font-family: 'Playfair Display', serif;">Trending Now</h2>
+                <p class="text-gold uppercase font-bold tracking-[0.3em] text-xs mb-4">Hand-Picked</p>
+                <h2 class="text-4xl md:text-5xl font-serif font-bold text-navy">Trending Now</h2>
             </div>
-            <a href="{{ url_for('main.products') }}" class="btn btn-outline-navy rounded-pill px-4">View All <i class="bi bi-arrow-right ms-1"></i></a>
+            <a href="{{ url_for('main.products') }}" class="hidden md:flex items-center text-sm font-bold text-navy border-b-2 border-navy pb-1 hover:text-gold hover:border-gold transition-colors group">
+                View All Collection <i class="bi bi-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+            </a>
         </div>
-        <div class="row g-4">
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8">
             {% for product in featured_products[:8] %}
-            <div class="col-6 col-md-4 col-lg-3 product-item">
-                <div class="card product-card border-0 shadow-sm h-100">
-                    <a href="{{ url_for('main.product_detail', id=product.id) }}" class="text-decoration-none text-dark">
-                        <div class="card-img-wrapper">
-                            <img src="{{ product.image_url or 'https://via.placeholder.com/400x500' }}" class="card-img-top object-fit-cover" style="height: 280px;" alt="{{ product.name }}">
-                            {% if product.stock == 0 %}
-                                <span class="badge bg-danger position-absolute top-0 start-0 m-3">Sold Out</span>
-                            {% elif product.is_featured %}
-                                <span class="badge badge-offer position-absolute top-0 start-0 m-3">TRENDING</span>
+            <div class="product-item opacity-0 group">
+                <a href="{{ url_for('main.product_detail', id=product.id) }}" class="block">
+                    <div class="relative bg-slate-50 rounded-2xl overflow-hidden mb-4 aspect-[4/5] border border-slate-100 group-hover:border-gold/30 transition-colors">
+                        <img src="{{ product.image_url or 'https://via.placeholder.com/400x500' }}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="{{ product.name }}">
+                        {% if product.stock <= 0 %}
+                            <span class="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">Sold Out</span>
+                        {% elif product.stock == 1 %}
+                            <span class="absolute top-3 left-3 bg-orange-500 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">Only 1 Left</span>
+                        {% elif product.is_featured %}
+                            <span class="absolute top-3 left-3 bg-navy text-gold text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">Trending</span>
+                        {% endif %}
+                        {% if product.original_price and product.original_price > product.price %}
+                            <span class="absolute top-3 right-3 bg-red-500 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-full shadow-lg">
+                                -{{ "{:.0f}".format(((product.original_price - product.price) / product.original_price) * 100) }}%
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">{{ product.brand or 'Luxon' }}</p>
+                        <h6 class="font-bold text-navy text-sm mb-2 group-hover:text-gold transition-colors truncate">{{ product.name }}</h6>
+                        <div class="flex items-center gap-2">
+                            <span class="font-extrabold text-navy">₹{{ "{:,.0f}".format(product.price) }}</span>
+                            {% if product.original_price and product.original_price > product.price %}
+                                <span class="text-xs text-slate-400 line-through font-medium">₹{{ "{:,.0f}".format(product.original_price) }}</span>
                             {% endif %}
                         </div>
-                        <div class="card-body px-3 pb-3">
-                            <p class="text-muted mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">{{ product.brand or 'Luxon' }}</p>
-                            <h6 class="fw-semibold mb-2 text-truncate" style="font-size: 0.9rem;">{{ product.name }}</h6>
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="price-current">₹{{ "{:,.0f}".format(product.price) }}</span>
-                            </div>
-                        </div>
-                    </a>
-                </div>
+                    </div>
+                </a>
             </div>
             {% else %}
-            <div class="col-12 text-center text-muted py-5">No featured products yet.</div>
+            <div class="col-span-full text-center text-slate-400 py-12">No featured products yet.</div>
             {% endfor %}
+        </div>
+        
+        <!-- Mobile CTA -->
+        <div class="mt-10 text-center md:hidden">
+            <a href="{{ url_for('main.products') }}" class="inline-flex items-center text-sm font-bold text-navy border-b-2 border-navy pb-1 hover:text-gold hover:border-gold transition-colors">
+                View All Collection <i class="bi bi-arrow-right ml-2"></i>
+            </a>
         </div>
     </div>
 </section>
 
 <!-- Promo Banner -->
-<section class="py-5 bg-navy text-white">
-    <div class="container py-4">
-        <div class="row align-items-center">
-            <div class="col-lg-7 promo-text">
-                <p class="text-gold text-uppercase fw-semibold small mb-2" style="letter-spacing: 3px;">Limited Time Offer</p>
-                <h2 class="display-5 fw-bold mb-3" style="font-family: 'Playfair Display', serif;">The Grand Luxury Sale</h2>
-                <p class="mb-4" style="opacity: 0.7; max-width: 500px;">Get up to 40% off on select premium watches, bags, and accessories. Use code LUXON40 at checkout.</p>
-                <a href="{{ url_for('main.products') }}" class="btn btn-gold rounded-pill px-5 py-3">Shop the Sale <i class="bi bi-arrow-right ms-2"></i></a>
+<section class="py-24 bg-navy overflow-hidden relative">
+    <!-- Decorative -->
+    <div class="absolute top-0 right-0 w-96 h-96 bg-gold/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-72 h-72 bg-gold/5 rounded-full blur-3xl"></div>
+    
+    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div class="promo-text opacity-0">
+                <p class="text-gold uppercase font-bold tracking-[0.3em] text-xs mb-4 flex items-center gap-3">
+                    <span class="w-8 h-px bg-gold"></span> Limited Time Offer
+                </p>
+                <h2 class="text-4xl md:text-6xl font-serif font-bold text-white mb-8 leading-tight">The Grand<br>Luxury Sale</h2>
+                <p class="text-slate-300 text-lg mb-10 max-w-lg leading-relaxed">Get up to 40% off on select premium watches, bags, and accessories. Use code <span class="text-gold font-bold bg-gold/10 px-2 py-0.5 rounded">LUXON40</span> at checkout.</p>
+                <a href="{{ url_for('main.products') }}" class="inline-flex items-center btn-shimmer text-navy px-10 py-4 rounded-full font-bold tracking-wider uppercase transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:shadow-[0_0_40px_rgba(212,175,55,0.5)] hover:scale-105">
+                    Shop the Sale <i class="bi bi-arrow-right ml-3"></i>
+                </a>
             </div>
-            <div class="col-lg-5 text-center mt-4 mt-lg-0 promo-image">
-                <img src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=600&auto=format&fit=crop" class="img-fluid rounded-4 shadow-lg" style="max-height: 350px; object-fit: cover;" alt="Sale">
+            <div class="promo-image opacity-0 relative">
+                <div class="absolute inset-0 bg-gold/10 blur-3xl rounded-full transform -translate-x-10 translate-y-10"></div>
+                <img src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=800&auto=format&fit=crop" loading="lazy" class="relative z-10 w-full h-[450px] object-cover rounded-3xl shadow-2xl border border-white/10" alt="Sale">
             </div>
         </div>
     </div>
 </section>
 
 <!-- Brand Promise -->
-<section class="py-5 bg-white">
-    <div class="container py-4 text-center">
-        <h2 class="section-header center text-center fw-bold mb-5" style="font-family: 'Playfair Display', serif;">The Luxon Promise</h2>
-        <div class="row g-4">
-            <div class="col-md-4 promise-item">
-                <div class="p-4">
-                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px;">
-                        <i class="bi bi-gem fs-2 text-gold"></i>
+<section class="py-24 bg-white">
+    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <p class="text-gold uppercase font-bold tracking-[0.3em] text-xs mb-4">Why Choose Us</p>
+        <h2 class="text-4xl md:text-5xl font-serif font-bold text-navy mb-16">The Luxon Promise</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+            <div class="promise-item opacity-0 group">
+                <div class="p-8 rounded-3xl hover:bg-slate-50 transition-all duration-500 hover:-translate-y-2">
+                    <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-gold/15 to-gold/5 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                        <i class="bi bi-gem text-3xl text-gold"></i>
                     </div>
-                    <h5 class="fw-bold mb-2">Curated Selection</h5>
-                    <p class="text-muted small">Every product is hand-picked by our experts to ensure it meets the highest standards of luxury and quality.</p>
+                    <h5 class="font-bold text-navy text-lg mb-3">Curated Selection</h5>
+                    <p class="text-slate-500 text-sm leading-relaxed">Every product is hand-picked by our experts to ensure it meets the highest standards of luxury and quality.</p>
                 </div>
             </div>
-            <div class="col-md-4 promise-item">
-                <div class="p-4">
-                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px;">
-                        <i class="bi bi-patch-check fs-2 text-gold"></i>
+            <div class="promise-item opacity-0 group">
+                <div class="p-8 rounded-3xl hover:bg-slate-50 transition-all duration-500 hover:-translate-y-2">
+                    <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-gold/15 to-gold/5 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                        <i class="bi bi-patch-check text-3xl text-gold"></i>
                     </div>
-                    <h5 class="fw-bold mb-2">100% Genuine</h5>
-                    <p class="text-muted small">Every item comes with a certificate of authenticity. We source directly from authorized partners worldwide.</p>
+                    <h5 class="font-bold text-navy text-lg mb-3">100% Genuine</h5>
+                    <p class="text-slate-500 text-sm leading-relaxed">Every item comes with a certificate of authenticity. We source directly from authorized partners worldwide.</p>
                 </div>
             </div>
-            <div class="col-md-4 promise-item">
-                <div class="p-4">
-                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px;">
-                        <i class="bi bi-headset fs-2 text-gold"></i>
+            <div class="promise-item opacity-0 group">
+                <div class="p-8 rounded-3xl hover:bg-slate-50 transition-all duration-500 hover:-translate-y-2">
+                    <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-gold/15 to-gold/5 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                        <i class="bi bi-headset text-3xl text-gold"></i>
                     </div>
-                    <h5 class="fw-bold mb-2">Concierge Support</h5>
-                    <p class="text-muted small">Our luxury concierge team is available 24/7 to assist you with personal shopping and after-sales care.</p>
+                    <h5 class="font-bold text-navy text-lg mb-3">Concierge Support</h5>
+                    <p class="text-slate-500 text-sm leading-relaxed">Our luxury concierge team is available 24/7 to assist you with personal shopping and after-sales care.</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
+<!-- Motion One Animations -->
 <script type="module">
-    import { animate, stagger, inView, scroll } from "https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm";
+    import { animate, stagger, inView } from "https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm";
 
-    // Hero animations
-    animate(".hero-tag", { opacity: [0, 1], x: [-30, 0] }, { duration: 0.6, easing: "ease-out" });
-    animate(".hero-title", { opacity: [0, 1], y: [60, 0] }, { duration: 0.8, delay: 0.15, easing: [0.25, 0.46, 0.45, 0.94] });
-    animate(".hero-subtitle", { opacity: [0, 1], y: [30, 0] }, { duration: 0.7, delay: 0.35, easing: "ease-out" });
-    animate(".hero-btns", { opacity: [0, 1], y: [20, 0] }, { duration: 0.6, delay: 0.55, easing: "ease-out" });
+    // Hero animations (sequenced)
+    animate(".hero-tag", { opacity: [0, 1], x: [-30, 0] }, { duration: 0.7, easing: [0.22, 1, 0.36, 1] });
+    animate(".hero-title", { opacity: [0, 1], y: [40, 0] }, { duration: 0.9, delay: 0.15, easing: [0.22, 1, 0.36, 1] });
+    animate(".hero-subtitle", { opacity: [0, 1], y: [25, 0] }, { duration: 0.7, delay: 0.35, easing: [0.22, 1, 0.36, 1] });
+    animate(".hero-btns", { opacity: [0, 1], y: [20, 0] }, { duration: 0.6, delay: 0.55, easing: [0.22, 1, 0.36, 1] });
+    animate(".hero-scroll", { opacity: [0, 0.6] }, { duration: 0.6, delay: 1.2, easing: "ease-out" });
 
-    // Trust bar - slide up
-    inView(".trust-item", (info) => {
-        animate(info.target, { opacity: [0, 1], y: [25, 0] }, { duration: 0.5, easing: "ease-out" });
+    // Parallax effect on hero image
+    const heroImg = document.getElementById('heroImg');
+    if (heroImg) {
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            if (scrolled < window.innerHeight) {
+                heroImg.style.transform = `scale(1.1) translateY(${scrolled * 0.15}px)`;
+            }
+        }, { passive: true });
+    }
+
+    // Trust bar stagger
+    inView(".trust-item", () => {
+        animate(".trust-item", { opacity: [0, 1], y: [25, 0] }, { duration: 0.5, delay: stagger(0.1), easing: [0.22, 1, 0.36, 1] });
     }, { amount: 0.3 });
 
-    // Category cards - stagger in
+    // Category cards
     inView("#collections", () => {
-        animate(".category-card", { opacity: [0, 1], y: [50, 0], scale: [0.95, 1] }, { duration: 0.6, delay: stagger(0.15), easing: [0.25, 0.46, 0.45, 0.94] });
+        animate(".category-card", { opacity: [0, 1], y: [50, 0] }, { duration: 0.7, delay: stagger(0.15), easing: [0.22, 1, 0.36, 1] });
     }, { amount: 0.2 });
 
-    // Product cards - stagger
+    // Product cards
     inView(".product-item", (info) => {
-        animate(info.target, { opacity: [0, 1], y: [40, 0] }, { duration: 0.5, easing: "ease-out" });
-    }, { amount: 0.15 });
+        animate(info.target, { opacity: [0, 1], y: [30, 0] }, { duration: 0.6, easing: [0.22, 1, 0.36, 1] });
+    }, { amount: 0.1 });
 
-    // Promo banner - slide in from sides
+    // Promo section
     inView(".promo-text", (info) => {
-        animate(info.target, { opacity: [0, 1], x: [-60, 0] }, { duration: 0.7, easing: [0.25, 0.46, 0.45, 0.94] });
-    });
+        animate(info.target, { opacity: [0, 1], x: [-50, 0] }, { duration: 0.8, easing: [0.22, 1, 0.36, 1] });
+    }, { amount: 0.3 });
     inView(".promo-image", (info) => {
-        animate(info.target, { opacity: [0, 1], x: [60, 0] }, { duration: 0.7, easing: [0.25, 0.46, 0.45, 0.94] });
-    });
+        animate(info.target, { opacity: [0, 1], x: [50, 0] }, { duration: 0.8, easing: [0.22, 1, 0.36, 1] });
+    }, { amount: 0.3 });
 
     // Promise section
     inView(".promise-item", (info) => {
-        animate(info.target, { opacity: [0, 1], y: [30, 0] }, { duration: 0.5, easing: "ease-out" });
+        animate(info.target, { opacity: [0, 1], y: [30, 0] }, { duration: 0.5, easing: [0.22, 1, 0.36, 1] });
     }, { amount: 0.3 });
 </script>
-
-<style>
-.hero-tag, .hero-title, .hero-subtitle, .hero-btns { opacity: 0; }
-.trust-item, .category-card, .product-item, .promo-text, .promo-image, .promise-item { opacity: 0; }
-</style>
 {% endblock %}

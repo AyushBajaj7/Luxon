@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
@@ -44,12 +44,28 @@ def create_app(config_class=Config):
     @app.route('/health')
     def health_check():
         return {'status': 'healthy'}
+        
+    @app.context_processor
+    def inject_global_vars():
+        from app.models import Category
+        if not hasattr(app, 'cached_categories'):
+            # Cache category data as simple dictionaries to avoid detached session errors
+            cats = Category.query.all()
+            app.cached_categories = [
+                {
+                    'id': c.id, 
+                    'name': c.name,
+                    'subcategories': [{'id': s.id, 'name': s.name} for s in c.subcategories]
+                } for c in cats
+            ]
+        return dict(categories=app.cached_categories)
 
     @app.after_request
     def add_header(response):
-        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
-        response.headers['Pragma'] = 'no-cache'
-        response.headers['Expires'] = '-1'
+        if request.endpoint == 'static':
+            response.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
+        else:
+            response.headers['Cache-Control'] = 'no-store, max-age=0'
         return response
 
     return app

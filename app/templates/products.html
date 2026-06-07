@@ -2,112 +2,374 @@
 {% block title %}Shop Collection | Luxon{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="mb-5">
-        <h1 class="fw-bold page-title" style="font-family: 'Playfair Display', serif;">The Collection</h1>
-        <p class="text-muted">Explore our curated selection of luxury items from the world's finest brands.</p>
+<div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    
+    <!-- Page Header -->
+    <div class="mb-12 border-b border-slate-200 pb-8 page-header">
+        <h1 class="text-4xl md:text-5xl font-serif font-bold text-navy mb-4">
+            {% if active_filter and active_filter.startswith('cat_') %}
+                {{ active_filter[4:] }}
+            {% elif active_filter and active_filter.startswith('sub_') %}
+                {{ active_filter[4:] }}
+            {% else %}
+                The Collection
+            {% endif %}
+        </h1>
+        <p class="text-slate-500 text-lg max-w-2xl">
+            {% if request.args.get('q') %}
+                Showing refined picks for <strong class="text-navy">"{{ request.args.get('q') }}"</strong>.
+            {% elif active_filter %}
+                Discover exclusive pieces from our curated selection.
+            {% else %}
+                Explore our curated selection of luxury items from the world's finest brands.
+            {% endif %}
+        </p>
     </div>
     
-    <div class="row">
+    <div class="flex flex-col lg:flex-row gap-12">
+        
         <!-- Sidebar Filters -->
-        <div class="col-lg-3 mb-4">
-            <div class="card border-0 shadow-sm rounded-3 p-4 sticky-top" style="top: 100px;">
-                <h5 class="fw-bold mb-4"><i class="bi bi-funnel me-2"></i>Filters</h5>
+        <aside class="w-full lg:w-72 flex-shrink-0 filter-sidebar">
+            <div class="sticky top-28 bg-white shadow-xl shadow-slate-200/50 rounded-3xl p-6 border border-slate-100">
+                <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                    <i class="bi bi-funnel text-gold text-xl"></i>
+                    <h5 class="font-bold text-navy text-lg m-0">Refine</h5>
+                </div>
+                
                 <form method="GET" action="{{ url_for('main.products') }}">
-                    <div class="mb-4">
-                        <label class="form-label small fw-bold text-muted text-uppercase" style="letter-spacing: 1px;">Category</label>
-                        <select class="form-select bg-light border-0 rounded-3" name="category">
-                            <option value="">All Categories</option>
-                            {% for c in categories %}
-                                <option value="{{ c.id }}" {% if request.args.get('category')|string == c.id|string %}selected{% endif %}>{{ c.name }}</option>
-                            {% endfor %}
-                        </select>
+                    <!-- Preserve search query if exists -->
+                    {% if request.args.get('q') %}
+                    <input type="hidden" name="q" value="{{ request.args.get('q') }}">
+                    {% endif %}
+                    
+                    <div class="mb-8">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Sort By</label>
+                        <div class="relative custom-dropdown" data-target="sort_input">
+                            <button type="button" class="w-full bg-slate-50 border border-slate-200 text-slate-700 py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition-all cursor-pointer font-medium text-left flex justify-between items-center dropdown-toggle">
+                                <span class="dropdown-selected">Newest Arrivals</span>
+                                <i class="bi bi-chevron-down text-xs transition-transform duration-300 text-slate-500"></i>
+                            </button>
+                            <div class="absolute z-50 w-full mt-2 bg-white border border-slate-100 rounded-xl shadow-2xl opacity-0 invisible translate-y-2 transition-all duration-300 dropdown-menu overflow-hidden">
+                                <ul class="py-2 max-h-60 overflow-y-auto custom-scrollbar">
+                                    <li><button type="button" class="w-full text-left px-4 py-2.5 hover:bg-slate-50 hover:text-gold transition-colors text-sm font-medium dropdown-item" data-value="newest">Newest Arrivals</button></li>
+                                    <li><button type="button" class="w-full text-left px-4 py-2.5 hover:bg-slate-50 hover:text-gold transition-colors text-sm font-medium dropdown-item" data-value="price_asc">Price: Low to High</button></li>
+                                    <li><button type="button" class="w-full text-left px-4 py-2.5 hover:bg-slate-50 hover:text-gold transition-colors text-sm font-medium dropdown-item" data-value="price_desc">Price: High to Low</button></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <input type="hidden" name="sort" id="sort_input" value="{{ request.args.get('sort', 'newest') }}">
                     </div>
-                    <div class="mb-4">
-                        <label class="form-label small fw-bold text-muted text-uppercase" style="letter-spacing: 1px;">Max Price</label>
-                        <input type="range" class="form-range" name="max_price" min="0" max="500000" step="5000" value="{{ request.args.get('max_price', 500000) }}" oninput="this.nextElementSibling.value = '₹' + Number(this.value).toLocaleString('en-IN')">
-                        <output class="small text-muted d-block text-end">₹{{ "{:,}".format(request.args.get('max_price', 500000)|int) }}</output>
+
+                    <div class="mb-8">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Category</label>
+                        <div class="relative custom-dropdown" data-target="filter_type_input">
+                            <button type="button" class="w-full bg-slate-50 border border-slate-200 text-slate-700 py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition-all cursor-pointer font-medium text-left flex justify-between items-center dropdown-toggle">
+                                <span class="dropdown-selected truncate">All Collections</span>
+                                <i class="bi bi-chevron-down text-xs transition-transform duration-300 text-slate-500 flex-shrink-0 ml-2"></i>
+                            </button>
+                            <div class="absolute z-50 w-full mt-2 bg-white border border-slate-100 rounded-xl shadow-2xl opacity-0 invisible translate-y-2 transition-all duration-300 dropdown-menu overflow-hidden">
+                                <ul class="py-2 max-h-80 overflow-y-auto custom-scrollbar">
+                                    <li><button type="button" class="w-full text-left px-4 py-2.5 hover:bg-slate-50 hover:text-gold transition-colors text-sm font-medium dropdown-item" data-value="">All Collections</button></li>
+                                    {% for c in categories %}
+                                        <li class="px-4 py-2 mt-1 border-t border-slate-50">
+                                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ c.name }}</span>
+                                        </li>
+                                        <li><button type="button" class="w-full text-left px-4 py-2.5 hover:bg-slate-50 hover:text-gold transition-colors text-sm font-medium dropdown-item pl-6" data-value="cat_{{ c.name }}">All {{ c.name }}</button></li>
+                                        {% for sub in c.subcategories %}
+                                            <li><button type="button" class="w-full text-left px-4 py-2.5 hover:bg-slate-50 hover:text-gold transition-colors text-sm font-medium dropdown-item pl-6" data-value="sub_{{ sub.name }}">{{ sub.name }}</button></li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <input type="hidden" name="filter_type" id="filter_type_input" value="{{ active_filter }}">
                     </div>
-                    <button type="submit" class="btn btn-navy w-100 py-2 rounded-pill">Apply Filters</button>
+
+                    <div class="mb-8">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Gender</label>
+                        <div class="relative custom-dropdown" data-target="gender_input">
+                            <button type="button" class="w-full bg-slate-50 border border-slate-200 text-slate-700 py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition-all cursor-pointer font-medium text-left flex justify-between items-center dropdown-toggle">
+                                <span class="dropdown-selected truncate">All Genders</span>
+                                <i class="bi bi-chevron-down text-xs transition-transform duration-300 text-slate-500 flex-shrink-0 ml-2"></i>
+                            </button>
+                            <div class="absolute z-50 w-full mt-2 bg-white border border-slate-100 rounded-xl shadow-2xl opacity-0 invisible translate-y-2 transition-all duration-300 dropdown-menu overflow-hidden">
+                                <ul class="py-2 max-h-80 overflow-y-auto custom-scrollbar">
+                                    <li><button type="button" class="w-full text-left px-4 py-2.5 hover:bg-slate-50 hover:text-gold transition-colors text-sm font-medium dropdown-item" data-value="">All Genders</button></li>
+                                    <li><button type="button" class="w-full text-left px-4 py-2.5 hover:bg-slate-50 hover:text-gold transition-colors text-sm font-medium dropdown-item" data-value="Men">Men</button></li>
+                                    <li><button type="button" class="w-full text-left px-4 py-2.5 hover:bg-slate-50 hover:text-gold transition-colors text-sm font-medium dropdown-item" data-value="Women">Women</button></li>
+                                    <li><button type="button" class="w-full text-left px-4 py-2.5 hover:bg-slate-50 hover:text-gold transition-colors text-sm font-medium dropdown-item" data-value="Unisex">Unisex</button></li>
+                                    <li><button type="button" class="w-full text-left px-4 py-2.5 hover:bg-slate-50 hover:text-gold transition-colors text-sm font-medium dropdown-item" data-value="Kids">Kids</button></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <input type="hidden" name="gender" id="gender_input" value="{{ gender or '' }}">
+                    </div>
+                    
+                    <div class="mb-8">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Maximum Price</label>
+                        <input type="range" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-gold" name="max_price" min="0" max="2500000" step="10000" value="{{ request.args.get('max_price', 2500000) }}" oninput="document.getElementById('priceOutput').textContent = '₹' + Number(this.value).toLocaleString('en-IN')">
+                        <div class="flex justify-between items-center mt-3">
+                            <span class="text-xs text-slate-400 font-medium">₹0</span>
+                            <output id="priceOutput" class="text-sm font-bold text-navy bg-slate-50 px-3 py-1 rounded-lg border border-slate-100">₹{{ "{:,}".format(request.args.get('max_price', 2500000)|int) }}</output>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-navy hover:bg-gold text-white hover:text-navy py-3.5 rounded-xl font-bold tracking-wider uppercase text-sm transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                        Apply Filters
+                    </button>
+                    
                     {% if request.args %}
-                        <a href="{{ url_for('main.products') }}" class="btn btn-link text-muted w-100 mt-2 text-decoration-none small">Clear All</a>
+                        <div class="mt-4 text-center">
+                            <a href="{{ url_for('main.products') }}" class="text-xs font-bold text-slate-400 hover:text-navy uppercase tracking-widest transition-colors border-b border-transparent hover:border-navy pb-0.5">Clear All</a>
+                        </div>
                     {% endif %}
                 </form>
             </div>
-        </div>
+        </aside>
         
         <!-- Products Grid -->
-        <div class="col-lg-9">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <p class="text-muted mb-0 small">Showing <strong>{{ pagination.total }}</strong> products</p>
+        <div class="flex-1">
+            <div class="flex justify-between items-center mb-6">
+                <p class="text-sm text-slate-500 font-medium">Showing <strong class="text-navy">{{ pagination.total }}</strong> exclusive pieces</p>
             </div>
-            <div class="row g-4 mb-5">
+            
+            <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-8 mb-12">
                 {% for p in pagination.items %}
-                <div class="col-6 col-lg-4 product-grid-item">
-                    <div class="card product-card border-0 shadow-sm h-100">
-                        <a href="{{ url_for('main.product_detail', id=p.id) }}" class="text-decoration-none text-dark">
-                            <div class="card-img-wrapper">
-                                <img src="{{ p.image_url or 'https://via.placeholder.com/400x400' }}" class="card-img-top object-fit-cover" style="height: 280px;" alt="{{ p.name }}">
-                                {% if p.stock == 0 %}
-                                    <span class="badge bg-danger position-absolute top-0 start-0 m-3 rounded-pill">Out of Stock</span>
-                                {% elif p.is_featured %}
-                                    <span class="badge badge-offer position-absolute top-0 start-0 m-3">TRENDING</span>
-                                {% endif %}
-                            </div>
-                            <div class="card-body px-3 pb-3">
-                                <p class="text-muted mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">{{ p.brand or 'Luxon' }}</p>
-                                <h6 class="fw-semibold mb-2 text-truncate" style="font-size: 0.9rem;">{{ p.name }}</h6>
-                                <span class="price-current">₹{{ "{:,.0f}".format(p.price) }}</span>
-                            </div>
-                        </a>
+                <div class="group product-grid-item bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl border border-slate-100 hover:border-gold/30 transition-all duration-500 transform hover:-translate-y-2 flex flex-col h-full">
+                    <a href="{{ url_for('main.product_detail', id=p.id) }}" class="block relative overflow-hidden bg-slate-50 aspect-[4/5]">
+                        <img src="{{ p.image_url or 'https://via.placeholder.com/400x400' }}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="{{ p.name }}">
+                        
+                        <!-- Badges -->
+                        <div class="absolute top-4 left-4 flex flex-col gap-2">
+                            {% if p.stock <= 0 %}
+                                <span class="bg-red-500 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">Sold Out</span>
+                            {% elif p.stock == 1 %}
+                                <span class="bg-orange-500 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">Only 1 Left</span>
+                            {% elif p.is_featured %}
+                                <span class="bg-navy text-gold text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">Trending</span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Quick actions overlay on hover -->
+                        <div class="absolute inset-x-0 bottom-0 p-3 sm:p-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                            {% if current_user.is_authenticated %}
+                                <div class="flex gap-2">
+                                    <button class="flex-1 bg-navy hover:bg-gold text-white hover:text-navy py-2.5 sm:py-3 rounded-xl font-bold text-[10px] sm:text-xs uppercase tracking-wider shadow-lg transition-colors add-to-cart flex items-center justify-center gap-1 sm:gap-2" data-id="{{ p.id }}" {% if p.stock == 0 %}disabled{% endif %}>
+                                        {% if p.stock == 0 %}Sold Out{% else %}<i class="bi bi-bag"></i> <span class="hidden sm:inline">Add to Bag</span><span class="sm:hidden">Add</span>{% endif %}
+                                    </button>
+                                    <button class="w-10 sm:w-12 h-10 sm:h-12 bg-white text-navy hover:text-gold rounded-xl flex items-center justify-center shadow-lg transition-colors toggle-wishlist" data-id="{{ p.id }}">
+                                        <i class="bi bi-heart text-lg"></i>
+                                    </button>
+                                </div>
+                            {% else %}
+                                <a href="{{ url_for('auth.login', next=request.full_path) }}" class="block w-full text-center bg-white hover:bg-navy text-navy hover:text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider shadow-lg transition-colors">
+                                    Sign in to Buy
+                                </a>
+                            {% endif %}
+                        </div>
+                    </a>
+                    
+                    <div class="p-4 sm:p-6 flex flex-col flex-grow">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 sm:mb-2">{{ p.brand or 'Luxon' }}</p>
+                        <h6 class="font-bold text-navy text-sm sm:text-base mb-2 sm:mb-3 leading-snug group-hover:text-gold transition-colors line-clamp-2">{{ p.name }}</h6>
+                        <div class="mt-auto pt-3 sm:pt-4 border-t border-slate-100 flex items-end gap-2 sm:gap-3 flex-wrap">
+                            <span class="text-base sm:text-lg font-extrabold text-navy">₹{{ "{:,.0f}".format(p.price) }}</span>
+                            {% if p.original_price and p.original_price > p.price %}
+                                <span class="text-xs sm:text-sm text-slate-400 line-through font-medium">₹{{ "{:,.0f}".format(p.original_price) }}</span>
+                                <span class="text-[10px] sm:text-xs font-bold text-red-500 bg-red-50 px-1.5 sm:px-2 py-0.5 rounded-md">
+                                    -{{ "{:.0f}".format(((p.original_price - p.price) / p.original_price) * 100) }}%
+                                </span>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
                 {% else %}
-                <div class="col-12 text-center py-5">
-                    <i class="bi bi-search display-1 text-muted mb-3 d-block opacity-25"></i>
-                    <h4 class="text-muted">No products found matching your criteria.</h4>
-                    <a href="{{ url_for('main.products') }}" class="btn btn-outline-navy rounded-pill mt-3">View All Products</a>
+                <div class="col-span-full py-20 text-center bg-slate-50 rounded-3xl border border-slate-100 border-dashed">
+                    <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                        <i class="bi bi-search text-3xl text-slate-300"></i>
+                    </div>
+                    <h4 class="text-2xl font-serif font-bold text-navy mb-3">No Exclusive Pieces Found</h4>
+                    <p class="text-slate-500 mb-8 max-w-md mx-auto">We couldn't find any items matching your exquisite taste in the current refined selection.</p>
+                    <a href="{{ url_for('main.products') }}" class="inline-block bg-white border-2 border-navy text-navy hover:bg-navy hover:text-white px-8 py-3 rounded-full font-bold text-xs uppercase tracking-widest transition-colors">
+                        Explore Full Collection
+                    </a>
                 </div>
                 {% endfor %}
             </div>
             
+            <!-- Pagination -->
             {% if pagination.pages > 1 %}
             {% set page_args = request.args.to_dict() %}
             {% set _ = page_args.pop('page', None) %}
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center gap-2">
-                    <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
-                        <a class="page-link border-0 shadow-sm rounded-circle text-navy" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" href="{{ url_for('main.products', page=pagination.prev_num, **page_args) }}"><i class="bi bi-chevron-left"></i></a>
-                    </li>
-                    {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
-                        {% if page_num %}
-                            <li class="page-item {% if pagination.page == page_num %}active{% endif %}">
-                                <a class="page-link border-0 shadow-sm rounded-circle {% if pagination.page == page_num %}bg-navy{% else %}text-navy{% endif %}" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" href="{{ url_for('main.products', page=page_num, **page_args) }}">{{ page_num }}</a>
-                            </li>
-                        {% else %}
-                            <li class="page-item disabled"><span class="page-link border-0 bg-transparent text-muted">...</span></li>
-                        {% endif %}
-                    {% endfor %}
-                    <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
-                        <a class="page-link border-0 shadow-sm rounded-circle text-navy" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" href="{{ url_for('main.products', page=pagination.next_num, **page_args) }}"><i class="bi bi-chevron-right"></i></a>
-                    </li>
-                </ul>
-            </nav>
+            <div class="flex justify-center mt-12">
+                <nav class="inline-flex items-center gap-2 bg-white p-2 rounded-full shadow-md border border-slate-100">
+                    <a href="{{ url_for('main.products', page=pagination.prev_num, **page_args) if pagination.has_prev else '#' }}" 
+                       class="w-10 h-10 rounded-full flex items-center justify-center text-navy hover:bg-slate-50 transition-colors {% if not pagination.has_prev %}opacity-30 cursor-not-allowed pointer-events-none{% endif %}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                    
+                    <div class="flex items-center gap-1 px-2">
+                        {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                            {% if page_num %}
+                                <a href="{{ url_for('main.products', page=page_num, **page_args) }}" 
+                                   class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all {% if pagination.page == page_num %}bg-navy text-gold shadow-md{% else %}text-slate-600 hover:bg-slate-50{% endif %}">
+                                    {{ page_num }}
+                                </a>
+                            {% else %}
+                                <span class="w-8 h-10 flex items-center justify-center text-slate-400">...</span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    
+                    <a href="{{ url_for('main.products', page=pagination.next_num, **page_args) if pagination.has_next else '#' }}" 
+                       class="w-10 h-10 rounded-full flex items-center justify-center text-navy hover:bg-slate-50 transition-colors {% if not pagination.has_next %}opacity-30 cursor-not-allowed pointer-events-none{% endif %}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </nav>
+            </div>
             {% endif %}
         </div>
     </div>
 </div>
 
+<!-- Motion One Animations -->
 <script type="module">
     import { animate, stagger, inView } from "https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm";
     
-    animate(".page-title", { opacity: [0, 1], x: [-30, 0] }, { duration: 0.6, easing: "ease-out" });
+    animate(".page-header", { opacity: [0, 1], y: [-20, 0] }, { duration: 0.8, easing: [0.22, 1, 0.36, 1] });
+    animate(".filter-sidebar", { opacity: [0, 1], x: [-30, 0] }, { duration: 0.8, delay: 0.2, easing: [0.22, 1, 0.36, 1] });
     
     inView(".product-grid-item", (info) => {
-        animate(info.target, { opacity: [0, 1], y: [30, 0] }, { duration: 0.4, easing: "ease-out" });
+        animate(info.target, { opacity: [0, 1], y: [40, 0] }, { duration: 0.8, easing: [0.22, 1, 0.36, 1] });
     }, { amount: 0.1 });
 </script>
+
+{% if current_user.is_authenticated %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add to Cart
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent triggering the card link
+            const originalText = this.innerHTML;
+            this.disabled = true;
+            this.innerHTML = '<span class="inline-block animate-spin mr-2"><i class="bi bi-arrow-repeat"></i></span> Adding';
+            
+            fetch(`/api/cart/add/${this.dataset.id}`, { method: 'POST', headers: {'Content-Type': 'application/json'} })
+                .then(r => r.json())
+                .then(data => {
+                    if (!data.success) throw new Error(data.error || 'Unable to add item.');
+                    this.innerHTML = '<i class="bi bi-check2 text-lg"></i>';
+                    this.classList.replace('bg-white', 'bg-green-500');
+                    this.classList.replace('text-navy', 'text-white');
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.classList.replace('bg-green-500', 'bg-white');
+                        this.classList.replace('text-white', 'text-navy');
+                        this.disabled = false;
+                    }, 1500);
+                })
+                .catch(error => {
+                    alert(error.message);
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                });
+        });
+    });
+
+    // Toggle Wishlist
+    document.querySelectorAll('.toggle-wishlist').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent triggering the card link
+            fetch(`/api/wishlist/toggle/${this.dataset.id}`, { method: 'POST', headers: {'Content-Type': 'application/json'} })
+                .then(r => r.json())
+                .then(data => {
+                    if (!data.success) return;
+                    const icon = this.querySelector('i');
+                    if (data.added) {
+                        icon.className = 'bi bi-heart-fill text-lg text-gold';
+                        // Add a small pop animation
+                        this.style.transform = 'scale(1.2)';
+                        setTimeout(() => this.style.transform = 'scale(1)', 200);
+                    } else {
+                        icon.className = 'bi bi-heart text-lg text-navy group-hover:text-gold';
+                    }
+                });
+        });
+    });
+});
+</script>
+{% endif %}
+
 <style>
-.page-title, .product-grid-item { opacity: 0; }
+    /* Custom Scrollbar for Dropdowns */
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdowns = document.querySelectorAll('.custom-dropdown');
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+        dropdowns.forEach(dropdown => {
+            if (!dropdown.contains(e.target)) closeDropdown(dropdown);
+        });
+    });
+
+    dropdowns.forEach(dropdown => {
+        const toggleBtn = dropdown.querySelector('.dropdown-toggle');
+        const menu = dropdown.querySelector('.dropdown-menu');
+        const items = dropdown.querySelectorAll('.dropdown-item');
+        const targetInput = document.getElementById(dropdown.dataset.target);
+        const selectedText = dropdown.querySelector('.dropdown-selected');
+
+        // Set initial state
+        const initialVal = targetInput.value;
+        const initialItem = Array.from(items).find(item => item.dataset.value === initialVal);
+        if (initialItem) {
+            selectedText.textContent = initialItem.textContent;
+            initialItem.classList.add('text-gold', 'bg-slate-50');
+        }
+
+        toggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const isOpen = !menu.classList.contains('invisible');
+            dropdowns.forEach(d => { if (d !== dropdown) closeDropdown(d); });
+            if (isOpen) closeDropdown(dropdown);
+            else openDropdown(dropdown);
+        });
+
+        items.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                targetInput.value = item.dataset.value;
+                selectedText.textContent = item.textContent;
+                items.forEach(i => i.classList.remove('text-gold', 'bg-slate-50'));
+                item.classList.add('text-gold', 'bg-slate-50');
+                closeDropdown(dropdown);
+            });
+        });
+    });
+
+    function openDropdown(dropdown) {
+        const menu = dropdown.querySelector('.dropdown-menu');
+        const icon = dropdown.querySelector('i.bi-chevron-down');
+        menu.classList.remove('invisible', 'opacity-0', 'translate-y-2');
+        menu.classList.add('opacity-100', 'translate-y-0');
+        icon.classList.add('rotate-180');
+    }
+
+    function closeDropdown(dropdown) {
+        const menu = dropdown.querySelector('.dropdown-menu');
+        const icon = dropdown.querySelector('i.bi-chevron-down');
+        menu.classList.add('invisible', 'opacity-0', 'translate-y-2');
+        menu.classList.remove('opacity-100', 'translate-y-0');
+        icon.classList.remove('rotate-180');
+    }
+});
+</script>
 {% endblock %}

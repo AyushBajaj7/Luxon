@@ -5,197 +5,419 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Luxon | Luxury is On{% endblock %}</title>
     <meta name="description" content="Luxon - India's Premier Luxury Shopping Destination. Shop authentic luxury watches, bags, fashion, tech and lifestyle products.">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Tailwind CSS (Play CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: '#060B19',
+                        navyLight: '#0A1226',
+                        gold: '#D4AF37',
+                        champagne: '#F7E7CE',
+                    },
+                    fontFamily: {
+                        sans: ['Manrope', 'sans-serif'],
+                        serif: ['Cormorant Garamond', 'serif'],
+                    },
+                    keyframes: {
+                        'marquee': {
+                            '0%': { transform: 'translateX(0%)' },
+                            '100%': { transform: 'translateX(-50%)' },
+                        },
+                        'shimmer': {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        },
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        'checkmark': {
+                            '0%': { strokeDashoffset: '50' },
+                            '100%': { strokeDashoffset: '0' },
+                        },
+                    },
+                    animation: {
+                        'marquee': 'marquee 30s linear infinite',
+                        'shimmer': 'shimmer 2.5s ease-in-out infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'checkmark': 'checkmark 0.6s ease-out forwards',
+                    },
+                }
+            }
+        }
+    </script>
+    
+
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+
     {% block extra_css %}{% endblock %}
+    
+    <style>
+        /* Custom scrollbar for premium feel */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060B19; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+        
+        /* Gold shimmer button effect */
+        .btn-shimmer {
+            background: linear-gradient(110deg, #D4AF37 0%, #F7E7CE 30%, #D4AF37 60%, #D4AF37 100%);
+            background-size: 200% 100%;
+        }
+        .btn-shimmer:hover {
+            animation: shimmer 2.5s ease-in-out infinite;
+        }
+        
+        /* Focus ring for inputs */
+        .input-luxon:focus {
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+        }
+    </style>
+    
+    <!-- No-JS Fallback: ensure content is visible if JS/CDN fails -->
+    <noscript>
+        <style>
+            [class*="opacity-0"] { opacity: 1 !important; }
+            .motion-container { opacity: 1 !important; }
+        </style>
+    </noscript>
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body class="flex flex-col min-h-screen bg-slate-50 font-sans text-slate-800 antialiased selection:bg-gold/30 selection:text-navy">
 
-    <!-- Announcement Bar -->
-    <div class="announcement-bar text-white text-center py-2">
-        <div class="container">
-            <small class="fw-medium"><i class="bi bi-stars me-1"></i> Free Express Shipping on Orders Above ₹4,999 | Authenticity Guaranteed <i class="bi bi-stars ms-1"></i></small>
-        </div>
-    </div>
-
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg sticky-top bg-navy navbar-dark py-2 shadow-sm">
-        <div class="container">
-            <a class="navbar-brand text-gold py-0 d-flex align-items-center gap-2" href="{{ url_for('main.index') }}" style="font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.8rem; letter-spacing: 3px;">
-                <span class="d-inline-block bg-gold text-navy rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; font-size: 1.2rem;">L</span>
-                LUXON
-            </a>
-            <div class="d-flex align-items-center gap-3 d-lg-none">
-                {% if current_user.is_authenticated %}
-                <a class="text-white" href="{{ url_for('shop.view_cart') }}"><i class="bi bi-cart3 fs-5"></i></a>
-                {% endif %}
-                <button class="navbar-toggler border-0 p-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+    <!-- Sticky Header Wrapper -->
+    <header class="sticky top-0 z-50 w-full flex flex-col shadow-lg shadow-navy/20">
+        <!-- Announcement Bar (Marquee) -->
+        <div class="bg-navy text-champagne/80 py-2 text-xs font-medium tracking-widest uppercase border-b border-white/5 overflow-hidden relative">
+            <div class="flex animate-marquee whitespace-nowrap">
+                <span class="mx-8"><i class="bi bi-gem mr-1 text-gold"></i> Complimentary White-Glove Delivery on All Orders</span>
+                <span class="mx-8"><i class="bi bi-shield-check mr-1 text-gold"></i> 100% Authenticity Guaranteed</span>
+                <span class="mx-8"><i class="bi bi-arrow-repeat mr-1 text-gold"></i> 30-Day Easy Returns</span>
+                <span class="mx-8"><i class="bi bi-lock mr-1 text-gold"></i> Secure Payments: UPI, Cards, COD</span>
+                <span class="mx-8"><i class="bi bi-gem mr-1 text-gold"></i> Complimentary White-Glove Delivery on All Orders</span>
+                <span class="mx-8"><i class="bi bi-shield-check mr-1 text-gold"></i> 100% Authenticity Guaranteed</span>
+                <span class="mx-8"><i class="bi bi-arrow-repeat mr-1 text-gold"></i> 30-Day Easy Returns</span>
+                <span class="mx-8"><i class="bi bi-lock mr-1 text-gold"></i> Secure Payments: UPI, Cards, COD</span>
             </div>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto ms-lg-4">
-                    <li class="nav-item">
-                        <a class="nav-link text-white fw-medium" href="{{ url_for('main.index') }}">Home</a>
-                    </li>
-                    <li class="nav-item me-2">
-                        <a class="nav-link text-white fw-medium" href="{{ url_for('main.products') }}">Shop</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link text-white fw-medium dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button" aria-expanded="false">Categories</a>
-                        <ul class="dropdown-menu shadow border-0 rounded-3">
-                            <li><h6 class="dropdown-header text-gold">Fashion</h6></li>
-                            <li><a class="dropdown-item" href="{{ url_for('main.products', subcategory_name='Watches') }}">Watches</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('main.products', subcategory_name='Bags') }}">Bags</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('main.products', subcategory_name='Clothing') }}">Clothing</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('main.products', subcategory_name='Shoes') }}">Shoes</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><h6 class="dropdown-header text-gold">Premium Tech</h6></li>
-                            <li><a class="dropdown-item" href="{{ url_for('main.products', subcategory_name='Smartphones') }}">Smartphones</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('main.products', subcategory_name='Laptops') }}">Laptops</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('main.products', subcategory_name='Audio') }}">Audio</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><h6 class="dropdown-header text-gold">Lifestyle</h6></li>
-                            <li><a class="dropdown-item" href="{{ url_for('main.products', subcategory_name='Fragrances') }}">Fragrances</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('main.products', subcategory_name='Home Decor') }}">Home Decor</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('main.products', subcategory_name='Accessories') }}">Accessories</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <form class="d-flex my-3 my-lg-0 mx-lg-4 flex-grow-1" style="max-width: 420px;">
-                    <div class="input-group">
-                        <input class="form-control bg-white bg-opacity-10 border-0 text-white rounded-pill rounded-end ps-4" type="search" placeholder="Search for products, brands..." aria-label="Search" style="padding-right: 45px;">
-                        <button class="btn position-absolute end-0 top-0 bottom-0 text-white z-1 pe-3" type="submit" style="background: none; border: none;"><i class="bi bi-search"></i></button>
+        </div>
+
+        <!-- Navigation Bar -->
+        <nav class="bg-navy border-b border-white/10 transition-all duration-300" id="mainNav">
+        <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="{{ url_for('main.index') }}" class="flex items-center gap-3 text-white hover:text-gold transition-colors group">
+                        <div class="w-12 h-12 rounded-full overflow-hidden shadow-[0_0_15px_rgba(212,175,55,0.4)] flex items-center justify-center bg-white flex-shrink-0">
+                            <img src="https://res.cloudinary.com/drzkhibqf/image/upload/v1780810575/luxon_assets/lzunxlcjo2yish9vjwmq.png" class="w-[85%] h-[85%] object-contain group-hover:scale-110 transition-transform duration-500" alt="Luxon Logo">
+                        </div>
+                        <span class="font-serif font-bold text-2xl tracking-[0.2em] uppercase mt-1">LUXON</span>
+                    </a>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden lg:flex items-center space-x-8 ml-10">
+                    <a href="{{ url_for('main.index') }}" class="text-sm font-semibold text-slate-300 hover:text-gold transition-colors tracking-wide uppercase relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-gold after:transition-all hover:after:w-full">Home</a>
+                    <a href="{{ url_for('main.products') }}" class="text-sm font-semibold text-slate-300 hover:text-gold transition-colors tracking-wide uppercase relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-gold after:transition-all hover:after:w-full">Shop All</a>
+                    <a href="{{ url_for('main.products', gender='Women') }}" class="text-sm font-semibold text-slate-300 hover:text-gold transition-colors tracking-wide uppercase relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-gold after:transition-all hover:after:w-full">Women</a>
+                    <a href="{{ url_for('main.products', gender='Men') }}" class="text-sm font-semibold text-slate-300 hover:text-gold transition-colors tracking-wide uppercase relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-gold after:transition-all hover:after:w-full">Men</a>
+                    <a href="{{ url_for('main.products', gender='Kids') }}" class="text-sm font-semibold text-slate-300 hover:text-gold transition-colors tracking-wide uppercase relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-gold after:transition-all hover:after:w-full">Kids</a>
+                    
+                    <!-- Categories Dropdown (Hover) -->
+                    <div class="relative group">
+                        <button class="flex items-center text-sm font-semibold text-slate-300 group-hover:text-gold transition-colors tracking-wide uppercase py-8">
+                            Categories <i class="bi bi-chevron-down ml-1 text-[10px] opacity-70 group-hover:rotate-180 transition-transform"></i>
+                        </button>
+                        <div class="absolute left-0 mt-0 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50">
+                            <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 p-4 mt-2">
+                                <div class="mb-4">
+                                    <h6 class="text-xs font-bold text-gold uppercase tracking-widest px-4 mb-2">Fashion</h6>
+                                    <a href="{{ url_for('main.products', subcategory_name='Watches') }}" class="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-navy rounded-lg transition-colors">Watches</a>
+                                    <a href="{{ url_for('main.products', subcategory_name='Bags') }}" class="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-navy rounded-lg transition-colors">Bags</a>
+                                    <a href="{{ url_for('main.products', subcategory_name='Clothing') }}" class="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-navy rounded-lg transition-colors">Clothing</a>
+                                    <a href="{{ url_for('main.products', subcategory_name='Shoes') }}" class="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-navy rounded-lg transition-colors">Shoes</a>
+                                </div>
+                                <div class="mb-4">
+                                    <h6 class="text-xs font-bold text-gold uppercase tracking-widest px-4 mb-2">Premium Tech</h6>
+                                    <a href="{{ url_for('main.products', subcategory_name='Smartphones') }}" class="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-navy rounded-lg transition-colors">Smartphones</a>
+                                    <a href="{{ url_for('main.products', subcategory_name='Laptops') }}" class="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-navy rounded-lg transition-colors">Laptops</a>
+                                    <a href="{{ url_for('main.products', subcategory_name='Audio') }}" class="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-navy rounded-lg transition-colors">Audio</a>
+                                </div>
+                                <div>
+                                    <h6 class="text-xs font-bold text-gold uppercase tracking-widest px-4 mb-2">Lifestyle</h6>
+                                    <a href="{{ url_for('main.products', subcategory_name='Fragrances') }}" class="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-navy rounded-lg transition-colors">Fragrances</a>
+                                    <a href="{{ url_for('main.products', subcategory_name='Accessories') }}" class="block px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-navy rounded-lg transition-colors">Accessories</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </form>
-                <ul class="navbar-nav align-items-lg-center gap-lg-1">
+                </div>
+
+                <!-- Search Bar (Desktop) -->
+                <div class="flex-1 max-w-lg px-8 hidden md:block">
+                    <form method="GET" action="{{ url_for('main.products') }}" class="relative group">
+                        <input type="search" name="q" value="{{ request.args.get('q', '') if request else '' }}" 
+                               placeholder="Search for Rolex, Louis Vuitton..." 
+                               class="w-full bg-white/10 border border-white/15 text-white text-sm rounded-full py-2.5 pl-5 pr-10 focus:outline-none focus:ring-2 focus:ring-gold/40 focus:border-gold focus:bg-white/15 transition-all placeholder-slate-400/80 input-luxon">
+                        <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-gold transition-colors">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Right Menu (Icons & Auth) -->
+                <div class="flex items-center gap-4 lg:gap-6">
+                    <!-- Mobile Search Toggle -->
+                    <button class="md:hidden text-slate-300 hover:text-gold transition-colors" onclick="document.getElementById('mobileSearch').classList.toggle('hidden')">
+                        <i class="bi bi-search text-xl"></i>
+                    </button>
+                    
                     {% if current_user.is_authenticated %}
-                        <li class="nav-item d-none d-lg-block">
-                            <a class="nav-link text-white px-2" href="{{ url_for('shop.view_wishlist') }}" title="Wishlist"><i class="bi bi-heart fs-5"></i></a>
-                        </li>
-                        <li class="nav-item d-none d-lg-block">
-                            <a class="nav-link text-white px-2 position-relative" href="{{ url_for('shop.view_cart') }}" title="Cart">
-                                <i class="bi bi-bag fs-5"></i>
-                                {% if current_user.cart and current_user.cart.items %}
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-gold text-dark" style="font-size: 0.65rem;">{{ current_user.cart.items|map(attribute='quantity')|sum }}</span>
-                                {% endif %}
-                            </a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-white d-flex align-items-center gap-2" href="#" data-bs-toggle="dropdown">
-                                <div class="bg-gold rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                        
+                        <!-- Wishlist -->
+                        <a href="{{ url_for('shop.view_wishlist') }}" class="hidden lg:flex text-slate-300 hover:text-gold transition-colors relative group">
+                            <i class="bi bi-heart text-xl group-hover:scale-110 transition-transform"></i>
+                        </a>
+
+                        <!-- Cart -->
+                        <a href="{{ url_for('shop.view_cart') }}" class="text-slate-300 hover:text-gold transition-colors relative group">
+                            <i class="bi bi-bag text-xl group-hover:scale-110 transition-transform"></i>
+                            {% if current_user.cart and current_user.cart.items %}
+                            <span class="absolute -top-1.5 -right-2 bg-gold text-navy text-[10px] font-bold h-4.5 w-4.5 rounded-full flex items-center justify-center shadow-[0_0_8px_rgba(212,175,55,0.5)]" style="width:18px;height:18px;">
+                                {{ current_user.cart.items|map(attribute='quantity')|sum }}
+                            </span>
+                            {% endif %}
+                        </a>
+
+                        <!-- Admin Dashboard Button (Only visible if admin) -->
+                        {% if current_user.role == 'admin' %}
+                        <a href="{{ url_for('admin.dashboard') }}" class="hidden lg:flex items-center gap-2 bg-white/10 hover:bg-gold text-white hover:text-navy border border-white/10 hover:border-gold px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase transition-all duration-300 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+                            <i class="bi bi-shield-lock"></i> Admin
+                        </a>
+                        {% endif %}
+
+                        <!-- User Profile Dropdown -->
+                        <div class="relative group">
+                            <button class="flex items-center gap-2 focus:outline-none py-4">
+                                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-gold to-amber-600 border-2 border-gold/30 flex items-center justify-center text-navy text-xs font-bold group-hover:scale-110 group-hover:shadow-[0_0_12px_rgba(212,175,55,0.4)] transition-all">
                                     {{ current_user.full_name[:1] }}
                                 </div>
-                                <span class="d-lg-none">{{ current_user.full_name }}</span>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 py-2">
-                                <li class="px-3 py-2 border-bottom">
-                                    <small class="text-muted">Hello, <strong class="text-dark">{{ current_user.full_name }}</strong></small>
-                                </li>
-                                {% if current_user.role == 'admin' %}
-                                    <li><a class="dropdown-item py-2" href="{{ url_for('admin.dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Admin Dashboard</a></li>
-                                {% endif %}
-                                <li><a class="dropdown-item py-2" href="{{ url_for('shop.profile') }}"><i class="bi bi-box-seam me-2"></i>My Orders</a></li>
-                                <li><a class="dropdown-item py-2" href="{{ url_for('shop.view_wishlist') }}"><i class="bi bi-heart me-2"></i>Wishlist</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item py-2 text-danger" href="{{ url_for('auth.logout') }}"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
-                            </ul>
-                        </li>
+                            </button>
+                            <div class="absolute right-0 mt-0 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50">
+                                <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 mt-2">
+                                    <div class="px-4 py-3 border-b border-slate-50 mb-1">
+                                        <p class="text-xs text-slate-400 uppercase tracking-widest mb-0.5">Welcome</p>
+                                        <p class="text-sm font-bold text-navy truncate">{{ current_user.full_name }}</p>
+                                    </div>
+                                    <a href="{{ url_for('shop.profile') }}" class="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-navy transition-colors">
+                                        <i class="bi bi-box-seam mr-3 text-lg opacity-70"></i> My Orders
+                                    </a>
+                                    <a href="{{ url_for('shop.view_wishlist') }}" class="flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-navy transition-colors">
+                                        <i class="bi bi-heart mr-3 text-lg opacity-70"></i> Wishlist
+                                    </a>
+                                    {% if current_user.role == 'admin' %}
+                                    <a href="{{ url_for('admin.dashboard') }}" class="flex lg:hidden items-center px-4 py-2.5 text-sm text-gold hover:bg-slate-50 transition-colors font-bold">
+                                        <i class="bi bi-shield-lock mr-3 text-lg"></i> Admin Panel
+                                    </a>
+                                    {% endif %}
+                                    <div class="border-t border-slate-50 my-1"></div>
+                                    <a href="{{ url_for('auth.logout') }}" class="flex items-center px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors">
+                                        <i class="bi bi-box-arrow-right mr-3 text-lg opacity-70"></i> Sign Out
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     {% else %}
-                        <li class="nav-item ms-lg-2">
-                            <a class="btn btn-gold rounded-pill px-4 py-2 fw-semibold" href="{{ url_for('auth.login') }}">Sign In</a>
-                        </li>
+                        <!-- Sign In Button for Guests -->
+                        <a href="{{ url_for('auth.login') }}" class="btn-shimmer text-navy px-6 py-2 rounded-full text-sm font-bold tracking-wide transition-all shadow-[0_0_15px_rgba(212,175,55,0.2)] hover:shadow-[0_0_25px_rgba(212,175,55,0.4)] hover:scale-105">
+                            SIGN IN
+                        </a>
                     {% endif %}
-                </ul>
+
+                    <!-- Mobile Menu Toggle -->
+                    <button class="lg:hidden text-slate-300 hover:text-gold transition-colors" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')">
+                        <i class="bi bi-list text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Search Bar (Hidden by default) -->
+        <div id="mobileSearch" class="hidden md:hidden px-4 pb-4 border-t border-white/5">
+            <form method="GET" action="{{ url_for('main.products') }}" class="relative">
+                <input type="search" name="q" value="{{ request.args.get('q', '') if request else '' }}" 
+                       placeholder="Search products, brands..." 
+                       class="w-full bg-white/10 border border-white/15 text-white text-sm rounded-full py-3 pl-5 pr-10 focus:outline-none focus:ring-2 focus:ring-gold/40 focus:border-gold transition-all placeholder-slate-400/80">
+                <button type="submit" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+        </div>
+        
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobileMenu" class="hidden lg:hidden bg-navy border-t border-white/5">
+            <div class="px-4 py-4 space-y-1">
+                <a href="{{ url_for('main.index') }}" class="block px-4 py-3 text-sm font-semibold text-slate-300 hover:text-gold hover:bg-white/5 rounded-xl transition-colors uppercase tracking-wide">Home</a>
+                <a href="{{ url_for('main.products') }}" class="block px-4 py-3 text-sm font-semibold text-slate-300 hover:text-gold hover:bg-white/5 rounded-xl transition-colors uppercase tracking-wide">Shop All</a>
+                <div class="border-t border-white/5 my-2"></div>
+                <p class="px-4 text-[10px] font-bold text-gold uppercase tracking-widest mb-1">Categories</p>
+                <a href="{{ url_for('main.products', subcategory_name='Watches') }}" class="block px-4 py-2 text-sm text-slate-400 hover:text-gold hover:bg-white/5 rounded-xl transition-colors">Watches</a>
+                <a href="{{ url_for('main.products', subcategory_name='Bags') }}" class="block px-4 py-2 text-sm text-slate-400 hover:text-gold hover:bg-white/5 rounded-xl transition-colors">Bags</a>
+                <a href="{{ url_for('main.products', subcategory_name='Smartphones') }}" class="block px-4 py-2 text-sm text-slate-400 hover:text-gold hover:bg-white/5 rounded-xl transition-colors">Smartphones</a>
+                <a href="{{ url_for('main.products', subcategory_name='Fragrances') }}" class="block px-4 py-2 text-sm text-slate-400 hover:text-gold hover:bg-white/5 rounded-xl transition-colors">Fragrances</a>
+                {% if current_user.is_authenticated %}
+                <div class="border-t border-white/5 my-2"></div>
+                <a href="{{ url_for('shop.view_wishlist') }}" class="block px-4 py-3 text-sm font-semibold text-slate-300 hover:text-gold hover:bg-white/5 rounded-xl transition-colors"><i class="bi bi-heart mr-2"></i>Wishlist</a>
+                {% if current_user.role == 'admin' %}
+                <a href="{{ url_for('admin.dashboard') }}" class="block px-4 py-3 text-sm font-bold text-gold hover:bg-white/5 rounded-xl transition-colors"><i class="bi bi-shield-lock mr-2"></i>Admin Panel</a>
+                {% endif %}
+                {% endif %}
             </div>
         </div>
     </nav>
+    </header>
 
     <!-- Flash Messages -->
-    <div class="container mt-3 position-relative z-3">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm rounded-3 border-0" role="alert">
-                        <i class="bi {% if category == 'success' %}bi-check-circle-fill{% elif category == 'danger' %}bi-exclamation-triangle-fill{% elif category == 'warning' %}bi-exclamation-circle-fill{% else %}bi-info-circle-fill{% endif %} me-2"></i>
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="max-w-screen-xl mx-auto px-4 w-full mt-6 z-40 relative">
+            {% for category, message in messages %}
+                <div class="mb-3 px-5 py-4 rounded-2xl shadow-lg border flex items-center justify-between flash-alert
+                    {% if category == 'success' %} bg-emerald-50/90 border-emerald-200 text-emerald-800
+                    {% elif category == 'danger' %} bg-red-50/90 border-red-200 text-red-800
+                    {% elif category == 'warning' %} bg-amber-50/90 border-amber-200 text-amber-800
+                    {% else %} bg-blue-50/90 border-blue-200 text-blue-800 {% endif %}">
+                    <div class="flex items-center">
+                        <i class="bi mr-3 text-lg 
+                            {% if category == 'success' %} bi-check-circle-fill
+                            {% elif category == 'danger' %} bi-exclamation-octagon-fill
+                            {% elif category == 'warning' %} bi-exclamation-triangle-fill
+                            {% else %} bi-info-circle-fill {% endif %}"></i>
+                        <span class="text-sm font-medium">{{ message }}</span>
                     </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-    </div>
+                    <button onclick="this.parentElement.style.opacity='0';setTimeout(()=>this.parentElement.remove(),300)" class="text-opacity-50 hover:text-opacity-100 transition-opacity ml-4">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
 
     <!-- Main Content -->
-    <main class="flex-grow-1">
+    <main class="flex-grow">
         {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white pt-5 pb-4 mt-auto">
-        <div class="container">
-            <div class="row g-4 mb-4">
-                <!-- Brand Column -->
-                <div class="col-lg-4 col-md-6">
-                    <h5 class="text-gold mb-3" style="font-family: 'Playfair Display', serif; letter-spacing: 2px;">LUXON</h5>
-                    <p class="text-muted small lh-lg">India's premier destination for authentic luxury. We curate the finest selection of premium fashion, tech, and lifestyle products from the world's most iconic brands.</p>
-                    <div class="d-flex gap-3 mt-3">
-                        <a href="#" class="text-muted"><i class="bi bi-instagram fs-5"></i></a>
-                        <a href="#" class="text-muted"><i class="bi bi-twitter-x fs-5"></i></a>
-                        <a href="#" class="text-muted"><i class="bi bi-facebook fs-5"></i></a>
-                        <a href="#" class="text-muted"><i class="bi bi-youtube fs-5"></i></a>
+    <footer class="bg-navyLight text-slate-300 pt-20 pb-10 border-t border-white/5 mt-auto">
+        <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+                
+                <!-- Brand Info -->
+                <div class="lg:col-span-1">
+                    <a href="{{ url_for('main.index') }}" class="flex items-center gap-3 text-white hover:text-gold transition-colors group mb-6 inline-flex">
+                        <div class="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-white flex-shrink-0">
+                            <img src="https://res.cloudinary.com/drzkhibqf/image/upload/v1780810575/luxon_assets/lzunxlcjo2yish9vjwmq.png" class="w-[85%] h-[85%] object-contain group-hover:scale-110 transition-transform duration-500" alt="Luxon Logo">
+                        </div>
+                        <span class="font-serif font-bold text-xl tracking-[0.2em] uppercase">LUXON</span>
+                    </a>
+                    <p class="text-sm text-slate-400 leading-relaxed mb-6">
+                        India's premier destination for authentic luxury. We curate the finest selection of premium fashion, tech, and lifestyle products from the world's most iconic brands.
+                    </p>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:bg-gold hover:text-navy transition-all hover:scale-110"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:bg-gold hover:text-navy transition-all hover:scale-110"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:bg-gold hover:text-navy transition-all hover:scale-110"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:bg-gold hover:text-navy transition-all hover:scale-110"><i class="bi bi-youtube"></i></a>
                     </div>
                 </div>
+
                 <!-- Shop Links -->
-                <div class="col-6 col-lg-2 col-md-3">
-                    <h6 class="fw-bold mb-3 text-dark">SHOP</h6>
-                    <ul class="list-unstyled small">
-                        <li class="mb-2"><a href="{{ url_for('main.products', subcategory_name='Watches') }}" class="text-decoration-none text-muted">Watches</a></li>
-                        <li class="mb-2"><a href="{{ url_for('main.products', subcategory_name='Bags') }}" class="text-decoration-none text-muted">Bags & Luggage</a></li>
-                        <li class="mb-2"><a href="{{ url_for('main.products', subcategory_name='Clothing') }}" class="text-decoration-none text-muted">Clothing</a></li>
-                        <li class="mb-2"><a href="{{ url_for('main.products', subcategory_name='Shoes') }}" class="text-decoration-none text-muted">Shoes</a></li>
-                        <li class="mb-2"><a href="{{ url_for('main.products', category_name='Premium Tech') }}" class="text-decoration-none text-muted">Tech</a></li>
+                <div>
+                    <h6 class="text-white text-xs font-bold uppercase tracking-widest mb-6">Boutique</h6>
+                    <ul class="space-y-3">
+                        <li><a href="{{ url_for('main.products', subcategory_name='Watches') }}" class="text-sm text-slate-400 hover:text-gold transition-colors hover:pl-1 duration-300">Luxury Watches</a></li>
+                        <li><a href="{{ url_for('main.products', subcategory_name='Bags') }}" class="text-sm text-slate-400 hover:text-gold transition-colors hover:pl-1 duration-300">Designer Bags</a></li>
+                        <li><a href="{{ url_for('main.products', category_name='Premium Tech') }}" class="text-sm text-slate-400 hover:text-gold transition-colors hover:pl-1 duration-300">Premium Tech</a></li>
+                        <li><a href="{{ url_for('main.products', category_name='Lifestyle') }}" class="text-sm text-slate-400 hover:text-gold transition-colors hover:pl-1 duration-300">Lifestyle & Decor</a></li>
                     </ul>
                 </div>
-                <!-- Help Links -->
-                <div class="col-6 col-lg-2 col-md-3">
-                    <h6 class="fw-bold mb-3 text-dark">HELP</h6>
-                    <ul class="list-unstyled small">
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Contact Us</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Shipping Info</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">Returns & Exchanges</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-muted">FAQ</a></li>
+
+                <!-- Client Services -->
+                <div>
+                    <h6 class="text-white text-xs font-bold uppercase tracking-widest mb-6">Client Services</h6>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-sm text-slate-400 hover:text-gold transition-colors hover:pl-1 duration-300">Contact Concierge</a></li>
+                        <li><a href="#" class="text-sm text-slate-400 hover:text-gold transition-colors hover:pl-1 duration-300">Shipping & Returns</a></li>
+                        <li><a href="#" class="text-sm text-slate-400 hover:text-gold transition-colors hover:pl-1 duration-300">Authenticity Guarantee</a></li>
+                        <li><a href="#" class="text-sm text-slate-400 hover:text-gold transition-colors hover:pl-1 duration-300">FAQ</a></li>
                     </ul>
                 </div>
+
                 <!-- Newsletter -->
-                <div class="col-lg-4 col-md-6">
-                    <h6 class="fw-bold mb-3 text-dark">STAY CONNECTED</h6>
-                    <p class="text-muted small">Subscribe to get exclusive offers, early access to new arrivals, and luxury inspiration.</p>
-                    <div class="input-group">
-                        <input type="email" class="form-control rounded-pill rounded-end border-light bg-light" placeholder="Enter your email">
-                        <button class="btn btn-navy rounded-pill rounded-start px-4" type="button">Subscribe</button>
-                    </div>
+                <div>
+                    <h6 class="text-white text-xs font-bold uppercase tracking-widest mb-6">The Luxon Club</h6>
+                    <p class="text-sm text-slate-400 mb-4">Subscribe for exclusive early access to rare pieces and private sales.</p>
+                    <form class="relative group" onsubmit="event.preventDefault(); this.innerHTML='<p class=\'text-gold text-sm font-semibold flex items-center\'><i class=\'bi bi-check2-circle mr-2 text-lg\'></i>Welcome to the club.</p>'">
+                        <input type="email" required placeholder="Enter your email" class="w-full bg-white/5 border border-white/10 text-white text-sm rounded-full py-3 pl-5 pr-32 focus:outline-none focus:border-gold transition-colors placeholder-slate-500">
+                        <button type="submit" class="absolute right-1 top-1 bottom-1 bg-white hover:bg-gold text-navy px-6 rounded-full text-xs font-bold tracking-wider uppercase transition-colors">
+                            Subscribe
+                        </button>
+                    </form>
                 </div>
+                
             </div>
-            <hr class="text-muted opacity-25">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <p class="text-muted small mb-0">&copy; 2026 Luxon. All rights reserved. Made in India with <i class="bi bi-heart-fill text-danger"></i></p>
-                </div>
-                <div class="col-md-6 text-md-end mt-2 mt-md-0">
-                    <span class="text-muted small">We accept: </span>
-                    <i class="bi bi-credit-card-2-front text-muted fs-5 ms-1"></i>
-                    <span class="badge bg-light text-dark ms-1 small">UPI</span>
-                    <span class="badge bg-light text-dark ms-1 small">Razorpay</span>
-                    <span class="badge bg-light text-dark ms-1 small">COD</span>
+            
+            <!-- Bottom Footer -->
+            <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-xs text-slate-500">&copy; 2026 Luxon. All rights reserved. Crafted with <i class="bi bi-heart-fill text-gold mx-1"></i></p>
+                <div class="flex items-center gap-4 text-slate-500">
+                    <i class="bi bi-credit-card-2-front text-xl"></i>
+                    <span class="text-xs font-bold tracking-wider border border-white/10 px-2.5 py-1 rounded hover:border-gold hover:text-gold transition-colors">UPI</span>
+                    <span class="text-xs font-bold tracking-wider border border-white/10 px-2.5 py-1 rounded hover:border-gold hover:text-gold transition-colors">RAZORPAY</span>
+                    <span class="text-xs font-bold tracking-wider border border-white/10 px-2.5 py-1 rounded hover:border-gold hover:text-gold transition-colors">COD</span>
                 </div>
             </div>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Back to Top Button -->
+    <button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" 
+            class="fixed bottom-8 right-8 w-12 h-12 bg-navy/90 hover:bg-gold text-white hover:text-navy rounded-full shadow-xl flex items-center justify-center transition-all duration-300 opacity-0 translate-y-4 pointer-events-none z-50 hover:scale-110 border border-white/10 hover:border-gold">
+        <i class="bi bi-chevron-up text-lg"></i>
+    </button>
+    
+    <script>
+        // Back to Top visibility
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 400) {
+                backToTop.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+                backToTop.classList.add('opacity-100', 'translate-y-0');
+            } else {
+                backToTop.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+                backToTop.classList.remove('opacity-100', 'translate-y-0');
+            }
+        });
+        
+        // Auto-dismiss flash messages
+        document.querySelectorAll('.flash-alert').forEach(el => {
+            setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 5000);
+        });
+    </script>
+
     {% block extra_js %}{% endblock %}
 </body>
 </html>

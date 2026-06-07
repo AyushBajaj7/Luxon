@@ -1,45 +1,81 @@
 {% extends 'base.html' %}
 {% block title %}Order Confirmed | Luxon{% endblock %}
+
 {% block content %}
-<div class="container py-5 text-center my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card border-0 shadow-lg rounded-4 p-5 confirm-card">
-                <div class="mb-4 confirm-icon">
-                    <div class="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
-                        <i class="bi bi-check2 fs-1"></i>
+<div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex items-center justify-center min-h-[70vh]">
+    <div class="w-full max-w-lg">
+        <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 sm:p-10 text-center relative overflow-hidden confirm-card">
+            
+            <!-- Decorative Sparkles / Confetti -->
+            <div class="absolute top-6 left-8 w-2 h-2 bg-gold/60 rounded-full sparkle" style="animation-delay: 0s;"></div>
+            <div class="absolute top-14 right-12 w-1.5 h-1.5 bg-gold/50 rounded-full sparkle" style="animation-delay: 0.4s;"></div>
+            <div class="absolute top-10 left-1/4 w-1 h-1 bg-champagne rounded-full sparkle" style="animation-delay: 0.8s;"></div>
+            <div class="absolute top-20 right-1/4 w-2.5 h-2.5 bg-gold/40 rounded-full sparkle" style="animation-delay: 1.2s;"></div>
+            <div class="absolute bottom-24 left-10 w-1.5 h-1.5 bg-gold/50 rounded-full sparkle" style="animation-delay: 0.6s;"></div>
+            <div class="absolute bottom-32 right-8 w-1 h-1 bg-champagne rounded-full sparkle" style="animation-delay: 1s;"></div>
+            <!-- Diamond confetti shapes -->
+            <div class="absolute top-8 right-1/3 w-2 h-2 bg-gold/30 rotate-45 sparkle" style="animation-delay: 0.2s;"></div>
+            <div class="absolute top-24 left-12 w-1.5 h-1.5 bg-champagne/60 rotate-45 sparkle" style="animation-delay: 1.4s;"></div>
+            
+            <!-- Subtle gold radial glow behind the checkmark -->
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-56 h-56 bg-gold/5 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- Animated Checkmark SVG -->
+            <div class="mb-6 confirm-icon relative">
+                <div class="w-24 h-24 mx-auto relative">
+                    <svg class="w-24 h-24" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Circle -->
+                        <circle cx="48" cy="48" r="44" stroke="#D4AF37" stroke-width="3" stroke-linecap="round" class="checkmark-circle" />
+                        <!-- Check -->
+                        <path d="M30 50 L43 63 L66 36" stroke="#D4AF37" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" class="checkmark-check" />
+                    </svg>
+                </div>
+            </div>
+            
+            <h1 class="text-3xl sm:text-4xl font-serif font-bold text-navy mb-3 confirm-text relative">Thank You!</h1>
+            <p class="text-slate-500 mb-8 text-sm leading-relaxed confirm-text relative">
+                Your luxury order has been placed successfully.<br class="hidden sm:block">
+                A confirmation email will be sent shortly.
+            </p>
+            
+            <!-- Order Details Card -->
+            <div class="bg-slate-50 rounded-2xl border border-slate-100 overflow-hidden mb-8 text-left confirm-details relative">
+                <div class="px-6 py-4 bg-navy">
+                    <p class="text-[10px] font-bold text-gold/80 uppercase tracking-widest">Order Details</p>
+                </div>
+                <div class="divide-y divide-slate-100">
+                    <div class="flex justify-between items-center px-6 py-4">
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Order Number</span>
+                        <span class="font-bold text-navy text-sm">#{{ order.id }}</span>
+                    </div>
+                    <div class="flex justify-between items-center px-6 py-4">
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Date</span>
+                        <span class="font-bold text-navy text-sm">{{ order.created_at.strftime('%B %d, %Y') }}</span>
+                    </div>
+                    <div class="flex justify-between items-center px-6 py-4">
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Paid</span>
+                        <span class="font-extrabold text-gold text-lg">₹{{ "{:,.0f}".format(order.total_amount) }}</span>
+                    </div>
+                    <div class="flex justify-between items-center px-6 py-4">
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Payment ID</span>
+                        <span class="font-bold text-navy text-xs font-mono bg-slate-100 px-2 py-1 rounded-lg">{{ order.payment.razorpay_payment_id if order.payment else 'Pending' }}</span>
                     </div>
                 </div>
-                <h1 class="fw-bold mb-3 text-navy confirm-text" style="font-family: 'Playfair Display', serif;">Thank You!</h1>
-                <p class="text-muted mb-5 confirm-text">Your luxury order has been placed successfully. A confirmation email will be sent shortly.</p>
-                
-                <div class="bg-light p-4 rounded-4 text-start mb-5 confirm-details">
-                    <div class="d-flex justify-content-between mb-3 border-bottom pb-3">
-                        <span class="text-muted fw-semibold">Order Number</span>
-                        <span class="fw-bold text-navy">#{{ order.id }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-3 border-bottom pb-3">
-                        <span class="text-muted fw-semibold">Date</span>
-                        <span class="fw-bold text-navy">{{ order.created_at.strftime('%B %d, %Y') }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-3 border-bottom pb-3">
-                        <span class="text-muted fw-semibold">Total Paid</span>
-                        <span class="fw-bold text-gold fs-5">₹{{ "{:,.0f}".format(order.total_amount) }}</span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <span class="text-muted fw-semibold">Payment ID</span>
-                        <span class="fw-bold text-navy small font-monospace">{{ order.payment.razorpay_payment_id if order.payment else 'Pending' }}</span>
-                    </div>
-                </div>
-                
-                <div class="d-flex justify-content-center gap-3 confirm-actions">
-                    <a href="{{ url_for('shop.profile') }}" class="btn btn-outline-navy rounded-pill px-4 py-2 fw-semibold">View Order Status</a>
-                    <a href="{{ url_for('main.products') }}" class="btn btn-gold rounded-pill px-4 py-2 fw-semibold">Continue Shopping</a>
-                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row justify-center gap-3 confirm-actions relative">
+                <a href="{{ url_for('shop.profile') }}" class="inline-flex items-center justify-center gap-2 border-2 border-navy text-navy hover:bg-navy hover:text-white px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs transition-all">
+                    <i class="bi bi-box-seam"></i> View Order Status
+                </a>
+                <a href="{{ url_for('main.products') }}" class="inline-flex items-center justify-center gap-2 bg-gold hover:bg-navy text-navy hover:text-white px-6 py-3 rounded-full font-bold uppercase tracking-widest text-xs transition-all shadow-[0_0_15px_rgba(212,175,55,0.2)] hover:shadow-lg">
+                    <i class="bi bi-bag"></i> Continue Shopping
+                </a>
             </div>
         </div>
     </div>
 </div>
+
 <script type="module">
     import { animate, stagger } from "https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm";
     animate(".confirm-card", { opacity: [0, 1], scale: [0.95, 1] }, { duration: 0.6, easing: "ease-out" });
@@ -50,5 +86,36 @@
 </script>
 <style>
 .confirm-card, .confirm-icon, .confirm-text, .confirm-details, .confirm-actions { opacity: 0; }
+
+/* Animated checkmark circle */
+.checkmark-circle {
+    stroke-dasharray: 280;
+    stroke-dashoffset: 280;
+    animation: drawCircle 0.8s ease-out 0.4s forwards;
+}
+/* Animated checkmark check */
+.checkmark-check {
+    stroke-dasharray: 60;
+    stroke-dashoffset: 60;
+    animation: drawCheck 0.5s ease-out 1s forwards;
+}
+@keyframes drawCircle {
+    to { stroke-dashoffset: 0; }
+}
+@keyframes drawCheck {
+    to { stroke-dashoffset: 0; }
+}
+
+/* Sparkle / confetti float animation */
+.sparkle {
+    animation: sparkleFloat 3s ease-in-out infinite alternate;
+}
+@keyframes sparkleFloat {
+    0% { opacity: 0; transform: translateY(0) scale(0.8); }
+    20% { opacity: 1; }
+    50% { transform: translateY(-8px) scale(1.1); opacity: 0.8; }
+    80% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(4px) scale(0.9); }
+}
 </style>
 {% endblock %}

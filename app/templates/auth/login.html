@@ -1,43 +1,147 @@
 {% extends 'base.html' %}
 {% block title %}Sign In | Luxon{% endblock %}
 {% block content %}
-<div class="container py-5 motion-container">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="card border-0 shadow-lg rounded-4 p-5 auth-card">
-                <div class="text-center mb-4">
-                    <h2 class="fw-bold text-navy" style="font-family: 'Playfair Display', serif;">Welcome Back</h2>
-                    <p class="text-muted small">Sign in to access your luxury shopping experience</p>
-                </div>
-                <form method="POST" action="{{ url_for('auth.login') }}">
-                    <div class="mb-4 input-group-custom">
-                        <label class="form-label small fw-bold text-muted text-uppercase letter-spacing-1">Email or Username</label>
-                        <input type="text" class="form-control p-3 bg-light border-0 rounded-3" name="email_or_username" placeholder="Enter your email" required>
-                    </div>
-                    <div class="mb-4 input-group-custom">
-                        <label class="form-label small fw-bold text-muted text-uppercase letter-spacing-1">Password</label>
-                        <input type="password" class="form-control p-3 bg-light border-0 rounded-3" name="password" placeholder="••••••••" required>
-                    </div>
-                    <div class="mb-4 d-flex justify-content-between align-items-center">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input border-secondary" id="remember" name="remember">
-                            <label class="form-check-label small text-muted" for="remember">Remember me</label>
-                        </div>
-                        <a href="#" class="small text-gold text-decoration-none fw-semibold">Forgot password?</a>
-                    </div>
-                    <button type="submit" class="btn btn-navy w-100 py-3 rounded-pill fw-bold shadow-sm mb-4">SIGN IN</button>
-                </form>
-                <div class="text-center">
-                    <p class="small text-muted mb-0">New to Luxon? <a href="{{ url_for('auth.register') }}" class="text-navy fw-bold text-decoration-none border-bottom border-navy pb-1">Create an Account</a></p>
-                </div>
+<div class="min-h-screen flex">
+
+    <!-- LEFT: Luxury Brand Image Panel (Desktop Only) -->
+    <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden brand-panel">
+        <!-- Background Image -->
+        <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop"
+             alt="Luxury Shopping" loading="lazy"
+             class="absolute inset-0 w-full h-full object-cover">
+        <!-- Dark Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-br from-navy/90 via-navy/80 to-navy/95"></div>
+        <!-- Subtle Pattern Overlay -->
+        <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23D4AF37&quot; fill-opacity=&quot;1&quot;%3E%3Cpath d=&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+
+        <!-- Centered Logo & Tagline -->
+        <div class="relative z-10 flex flex-col items-center justify-center w-full px-16 text-center brand-content">
+            <!-- Decorative Line -->
+            <div class="w-px h-16 bg-gradient-to-b from-transparent via-gold/60 to-transparent mb-10 brand-line"></div>
+
+            <!-- Logo -->
+            <div class="w-20 h-20 rounded-full bg-gold/10 border-2 border-gold/40 flex items-center justify-center mb-8 brand-logo shadow-[0_0_40px_rgba(212,175,55,0.15)]">
+                <span class="font-serif font-bold text-4xl text-gold">L</span>
+            </div>
+
+            <!-- Brand Name -->
+            <h1 class="font-serif font-bold text-5xl tracking-[0.3em] uppercase text-white mb-4">Luxon</h1>
+
+            <!-- Tagline -->
+            <p class="text-champagne/60 text-sm tracking-[0.35em] uppercase font-light">Where Luxury Finds You</p>
+
+            <!-- Decorative Line -->
+            <div class="w-px h-16 bg-gradient-to-b from-transparent via-gold/60 to-transparent mt-10 brand-line"></div>
+
+            <!-- Trust Badges -->
+            <div class="mt-12 flex items-center gap-8 text-white/30 text-xs tracking-widest uppercase">
+                <span class="flex items-center gap-2"><i class="bi bi-shield-check text-gold/50"></i> Authentic</span>
+                <span class="w-1 h-1 rounded-full bg-gold/30"></span>
+                <span class="flex items-center gap-2"><i class="bi bi-gem text-gold/50"></i> Premium</span>
+                <span class="w-1 h-1 rounded-full bg-gold/30"></span>
+                <span class="flex items-center gap-2"><i class="bi bi-lock text-gold/50"></i> Secure</span>
             </div>
         </div>
     </div>
+
+    <!-- RIGHT: Login Form Panel -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center bg-slate-50/50 px-6 sm:px-10 py-16 lg:py-0">
+        <div class="w-full max-w-md auth-card">
+
+            <!-- Mobile Logo (shown only on smaller screens) -->
+            <div class="flex flex-col items-center mb-10 lg:mb-12">
+                <div class="w-14 h-14 rounded-full bg-navy flex items-center justify-center mb-4 shadow-[0_0_30px_rgba(6,11,25,0.15)] mobile-logo">
+                    <span class="font-serif font-bold text-2xl text-gold">L</span>
+                </div>
+                <span class="font-serif font-bold text-lg tracking-[0.25em] uppercase text-navy mb-6 mobile-logo">Luxon</span>
+
+                <h2 class="text-4xl sm:text-5xl font-serif font-bold text-navy mb-3 text-center form-title">Welcome Back</h2>
+                <p class="text-slate-400 text-sm tracking-wide text-center form-subtitle">Sign in to access your luxury shopping experience</p>
+            </div>
+
+            <!-- Login Form -->
+            <form method="POST" action="{{ url_for('auth.login') }}" class="space-y-6">
+
+                <!-- Email/Username -->
+                <div class="input-group-custom">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-2.5">Email or Username</label>
+                    <div class="relative group">
+                        <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-gold transition-colors duration-300">
+                            <i class="bi bi-person text-lg"></i>
+                        </div>
+                        <input type="text" name="email_or_username" placeholder="Enter your email" required
+                               class="w-full bg-white border border-slate-200 rounded-xl pl-12 pr-4 py-4 text-sm text-navy focus:outline-none focus:border-gold/50 transition-all duration-300 placeholder:text-slate-300 input-luxon">
+                        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-gold/0 via-gold to-gold/0 group-focus-within:w-[calc(100%-2rem)] transition-all duration-500 rounded-full"></div>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="input-group-custom">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-2.5">Password</label>
+                    <div class="relative group">
+                        <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-gold transition-colors duration-300">
+                            <i class="bi bi-lock text-lg"></i>
+                        </div>
+                        <input type="password" name="password" placeholder="••••••••" required
+                               class="w-full bg-white border border-slate-200 rounded-xl pl-12 pr-4 py-4 text-sm text-navy focus:outline-none focus:border-gold/50 transition-all duration-300 placeholder:text-slate-300 input-luxon">
+                        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-gold/0 via-gold to-gold/0 group-focus-within:w-[calc(100%-2rem)] transition-all duration-500 rounded-full"></div>
+                    </div>
+                </div>
+
+                <!-- Remember / Forgot -->
+                <div class="flex items-center justify-between input-group-custom pt-1">
+                    <label class="flex items-center gap-2.5 cursor-pointer group">
+                        <input type="checkbox" name="remember" class="w-4 h-4 rounded text-navy border-slate-300 focus:ring-gold/20 focus:ring-2 cursor-pointer transition-colors accent-navy">
+                        <span class="text-xs text-slate-500 group-hover:text-navy transition-colors">Remember me</span>
+                    </label>
+                    <a href="#" class="text-xs font-bold text-gold hover:text-navy transition-colors duration-300">Forgot password?</a>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full bg-navy hover:bg-gold text-white hover:text-navy py-4 rounded-full font-bold uppercase tracking-[0.2em] text-sm transition-all duration-500 shadow-lg hover:shadow-[0_8px_30px_rgba(212,175,55,0.3)] transform hover:-translate-y-0.5 mt-4 relative overflow-hidden group input-group-custom">
+                    <span class="relative z-10">Sign In</span>
+                    <div class="absolute inset-0 bg-gradient-to-r from-gold via-champagne to-gold opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <span class="relative z-10 group-hover:text-navy transition-colors duration-500"></span>
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="flex items-center gap-4 my-8 input-group-custom">
+                <div class="flex-1 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
+                <span class="text-[10px] font-bold text-slate-300 uppercase tracking-[0.3em]">or</span>
+                <div class="flex-1 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
+            </div>
+
+            <!-- Register Link -->
+            <div class="text-center input-group-custom">
+                <p class="text-sm text-slate-400">
+                    New to Luxon?
+                    <a href="{{ url_for('auth.register') }}" class="font-bold text-navy hover:text-gold transition-colors duration-300 border-b border-navy/30 hover:border-gold pb-0.5 ml-1">Create an Account</a>
+                </p>
+            </div>
+
+        </div>
+    </div>
 </div>
+
 <script type="module">
-    import { animate } from "https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm";
-    animate(".auth-card", { opacity: [0, 1], y: [30, 0] }, { duration: 0.6, easing: "ease-out" });
-    animate(".input-group-custom", { opacity: [0, 1], x: [-20, 0] }, { duration: 0.5, delay: 0.2, easing: "ease-out" });
+    import { animate, stagger, inView } from "https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm";
+
+    // Brand panel animations (left side)
+    animate(".brand-logo", { opacity: [0, 1], scale: [0.5, 1] }, { duration: 1, easing: [0.22, 1, 0.36, 1], delay: 0.2 });
+    animate(".brand-content h1", { opacity: [0, 1], y: [20, 0] }, { duration: 0.8, easing: [0.22, 1, 0.36, 1], delay: 0.5 });
+    animate(".brand-content p", { opacity: [0, 1], y: [15, 0] }, { duration: 0.8, easing: [0.22, 1, 0.36, 1], delay: 0.7 });
+    animate(".brand-line", { opacity: [0, 1], scaleY: [0, 1] }, { duration: 1, easing: [0.22, 1, 0.36, 1], delay: 0.3 });
+
+    // Form panel animations (right side)
+    animate(".auth-card", { opacity: [0, 1] }, { duration: 0.6, easing: "ease-out" });
+    animate(".mobile-logo", { opacity: [0, 1], y: [-10, 0] }, { duration: 0.6, easing: [0.22, 1, 0.36, 1], delay: 0.1 });
+    animate(".form-title", { opacity: [0, 1], y: [20, 0] }, { duration: 0.7, easing: [0.22, 1, 0.36, 1], delay: 0.25 });
+    animate(".form-subtitle", { opacity: [0, 1], y: [10, 0] }, { duration: 0.6, easing: [0.22, 1, 0.36, 1], delay: 0.4 });
+    animate(".input-group-custom", { opacity: [0, 1], x: [-20, 0] }, { duration: 0.6, delay: stagger(0.08, { start: 0.35 }), easing: [0.22, 1, 0.36, 1] });
 </script>
-<style>.auth-card, .input-group-custom { opacity: 0; } .letter-spacing-1 { letter-spacing: 1px; }</style>
+<style>
+    .auth-card, .input-group-custom, .mobile-logo, .form-title, .form-subtitle,
+    .brand-logo, .brand-content h1, .brand-content p, .brand-line { opacity: 0; }
+</style>
 {% endblock %}

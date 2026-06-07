@@ -1,199 +1,1152 @@
 import random
+import urllib.parse
 from app import create_app, db
-from app.models import Category, Subcategory, Product, CartItem, Wishlist, OrderItem
+from app.models import Category, Subcategory, Product, User
+from werkzeug.security import generate_password_hash
 
 app = create_app()
 
-PRODUCTS_DATA = [
-    # Watches
-    {'cat': 'Fashion', 'sub': 'Watches', 'brand': 'Rolex', 'name': 'Rolex Submariner Date 41mm', 'price': 1050000, 'img': 'https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?w=600&auto=format&fit=crop', 'desc': 'The iconic Rolex Submariner Date 41mm in Oystersteel with a Cerachrom bezel. Waterproof to 300 meters, this diving watch features a Chromalight display for excellent visibility in dark conditions.'},
-    {'cat': 'Fashion', 'sub': 'Watches', 'brand': 'Omega', 'name': 'Omega Speedmaster Moonwatch Professional', 'price': 485000, 'img': 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=600&auto=format&fit=crop', 'desc': 'The legendary Omega Speedmaster Professional, the first watch worn on the moon. Features a Hesalite crystal, manual-winding calibre 3861 movement, and iconic black dial with tachymeter scale.'},
-    {'cat': 'Fashion', 'sub': 'Watches', 'brand': 'Tissot', 'name': 'Tissot PRX Powermatic 80', 'price': 75000, 'img': 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=600&auto=format&fit=crop', 'desc': 'Tissot PRX Powermatic 80 with integrated bracelet and 1970s design. Features an automatic movement with 80-hour power reserve, sapphire crystal, and water resistance to 100 meters.'},
-    {'cat': 'Fashion', 'sub': 'Watches', 'brand': 'Daniel Wellington', 'name': 'Daniel Wellington Classic Sheffield', 'price': 18500, 'img': 'https://images.unsplash.com/photo-1612817159949-195b6eb9e31a?w=600&auto=format&fit=crop', 'desc': 'Elegant Daniel Wellington Classic Sheffield with mesh bracelet. Features a minimalist white dial, slim profile, and Japanese quartz movement. Perfect for both formal and casual occasions.'},
-    {'cat': 'Fashion', 'sub': 'Watches', 'brand': 'Cartier', 'name': 'Cartier Tank Must Watch', 'price': 285000, 'img': 'https://images.unsplash.com/photo-1539874754764-5a96559165b0?w=600&auto=format&fit=crop', 'desc': 'The legendary Cartier Tank Must with Roman numerals and blue steel hands. Features quartz movement, sapphire crystal, and the iconic rectangular case that has defined elegance since 1917.'},
-    {'cat': 'Fashion', 'sub': 'Watches', 'brand': 'Patek Philippe', 'name': 'Patek Philippe Calatrava', 'price': 1850000, 'img': 'https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=600&auto=format&fit=crop', 'desc': 'Patek Philippe Calatrava in white gold with manual movement. Features classic round case, hobnail bezel, and the brand\'s signature understated elegance. A true investment piece.'},
-    {'cat': 'Fashion', 'sub': 'Watches', 'brand': 'Audemars Piguet', 'name': 'Audemars Piguet Royal Oak', 'price': 2250000, 'img': 'https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=600&auto=format&fit=crop', 'desc': 'Audemars Piguet Royal Oak in stainless steel with integrated bracelet. Features the iconic octagonal bezel, tapisserie dial, and self-winding movement. The definitive luxury sports watch.'},
-    {'cat': 'Fashion', 'sub': 'Watches', 'brand': 'Breitling', 'name': 'Breitling Navitimer B01', 'price': 525000, 'img': 'https://images.unsplash.com/photo-1585123334904-845d60e97b29?w=600&auto=format&fit=crop', 'desc': 'Breitling Navitimer B01 with chronograph and slide rule bezel. Features in-house movement, 43mm case, and the iconic pilot watch design. A legend in aviation timepieces.'},
-    
-    # Bags
-    {'cat': 'Fashion', 'sub': 'Bags', 'brand': 'Louis Vuitton', 'name': 'Louis Vuitton Neverfull MM Monogram', 'price': 165000, 'img': 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop', 'desc': 'The iconic Louis Vuitton Neverfull MM in classic Monogram canvas. Features spacious interior, removable pouch, and signature natural cowhide leather trim. A timeless everyday luxury tote.'},
-    {'cat': 'Fashion', 'sub': 'Bags', 'brand': 'Prada', 'name': 'Prada Re-Nylon Backpack', 'price': 145000, 'img': 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&auto=format&fit=crop', 'desc': 'Sustainable Prada Re-Nylon backpack made from regenerated nylon. Features triangle logo, multiple compartments, and adjustable shoulder straps. Modern luxury meets environmental consciousness.'},
-    {'cat': 'Fashion', 'sub': 'Bags', 'brand': 'Chanel', 'name': 'Chanel Classic Flap Bag Medium', 'price': 485000, 'img': 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&auto=format&fit=crop', 'desc': 'The legendary Chanel Classic Flap Bag in medium size with quilted lambskin and gold-tone hardware. Features the iconic interlocking CC turn-lock, chain strap, and elegant burgundy interior lining.'},
-    {'cat': 'Fashion', 'sub': 'Bags', 'brand': 'Hermes', 'name': 'Hermes Birkin 35 Togo Gold', 'price': 850000, 'img': 'https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=600&auto=format&fit=crop', 'desc': 'The holy grail of luxury handbags, Hermes Birkin 35 in Togo gold leather. Features palladium hardware, rolled handles, and the iconic saddle stitch. The ultimate investment piece.'},
-    {'cat': 'Fashion', 'sub': 'Bags', 'brand': 'Gucci', 'name': 'Gucci Dionysus GG Supreme Bag', 'price': 185000, 'img': 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&auto=format&fit=crop', 'desc': 'Gucci Dionysus bag in GG Supreme canvas with tiger head closure. Features chain shoulder strap, suede interior, and Alessandro Michele\'s signature design. Modern luxury redefined.'},
-    {'cat': 'Fashion', 'sub': 'Bags', 'brand': 'Dior', 'name': 'Dior Lady Dior Medium Bag', 'price': 385000, 'img': 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop', 'desc': 'Dior Lady Dior bag in cannage lambskin with gold hardware. Features top handles, removable shoulder strap, and the iconic quilted pattern. Named after Princess Diana.'},
-    {'cat': 'Fashion', 'sub': 'Bags', 'brand': 'Fendi', 'name': 'Fendi Baguette Medium Leather', 'price': 245000, 'img': 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&auto=format&fit=crop', 'desc': 'Fendi Baguette in medium size with FF logo hardware. Features structured silhouette, flap closure, and the bag that defined 90s luxury fashion. A timeless classic.'},
-    {'cat': 'Fashion', 'sub': 'Bags', 'brand': 'Celine', 'name': 'Celine Triomphe Canvas Belt Bag', 'price': 195000, 'img': 'https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=600&auto=format&fit=crop', 'desc': 'Celine Triomphe belt bag in canvas with leather trim. Features adjustable belt, front zip pocket, and the iconic Triomphe buckle. Perfect for modern luxury on the go.'},
-    
-    # Clothing
-    {'cat': 'Fashion', 'sub': 'Clothing', 'brand': 'Balenciaga', 'name': 'Balenciaga Oversized Hoodie Black', 'price': 65000, 'img': 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=600&auto=format&fit=crop', 'desc': 'Balenciaga oversized hoodie in premium cotton with dropped shoulders and signature logo. Features a relaxed fit, ribbed trim, and the brand\'s iconic streetwear aesthetic.'},
-    {'cat': 'Fashion', 'sub': 'Clothing', 'brand': 'Tom Ford', 'name': 'Tom Ford Slim Fit Wool Suit', 'price': 285000, 'img': 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&auto=format&fit=crop', 'desc': 'Impeccably tailored Tom Ford slim fit suit in Italian wool. Features notch lapels, two-button closure, and the brand\'s signature sophisticated silhouette. The epitome of modern elegance.'},
-    {'cat': 'Fashion', 'sub': 'Clothing', 'brand': 'Gucci', 'name': 'Gucci GG Silk Dress', 'price': 185000, 'img': 'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=600&auto=format&fit=crop', 'desc': 'Gucci silk midi dress with iconic GG monogram print. Features a flattering V-neckline, flowing silhouette, and the brand\'s signature vintage-inspired design. Perfect for elegant occasions.'},
-    {'cat': 'Fashion', 'sub': 'Clothing', 'brand': 'Versace', 'name': 'Versace Medusa Silk Shirt', 'price': 85000, 'img': 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=600&auto=format&fit=crop', 'desc': 'Versace silk shirt with Medusa head print. Features pointed collar, mother-of-pearl buttons, and the brand\'s bold aesthetic. Italian luxury at its most expressive.'},
-    {'cat': 'Fashion', 'sub': 'Clothing', 'brand': 'Burberry', 'name': 'Burberry Heritage Trench Coat', 'price': 145000, 'img': 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&auto=format&fit=crop', 'desc': 'Burberry Heritage trench coat in gabardine cotton. Features double-breasted design, storm shield, and the iconic check lining. A timeless British classic since 1856.'},
-    {'cat': 'Fashion', 'sub': 'Clothing', 'brand': 'Ralph Lauren', 'name': 'Ralph Lauren Purple Label Cashmere Sweater', 'price': 75000, 'img': 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600&auto=format&fit=crop', 'desc': 'Ralph Lauren Purple Label cashmere crewneck sweater. Features ribbed trim, premium Italian cashmere, and understated elegance. The pinnacle of American luxury knitwear.'},
-    {'cat': 'Fashion', 'sub': 'Clothing', 'brand': 'Saint Laurent', 'name': 'Saint Laurent Le Smoking Tuxedo', 'price': 325000, 'img': 'https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=600&auto=format&fit=crop', 'desc': 'Saint Laurent Le Smoking tuxedo in black wool crepe. Features satin lapels, slim trousers, and the iconic androgynous design that revolutionized womenswear. YSL at its finest.'},
-    {'cat': 'Fashion', 'sub': 'Clothing', 'brand': 'Brunello Cucinelli', 'name': 'Brunello Cucinelli Cashmere Cardigan', 'price': 125000, 'img': 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=600&auto=format&fit=crop', 'desc': 'Brunello Cucinelli cashmere cardigan with monile details. Features hand-finished edges, mother-of-pearl buttons, and Italian craftsmanship. Ethical luxury from Solomeo.'},
-    
-    # Shoes
-    {'cat': 'Fashion', 'sub': 'Shoes', 'brand': 'Christian Louboutin', 'name': 'Louboutin So Kate Patent Leather Pumps', 'price': 85000, 'img': 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=600&auto=format&fit=crop', 'desc': 'Christian Louboutin So Kate pumps in red patent leather with the iconic 120mm heel. Features the signature red sole, pointed toe, and leg-lengthening silhouette. The ultimate statement pump.'},
-    {'cat': 'Fashion', 'sub': 'Shoes', 'brand': 'Gucci', 'name': 'Gucci Ace Sneakers White Leather', 'price': 65000, 'img': 'https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&auto=format&fit=crop', 'desc': 'Gucci Ace low-top sneakers in white leather with green and red Web trim. Features signature GG motif, rubber sole, and the brand\'s iconic tennis shoe design. Luxury casual at its finest.'},
-    {'cat': 'Fashion', 'sub': 'Shoes', 'brand': 'Balenciaga', 'name': 'Balenciaga Triple S Sneakers', 'price': 95000, 'img': 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&auto=format&fit=crop', 'desc': 'Balenciaga Triple S sneakers in multi-panel leather with oversized chunky sole. Features the brand\'s signature distressed aesthetic, complex layering, and bold streetwear presence.'},
-    {'cat': 'Fashion', 'sub': 'Shoes', 'brand': 'Berluti', 'name': 'Berluti Patina Leather Oxford Shoes', 'price': 125000, 'img': 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&auto=format&fit=crop', 'desc': 'Handcrafted Berluti Oxford shoes in Venezia leather with signature patina. Features Goodyear construction, classic cap-toe design, and the brand\'s legendary artisanal craftsmanship.'},
-    {'cat': 'Fashion', 'sub': 'Shoes', 'brand': 'Jimmy Choo', 'name': 'Jimmy Choo Romy 85 Pumps', 'price': 75000, 'img': 'https://images.unsplash.com/photo-1560343090-f0409e92791a?w=600&auto=format&fit=crop', 'desc': 'Jimmy Choo Romy pumps in glitter with 85mm heel. Features pointed toe, leather sole, and crystal embellishment. The perfect shoe for red carpet moments.'},
-    {'cat': 'Fashion', 'sub': 'Shoes', 'brand': 'Manolo Blahnik', 'name': 'Manolo Blahnik Hangisi Satin Pumps', 'price': 95000, 'img': 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=600&auto=format&fit=crop', 'desc': 'Manolo Blahnik Hangisi pumps in blue satin with crystal buckle. Features 105mm heel, leather sole, and the iconic Sex and the City design. Couture footwear at its finest.'},
-    {'cat': 'Fashion', 'sub': 'Shoes', 'brand': 'Alexander McQueen', 'name': 'Alexander McQueen Oversized Sneakers', 'price': 85000, 'img': 'https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=600&auto=format&fit=crop', 'desc': 'Alexander McQueen oversized sneakers in leather with oversized sole. Features contrast stitching, heel counter, and the brand\'s avant-garde design. Statement footwear for the bold.'},
-    {'cat': 'Fashion', 'sub': 'Shoes', 'brand': 'Salvatore Ferragamo', 'name': 'Salvatore Ferragamo Varina Flats', 'price': 55000, 'img': 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&auto=format&fit=crop', 'desc': 'Salvatore Ferragamo Varina ballet flats in patent leather. Features Vara bow detail, leather sole, and Italian craftsmanship. Elegant comfort for everyday luxury.'},
-    
-    # Smartphones
-    {'cat': 'Premium Tech', 'sub': 'Smartphones', 'brand': 'Apple', 'name': 'iPhone 15 Pro Max 256GB Titanium', 'price': 159900, 'img': 'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=600&auto=format&fit=crop', 'desc': 'Apple iPhone 15 Pro Max in Titanium with A17 Pro chip. Features 48MP camera system, Dynamic Island, and the most powerful iPhone ever. Premium design meets cutting-edge technology.'},
-    {'cat': 'Premium Tech', 'sub': 'Smartphones', 'brand': 'Samsung', 'name': 'Samsung Galaxy S24 Ultra 512GB', 'price': 134999, 'img': 'https://images.unsplash.com/photo-1556656793-08538906a9f8?w=600&auto=format&fit=crop', 'desc': 'Samsung Galaxy S24 Ultra with S Pen and AI features. Features 200MP camera, 6.8" Dynamic AMOLED display, and titanium frame. The ultimate Android flagship experience.'},
-    {'cat': 'Premium Tech', 'sub': 'Smartphones', 'brand': 'Google', 'name': 'Google Pixel 8 Pro 256GB', 'price': 106999, 'img': 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop', 'desc': 'Google Pixel 8 Pro with advanced AI photography. Features Tensor G3 chip, 50MP telephoto lens, and 7 years of software updates. Pure Android experience with intelligent features.'},
-    {'cat': 'Premium Tech', 'sub': 'Smartphones', 'brand': 'OnePlus', 'name': 'OnePlus 12 512GB', 'price': 64999, 'img': 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600&auto=format&fit=crop', 'desc': 'OnePlus 12 with Snapdragon 8 Gen 3 and Hasselblad camera. Features 6.82" LTPO AMOLED display, 100W charging, and the fastest performance in its class. Flagship killer redefined.'},
-    {'cat': 'Premium Tech', 'sub': 'Smartphones', 'brand': 'Xiaomi', 'name': 'Xiaomi 14 Ultra 512GB', 'price': 99999, 'img': 'https://images.unsplash.com/photo-1556656793-08538906a9f8?w=600&auto=format&fit=crop', 'desc': 'Xiaomi 14 Ultra with Leica optics and Snapdragon 8 Gen 3. Features 1" sensor, 120W HyperCharge, and professional-grade photography. The camera phone for enthusiasts.'},
-    {'cat': 'Premium Tech', 'sub': 'Smartphones', 'brand': 'Nothing', 'name': 'Nothing Phone 2 256GB', 'price': 44999, 'img': 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600&auto=format&fit=crop', 'desc': 'Nothing Phone 2 with Glyph Interface and transparent design. Features Snapdragon 8+ Gen 1, unique notification lights, and a design philosophy that breaks conventions. The future of smartphones.'},
-    
-    # Laptops
-    {'cat': 'Premium Tech', 'sub': 'Laptops', 'brand': 'Apple', 'name': 'MacBook Pro 16" M3 Max 512GB', 'price': 349900, 'img': 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&auto=format&fit=crop', 'desc': 'Apple MacBook Pro 16" with M3 Max chip. Features Liquid Retina XDR display, up to 22 hours battery life, and professional performance for creative workflows. The ultimate pro laptop.'},
-    {'cat': 'Premium Tech', 'sub': 'Laptops', 'brand': 'Apple', 'name': 'MacBook Air 15" M3 256GB', 'price': 134900, 'img': 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&auto=format&fit=crop', 'desc': 'Apple MacBook Air 15" with M3 chip. Features stunning Liquid Retina display, 18-hour battery life, and fanless silent design. Perfect thin-and-light laptop for everyday luxury.'},
-    {'cat': 'Premium Tech', 'sub': 'Laptops', 'brand': 'Microsoft', 'name': 'Surface Laptop Studio 2 i7 32GB', 'price': 269999, 'img': 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=600&auto=format&fit=crop', 'desc': 'Microsoft Surface Laptop Studio 2 with unique 3-in-1 design. Features Intel Core i7, NVIDIA RTX GPU, and dynamic woven hinge. The most versatile Surface ever created.'},
-    {'cat': 'Premium Tech', 'sub': 'Laptops', 'brand': 'Dell', 'name': 'Dell XPS 15 OLED i9 32GB', 'price': 285000, 'img': 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600&auto=format&fit=crop', 'desc': 'Dell XPS 15 with stunning OLED display and Intel Core i9. Features NVIDIA RTX graphics, premium build quality, and Windows Hello. The Windows equivalent of MacBook Pro.'},
-    {'cat': 'Premium Tech', 'sub': 'Laptops', 'brand': 'Razer', 'name': 'Razer Blade 16 OLED i9 32GB', 'price': 325000, 'img': 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=600&auto=format&fit=crop', 'desc': 'Razer Blade 16 with OLED display and RTX 4090. Features CNC aluminum chassis, per-key RGB, and the most powerful gaming laptop in a portable form factor. Gaming luxury.'},
-    {'cat': 'Premium Tech', 'sub': 'Laptops', 'brand': 'Lenovo', 'name': 'Lenovo ThinkPad X1 Carbon i7 16GB', 'price': 195000, 'img': 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&auto=format&fit=crop', 'desc': 'Lenovo ThinkPad X1 Carbon with carbon fiber construction. Features Intel Core i7, OLED display, and legendary ThinkPad durability. The ultimate business laptop.'},
-    
-    # Audio
-    {'cat': 'Premium Tech', 'sub': 'Audio', 'brand': 'Bose', 'name': 'Bose QuietComfort Ultra Headphones', 'price': 34990, 'img': 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop', 'desc': 'Bose QuietComfort Ultra with world-class noise cancellation. Features CustomTune technology, spatial audio, and up to 24 hours battery life. The gold standard in premium audio.'},
-    {'cat': 'Premium Tech', 'sub': 'Audio', 'brand': 'Sony', 'name': 'Sony WH-1000XM5 Wireless Headphones', 'price': 29990, 'img': 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=600&auto=format&fit=crop', 'desc': 'Sony WH-1000XM5 with industry-leading noise cancellation. Features 8 microphones, 30-hour battery, and lightweight design. Premium sound meets exceptional comfort.'},
-    {'cat': 'Premium Tech', 'sub': 'Audio', 'brand': 'Sennheiser', 'name': 'Sennheiser Momentum 4 Wireless', 'price': 34990, 'img': 'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=600&auto=format&fit=crop', 'desc': 'Sennheiser Momentum 4 with signature sound. Features 60-hour battery, aptX Adaptive, and premium materials. Audiophile-grade sound in a sophisticated wireless package.'},
-    {'cat': 'Premium Tech', 'sub': 'Audio', 'brand': 'Apple', 'name': 'AirPods Max Silver', 'price': 59900, 'img': 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=600&auto=format&fit=crop', 'desc': 'Apple AirPods Max in silver with Active Noise Cancellation. Features computational audio, transparency mode, and seamless Apple ecosystem integration. Premium over-ear headphones.'},
-    {'cat': 'Premium Tech', 'sub': 'Audio', 'brand': 'Bang & Olufsen', 'name': 'B&O Beoplay HX Headphones', 'price': 44990, 'img': 'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=600&auto=format&fit=crop', 'desc': 'Bang & Olufsen Beoplay HX with adaptive ANC. Features premium materials, 30-hour battery, and Danish design excellence. Luxury audio with Scandinavian aesthetics.'},
-    {'cat': 'Premium Tech', 'sub': 'Audio', 'brand': 'Marshall', 'name': 'Marshall Major IV Headphones', 'price': 14990, 'img': 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop', 'desc': 'Marshall Major IV with iconic design and 80+ hour battery. Features wireless charging, custom-tuned drivers, and the classic rock aesthetic. Legendary sound heritage.'},
-    
-    # Smartwatches
-    {'cat': 'Premium Tech', 'sub': 'Smartwatches', 'brand': 'Apple', 'name': 'Apple Watch Series 9 GPS 45mm', 'price': 44900, 'img': 'https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=600&auto=format&fit=crop', 'desc': 'Apple Watch Series 9 with S9 chip and Double Tap gesture. Features always-on Retina display, advanced health sensors, and seamless iPhone integration. The most advanced smartwatch.'},
-    {'cat': 'Premium Tech', 'sub': 'Smartwatches', 'brand': 'Garmin', 'name': 'Garmin Fenix 7 Pro Solar', 'price': 79990, 'img': 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=600&auto=format&fit=crop', 'desc': 'Garmin Fenix 7 Pro Solar with solar charging. Features multi-sport GPS, advanced health monitoring, and infinite battery life in smartwatch mode. The ultimate adventure watch.'},
-    {'cat': 'Premium Tech', 'sub': 'Smartwatches', 'brand': 'Tag Heuer', 'name': 'Tag Heuer Connected Calibre E4 45mm', 'price': 185000, 'img': 'https://images.unsplash.com/photo-1546868871-af0de0ae72be?w=600&auto=format&fit=crop', 'desc': 'Tag Heuer Connected Calibre E4 with OLED touchscreen. Features Swiss-made craftsmanship, golf tracking, and luxury sports watch design. Where tradition meets innovation.'},
-    {'cat': 'Premium Tech', 'sub': 'Smartwatches', 'brand': 'Samsung', 'name': 'Samsung Galaxy Watch 6 Classic', 'price': 32990, 'img': 'https://images.unsplash.com/photo-1546868871-af0de0ae72be?w=600&auto=format&fit=crop', 'desc': 'Samsung Galaxy Watch 6 Classic with rotating bezel. Features BioActive sensor, sleep tracking, and classic watch design. The perfect blend of tradition and technology.'},
-    {'cat': 'Premium Tech', 'sub': 'Smartwatches', 'brand': 'Withings', 'name': 'Withings ScanWatch Horizon', 'price': 37990, 'img': 'https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=600&auto=format&fit=crop', 'desc': 'Withings ScanWatch Horizon with sapphire crystal and rotating bezel. Features 30-day battery, ECG, and medical-grade health monitoring. Luxury hybrid smartwatch.'},
-    {'cat': 'Premium Tech', 'sub': 'Smartwatches', 'brand': 'Montblanc', 'name': 'Montblanc Summit 3', 'price': 125000, 'img': 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=600&auto=format&fit=crop', 'desc': 'Montblanc Summit 3 with digital crown and sapphire crystal. Features Wear OS, premium leather strap, and Swiss watch heritage. Traditional luxury meets smart technology.'},
-    
-    # Home Decor
-    {'cat': 'Lifestyle', 'sub': 'Home Decor', 'brand': 'Baccarat', 'name': 'Baccarat Harmonie Crystal Vase', 'price': 85000, 'img': 'https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?w=600&auto=format&fit=crop', 'desc': 'Baccarat Harmonie vase in hand-cut crystal. Features diamond-cut pattern, timeless silhouette, and 250 years of French crystal craftsmanship. A stunning centerpiece for any luxury home.'},
-    {'cat': 'Lifestyle', 'sub': 'Home Decor', 'brand': 'Flos', 'name': 'Flos IC Lights T1 Table Lamp', 'price': 65000, 'img': 'https://images.unsplash.com/photo-1506898667547-42e22a46e125?w=600&auto=format&fit=crop', 'desc': 'Flos IC Lights T1 table lamp by Michael Anastassiades. Features blown glass opal diffuser, brass body, and elegant dimmer switch. Modern Italian design at its finest.'},
-    {'cat': 'Lifestyle', 'sub': 'Home Decor', 'brand': 'Hermes', 'name': 'Hermes Avalon Blanket Throw', 'price': 125000, 'img': 'https://images.unsplash.com/photo-1544457070-4cd773b4d71e?w=600&auto=format&fit=crop', 'desc': 'Hermes Avalon blanket in 100% cashmere with signature H motif. Features ultra-soft texture, elegant fringe trim, and the brand\'s legendary equestrian heritage. Pure luxury comfort.'},
-    {'cat': 'Lifestyle', 'sub': 'Home Decor', 'brand': 'Vitra', 'name': 'Vitra Eames Lounge Chair', 'price': 485000, 'img': 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=600&auto=format&fit=crop', 'desc': 'Vitra Eames Lounge Chair with ottoman in molded plywood and leather. Features iconic mid-century design, premium materials, and the most comfortable chair ever made. Design legend.'},
-    {'cat': 'Lifestyle', 'sub': 'Home Decor', 'brand': 'Artemide', 'name': 'Artemide Tolomeo Floor Lamp', 'price': 55000, 'img': 'https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?w=600&auto=format&fit=crop', 'desc': 'Artemide Tolomeo floor lamp by Michele De Lucchi. Features articulated arms, adjustable diffuser, and Italian engineering excellence. The perfect task lamp for modern spaces.'},
-    {'cat': 'Lifestyle', 'sub': 'Home Decor', 'brand': 'Kartell', 'name': 'Kartell Componibili Storage', 'price': 35000, 'img': 'https://images.unsplash.com/photo-1544457070-4cd773b4d71e?w=600&auto=format&fit=crop', 'desc': 'Kartell Componibili modular storage units in plastic. Features stackable design, sliding doors, and Anna Castelli Ferrieri\'s iconic 1969 design. Functional Italian design.'},
-    
-    # Fragrances
-    {'cat': 'Lifestyle', 'sub': 'Fragrances', 'brand': 'Chanel', 'name': 'Chanel Bleu de Chanel EDP 100ml', 'price': 14500, 'img': 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=600&auto=format&fit=crop', 'desc': 'Chanel Bleu de Chanel Eau de Parfum for men. Features woody aromatic notes with citrus and cedar. A sophisticated and magnetic fragrance that embodies freedom and elegance.'},
-    {'cat': 'Lifestyle', 'sub': 'Fragrances', 'brand': 'Tom Ford', 'name': 'Tom Ford Oud Wood EDP 100ml', 'price': 28500, 'img': 'https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=600&auto=format&fit=crop', 'desc': 'Tom Ford Oud Wood Eau de Parfum. Features rare oud wood, sandalwood, and rosewood. One of the most original and recognizable fragrances in the world. Rich, warm, and sophisticated.'},
-    {'cat': 'Lifestyle', 'sub': 'Fragrances', 'brand': 'Creed', 'name': 'Creed Aventus EDP 100ml', 'price': 38500, 'img': 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=600&auto=format&fit=crop', 'desc': 'Creed Aventus Eau de Parfum inspired by dramatic life. Features pineapple, birch, and musk notes. A sophisticated and bold fragrance for the confident modern man. The best-selling Creed scent.'},
-    {'cat': 'Lifestyle', 'sub': 'Fragrances', 'brand': 'Dior', 'name': 'Dior Sauvage EDP 100ml', 'price': 12500, 'img': 'https://images.unsplash.com/photo-1595425930338-5b7ac6e731f2?w=600&auto=format&fit=crop', 'desc': 'Dior Sauvage Eau de Parfum with raw and noble notes. Features bergamot, ambroxan, and pepper. A powerful and fresh fragrance that embodies the spirit of the wild.'},
-    {'cat': 'Lifestyle', 'sub': 'Fragrances', 'brand': 'Jo Malone', 'name': 'Jo Malone Wood Sage & Sea Salt', 'price': 16500, 'img': 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=600&auto=format&fit=crop', 'desc': 'Jo Malone Wood Sage & Sea Salt cologne. Features ambrette seeds, sea salt, and sage. A minimalist and sophisticated fragrance that captures the essence of the British coast.'},
-    {'cat': 'Lifestyle', 'sub': 'Fragrances', 'brand': 'Maison Francis Kurkdjian', 'name': 'MFK Baccarat Rouge 540 EDP', 'price': 45000, 'img': 'https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=600&auto=format&fit=crop', 'desc': 'Maison Francis Kurkdjian Baccarat Rouge 540. Features saffron, jasmine, and ambergris. An intoxicating and radiant fragrance that has become a modern icon. The scent of luxury.'},
-    
-    # Accessories
-    {'cat': 'Lifestyle', 'sub': 'Accessories', 'brand': 'Ray-Ban', 'name': 'Ray-Ban Aviator Classic Gold', 'price': 18500, 'img': 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=600&auto=format&fit=crop', 'desc': 'Ray-Ban Aviator Classic with gold frame and gradient lenses. Features teardrop shape, G-15 crystal lenses, and the iconic design that has defined cool for generations. Timeless American style.'},
-    {'cat': 'Lifestyle', 'sub': 'Accessories', 'brand': 'Cartier', 'name': 'Cartier Love Ring 18K Gold', 'price': 285000, 'img': 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&auto=format&fit=crop', 'desc': 'Cartier Love ring in 18K yellow gold. Features iconic screw motif, oval design, and the symbol of passionate attachment. A timeless piece of jewelry that represents eternal love.'},
-    {'cat': 'Lifestyle', 'sub': 'Accessories', 'brand': 'Montblanc', 'name': 'Montblanc Meisterstuck Classique Fountain Pen', 'price': 45000, 'img': 'https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?w=600&auto=format&fit=crop', 'desc': 'Montblanc Meisterstuck Classique fountain pen in black precious resin with gold trim. Features handcrafted 14K gold nib and piston filling mechanism. The pinnacle of writing instruments since 1924.'},
-    {'cat': 'Lifestyle', 'sub': 'Accessories', 'brand': 'Tiffany & Co.', 'name': 'Tiffany T Wire Bracelet', 'price': 145000, 'img': 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&auto=format&fit=crop', 'desc': 'Tiffany T Wire bracelet in 18K rose gold. Features minimalist T motif, diamond accents, and the iconic blue box. Modern luxury from the legendary American jeweler.'},
-    {'cat': 'Lifestyle', 'sub': 'Accessories', 'brand': 'Hermes', 'name': 'Hermes Collier de Chien Belt', 'price': 85000, 'img': 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&auto=format&fit=crop', 'desc': 'Hermes Collier de Chien belt in Swift calfskin with palladium hardware. Features iconic dog collar design, medallion buckle, and French craftsmanship. The ultimate luxury belt.'},
-    {'cat': 'Lifestyle', 'sub': 'Accessories', 'brand': 'Bvlgari', 'name': 'Bvlgari Serpenti Ring', 'price': 385000, 'img': 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&auto=format&fit=crop', 'desc': 'Bvlgari Serpenti ring in 18K white gold with emerald eyes. Features coiled snake design, diamond scales, and Roman jewelry heritage. A statement piece from the iconic Italian jeweler.'},
-    {'cat': 'Lifestyle', 'sub': 'Accessories', 'brand': 'Oakley', 'name': 'Oakley Holbrook XL Polarized', 'price': 18500, 'img': 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=600&auto=format&fit=crop', 'desc': 'Oakley Holbrook XL with polarized lenses. Features O-Matter frame, High Definition Optics, and classic American design. Performance eyewear that looks as good as it performs.'},
-    {'cat': 'Lifestyle', 'sub': 'Accessories', 'brand': 'Gucci', 'name': 'Gucci GG Marmont Belt', 'price': 45000, 'img': 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&auto=format&fit=crop', 'desc': 'Gucci GG Marmont belt in leather with double G buckle. Features black leather, gold-tone hardware, and the iconic interlocking GG logo. Italian luxury for everyday wear.'},
-    
-    # Art
-    {'cat': 'Lifestyle', 'sub': 'Art', 'brand': 'Tate', 'name': 'Abstract Expressionist Canvas Print', 'price': 75000, 'img': 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&auto=format&fit=crop', 'desc': 'Museum-quality abstract expressionist canvas print. Features bold brushstrokes, vibrant colors, and gallery-wrapped edges. A stunning statement piece that brings contemporary art to your space.'},
-    {'cat': 'Lifestyle', 'sub': 'Art', 'brand': 'Saatchi Art', 'name': 'Contemporary Minimalist Photography Print', 'price': 55000, 'img': 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&auto=format&fit=crop', 'desc': 'Limited edition minimalist photography print. Features clean lines, subtle tones, and museum-grade archival paper. Sophisticated wall art for the modern aesthetic home.'},
-    {'cat': 'Lifestyle', 'sub': 'Art', 'brand': '1stDibs', 'name': 'Vintage Mid-Century Modern Sculpture', 'price': 165000, 'img': 'https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=600&auto=format&fit=crop', 'desc': 'Authentic vintage mid-century modern sculpture. Features organic forms, brass construction, and provenance documentation. A rare collectible piece for the discerning art collector.'},
-    {'cat': 'Lifestyle', 'sub': 'Art', 'brand': 'Christies', 'name': 'Contemporary Oil Painting on Canvas', 'price': 285000, 'img': 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&auto=format&fit=crop', 'desc': 'Original contemporary oil painting on stretched canvas. Features layered textures, rich pigments, and artist signature. Investment-grade artwork for serious collectors.'},
-    {'cat': 'Lifestyle', 'sub': 'Art', 'brand': 'Sothebys', 'name': 'Limited Edition Serigraph Print', 'price': 95000, 'img': 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&auto=format&fit=crop', 'desc': 'Limited edition serigraph print numbered and signed by the artist. Features museum-quality paper, archival inks, and certificate of authenticity. Collectible fine art.'},
-    {'cat': 'Lifestyle', 'sub': 'Art', 'brand': 'Phillips', 'name': 'Modern Bronze Sculpture', 'price': 385000, 'img': 'https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=600&auto=format&fit=crop', 'desc': 'Hand-cast modern bronze sculpture with patina finish. Features abstract forms, solid bronze construction, and artist foundry mark. Three-dimensional art for luxury interiors.'},
-    
-    # Jewelry (New Category)
-    {'cat': 'Lifestyle', 'sub': 'Jewelry', 'brand': 'Tiffany & Co.', 'name': 'Tiffany T True Wire Ring', 'price': 185000, 'img': 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&auto=format&fit=crop', 'desc': 'Tiffany T True Wire ring in 18K rose gold with diamonds. Features minimalist T motif, brilliant-cut diamonds, and the iconic Tiffany craftsmanship. Modern luxury jewelry.'},
-    {'cat': 'Lifestyle', 'sub': 'Jewelry', 'brand': 'Van Cleef & Arpels', 'name': 'Van Cleef Alhambra Necklace', 'price': 485000, 'img': 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&auto=format&fit=crop', 'desc': 'Van Cleef & Arpels Alhambra necklace in 18K yellow gold with mother-of-pearl. Features iconic clover design, beaded edge, and French jewelry heritage. The symbol of luck.'},
-    {'cat': 'Lifestyle', 'sub': 'Jewelry', 'brand': 'Harry Winston', 'name': 'Harry Winston Diamond Stud Earrings', 'price': 1250000, 'img': 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&auto=format&fit=crop', 'desc': 'Harry Winston diamond stud earrings in platinum. Features brilliant-cut diamonds, exceptional clarity, and the "King of Diamonds" legacy. Ultimate luxury earrings.'},
-    {'cat': 'Lifestyle', 'sub': 'Jewelry', 'brand': 'Bulgari', 'name': 'Bulgari Serpenti Necklace', 'price': 850000, 'img': 'https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?w=600&auto=format&fit=crop', 'desc': 'Bulgari Serpenti necklace in 18K white gold with emeralds. Features coiled snake design, pavé diamonds, and Roman jewelry tradition. Iconic Italian luxury.'},
-    {'cat': 'Lifestyle', 'sub': 'Jewelry', 'brand': 'Chopard', 'name': 'Chopard Happy Diamonds Pendant', 'price': 385000, 'img': 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=600&auto=format&fit=crop', 'desc': 'Chopard Happy Diamonds pendant in 18K white gold. Features floating diamonds between sapphire crystals, playful design, and Swiss jewelry excellence. Joyful luxury.'},
-    {'cat': 'Lifestyle', 'sub': 'Jewelry', 'brand': 'Piaget', 'name': 'Piaget Possession Ring', 'price': 285000, 'img': 'https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?w=600&auto=format&fit=crop', 'desc': 'Piaget Possession ring in 18K rose gold with diamonds. Features rotating band, brilliant-cut diamonds, and the brand\'s signature playful elegance. Swiss luxury jewelry.'},
-    
-    # Eyewear (New Category)
-    {'cat': 'Lifestyle', 'sub': 'Eyewear', 'brand': 'Tom Ford', 'name': 'Tom Ford FT5402 Eyeglasses', 'price': 35000, 'img': 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=600&auto=format&fit=crop', 'desc': 'Tom Ford FT5402 eyeglasses in acetate with T temple. Features bold square frame, premium Italian acetate, and the iconic T logo. Sophisticated eyewear for the modern professional.'},
-    {'cat': 'Lifestyle', 'sub': 'Eyewear', 'brand': 'Oliver Peoples', 'name': 'Oliver Peoples Gregory Peck', 'price': 28500, 'img': 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=600&auto=format&fit=crop', 'desc': 'Oliver Peoples Gregory Peck in acetate with filigree detail. Features vintage-inspired design, hand-polished frames, and Hollywood heritage. Classic American eyewear.'},
-    {'cat': 'Lifestyle', 'sub': 'Eyewear', 'brand': 'Cartier', 'name': 'Cartier Santos Sunglasses', 'price': 65000, 'img': 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=600&auto=format&fit=crop', 'desc': 'Cartier Santos de Cartier sunglasses in gold with lenses. Features square aviator shape, C decor, and French luxury heritage. Iconic design since 1904.'},
-    {'cat': 'Lifestyle', 'sub': 'Eyewear', 'brand': 'Gucci', 'name': 'Gucci GG0365S Sunglasses', 'price': 45000, 'img': 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=600&auto=format&fit=crop', 'desc': 'Gucci GG0365S sunglasses in acetate with Web detail. Features oversized square frame, GG logo, and Italian craftsmanship. Bold luxury eyewear.'},
-    {'cat': 'Lifestyle', 'sub': 'Eyewear', 'brand': 'Prada', 'name': 'Prada Linea Rossa Sunglasses', 'price': 38500, 'img': 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=600&auto=format&fit=crop', 'desc': 'Prada Linea Rossa sunglasses in lightweight nylon. Features sporty design, red stripe, and Italian performance luxury. Active elegance.'},
-    {'cat': 'Lifestyle', 'sub': 'Eyewear', 'brand': 'Dior', 'name': 'Dior So Real Sunglasses', 'price': 55000, 'img': 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=600&auto=format&fit=crop', 'desc': 'Dior So Real sunglasses in metal with mirrored lenses. Features architectural frame, CD logo, and French fashion house elegance. Avant-garde luxury eyewear.'},
-    
-    # Leather Goods (New Category)
-    {'cat': 'Lifestyle', 'sub': 'Leather Goods', 'brand': 'Hermes', 'name': 'Hermes Birkin 25 Togo Black', 'price': 650000, 'img': 'https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=600&auto=format&fit=crop', 'desc': 'Hermes Birkin 25 in Togo black leather with gold hardware. Features compact size, palladium hardware, and the iconic saddle stitch. The ultimate investment bag in miniature.'},
-    {'cat': 'Lifestyle', 'sub': 'Leather Goods', 'brand': 'Louis Vuitton', 'name': 'Louis Vuitton Keepall 55 Bandouliere', 'price': 195000, 'img': 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&auto=format&fit=crop', 'desc': 'Louis Vuitton Keepall 55 travel bag in Monogram canvas. Features shoulder strap, leather trim, and spacious interior. The classic travel companion since 1930.'},
-    {'cat': 'Lifestyle', 'sub': 'Leather Goods', 'brand': 'Goyard', 'name': 'Goyard Saint Louis Tote GM', 'price': 225000, 'img': 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&auto=format&fit=crop', 'desc': 'Goyard Saint Louis tote in Goyardine canvas. Features reversible design, detachable pouch, and hand-painted chevron pattern. The discreet luxury choice.'},
-    {'cat': 'Lifestyle', 'sub': 'Leather Goods', 'brand': 'Moynat', 'name': 'Moynat Rejane Python', 'price': 385000, 'img': 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop', 'desc': 'Moynat Rejane bag in python leather with M lock. Features structured silhouette, hand-painted edges, and French heritage craftsmanship. Rare and exclusive.'},
-    {'cat': 'Lifestyle', 'sub': 'Leather Goods', 'brand': 'Delvaux', 'name': 'Delvaux Brillant PM', 'price': 425000, 'img': 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop', 'desc': 'Delvaux Brillant PM in box calf with Leclasp. Features rigid frame, D-shaped front, and Belgian royal warrant. The oldest luxury leather goods house.'},
-    {'cat': 'Lifestyle', 'sub': 'Leather Goods', 'brand': 'Loewe', 'name': 'Loewe Puzzle Bag Small', 'price': 285000, 'img': 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&auto=format&fit=crop', 'desc': 'Loewe Puzzle bag small in calf leather. Features geometric construction, anagram logo, and Jonathan Anderson\'s innovative design. Modern Spanish luxury.'},
-    
-    # Tableware (New Category)
-    {'cat': 'Lifestyle', 'sub': 'Tableware', 'brand': 'Baccarat', 'name': 'Baccarat Harcourt Glasses Set', 'price': 125000, 'img': 'https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?w=600&auto=format&fit=crop', 'desc': 'Baccarat Harcourt set of 6 crystal glasses. Features diamond-cut stem, timeless design since 1841, and exceptional clarity. The glass of kings and queens.'},
-    {'cat': 'Lifestyle', 'sub': 'Tableware', 'brand': 'Christofle', 'name': 'Christofle Silver Plated Cutlery Set', 'price': 285000, 'img': 'https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=600&auto=format&fit=crop', 'desc': 'Christofle silver-plated cutlery set for 12. Features Malmaison pattern, French silver craftsmanship, and elegant presentation. Dining luxury since 1830.'},
-    {'cat': 'Lifestyle', 'sub': 'Tableware', 'brand': 'Hermes', 'name': 'Hermes Hermes 3000 Dinnerware', 'price': 385000, 'img': 'https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?w=600&auto=format&fit=crop', 'desc': 'Hermes Hermes 3000 porcelain dinnerware set. Features horse-drawn carriage motif, gold rim, and Limoges porcelain. French elegance for the table.'},
-    {'cat': 'Lifestyle', 'sub': 'Tableware', 'brand': 'Bernardaud', 'name': 'Bernardaud Louvre Dinner Plate', 'price': 8500, 'img': 'https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?w=600&auto=format&fit=crop', 'desc': 'Bernardaud Louvre dinner plate in Limoges porcelain. Features gold edge, classical motif, and French artisanal excellence. Museum-quality tableware.'},
-    {'cat': 'Lifestyle', 'sub': 'Tableware', 'brand': 'Villeroy & Boch', 'name': 'Villeroy & Boch French Garden', 'price': 45000, 'img': 'https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?w=600&auto=format&fit=crop', 'desc': 'Villeroy & Boch French Garden dinnerware set. Features floral pattern, fine porcelain, and German craftsmanship. Romantic elegance for everyday dining.'},
-    {'cat': 'Lifestyle', 'sub': 'Tableware', 'brand': 'Meissen', 'name': 'Meissen Blue Onion Tea Set', 'price': 485000, 'img': 'https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?w=600&auto=format&fit=crop', 'desc': 'Meissen Blue Onion tea set in hand-painted porcelain. Features iconic pattern, 300-year heritage, and German royal porcelain. The first European hard-paste porcelain.'}
+CLOUDINARY_URLS = {
+    "apple_watch": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771409/xndnasr1pnlzhc1evawx.jpg",
+    "baccarat_vase": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771410/vpzbqvadmkbjjeike6bg.jpg",
+    "balenciaga_hoodie": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771410/niydydlqnphl5c2ko6jw.jpg",
+    "cartier_tank": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771411/if1zmafxldxckhdwfdjk.jpg",
+    "chanel_flap_bag": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771412/ajc31kzfetuktbqy5z1f.jpg",
+    "creed_aventus": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771413/ucn3gezraiqmobisqw1k.jpg",
+    "gucci_sneakers": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771414/iccavdlxttqx6ceuzsnp.jpg",
+    "hermes_birkin": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771415/z7jyyut5lzzgox2lgt7u.jpg",
+    "iphone_15_pro": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771416/mmuhiokfyzfztmtewpjl.jpg",
+    "louboutin_pumps": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771417/pvr6gfmagngnuowggdrr.jpg",
+    "louis_vuitton_bag": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771418/anfvlqmnv7rnrzqvdffj.jpg",
+    "macbook_pro": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771419/jkuhni1aleri0ktin6ra.jpg",
+    "omega_speedmaster": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771420/vtqwlpti8rg2ddphylsp.jpg",
+    "rolex_submariner": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771421/m5b3cyvuccfgvilanfoe.jpg",
+    "samsung_s24": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771422/uavk17h1bevurim6johd.jpg",
+    "sony_headphones": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771423/guaov2imc7s4rc8a98ux.jpg",
+    "tom_ford_suit": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771424/co0bjmmhriasnwdgjhie.jpg",
+    "s26_ultra_dragon": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780812540/luxon_products/cgrw4yxxjp46frsqys2i.jpg",
+    "s26_ultra_dragon_2": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780812793/luxon_products/ybho8zp2sgcw9smpd3ug.jpg",
+    "iphone_17_titanium": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780812543/luxon_products/nle06mxnv7itssbkqge8.jpg",
+    "rog_zephyrus": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780812545/luxon_products/kblr0svku26pdaskjibv.jpg",
+    "razer_blade": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780812546/luxon_products/v7jboed9xva5yqm0kds4.jpg",
+    "beolab_90": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780812547/luxon_products/uadd6opa8f606gbyzmdk.jpg",
+    "sennheiser_he1": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780812549/luxon_products/sjwtyi0wh7266ezxzloz.jpg",
+    "tag_heuer_e4": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780812550/luxon_products/bu8209kv7vh1xch7k6ub.jpg",
+    "hublot_big_bang": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780812551/luxon_products/b6v3cvexsw3o4iwn9ize.jpg",
+    "vertu_signature": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780815467/luxon_products/p9xvyvv6pa2xhvp2jjg8.jpg",
+    "montblanc_summit": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780815468/luxon_products/ytxttky6naqjm5s82f5q.jpg",
+    "patek_nautilus": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780815469/luxon_products/f6lg1uvzkzowfjepjl2z.jpg",
+    "ap_royal_oak": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780815470/luxon_products/nnhdf9j96xc9u9kicuqm.jpg",
+    "richard_mille": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780815471/luxon_products/yciovgpovfbz0360i7rd.jpg",
+    "vacheron_overseas": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780815471/luxon_products/auetuarhgrtdz00lv53c.jpg",
+    "hermes_kelly": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780815472/luxon_products/kpctwcjem5hv8tbcetsk.jpg",
+    "dior_lady": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780815473/luxon_products/xzqstzlocwgmuiylalqs.jpg",
+    "bottega_cassette": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780815474/luxon_products/qrchv0kexv8sdsjxoi6m.jpg",
+    "fendi_peekaboo": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780815474/luxon_products/ttwvbr1rm4zsu4sixx2a.jpg",
+    "goyard_st_louis": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780815475/luxon_products/rb08e2jqyy7mfakv3wjy.jpg",
+    "prada_galleria": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780815476/luxon_products/vomqnono83ewpb6pvvw5.jpg",
+    "rolex_daytona_plat": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780815477/luxon_products/e8nqkelopljqcaxpq3xs.jpg",
+    "jlc_reverso": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780815478/luxon_products/cdlnqegm209tuxgbe6oq.jpg",
+    "lange_1": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780815478/luxon_products/qgzviuwtgg7othcmnyjb.jpg",
+    "john_lobb_oxfords": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780815480/luxon_products/pghwerbmwnqaqu8ayo79.jpg",
+    "celine_triomphe": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780816034/luxon_products/fz0kozhmr2pxyigstn0b.jpg",
+    "loro_piana_coat": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780816036/luxon_products/cj8pwhgh2ajhxasjvoyo.jpg",
+    "brunello_sweater": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780816037/luxon_products/raavz7ha7dowuomhwkwb.jpg",
+    "kiton_suit": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780816037/luxon_products/lko4axlps38qpahmrpcb.jpg",
+    "brioni_jacket": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780816038/luxon_products/d2pzx9j6ahaflmdg0on4.jpg",
+    "gucci_cardigan": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780816040/luxon_products/swt57c7icdwopiwuboqg.jpg",
+    "balenciaga_shirt": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780816423/luxon_products/jdi1icg3kjwidp3yd2ds.jpg",
+    "burberry_trench": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780816424/luxon_products/yndbyopx5i6qryixdakg.jpg",
+    "berluti_shoes": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780816425/luxon_products/gidj6yjwwgwyfoceiinm.jpg",
+    "manolo_pumps": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780816426/luxon_products/vjitdbhepynvohknua9a.jpg",
+    "jimmy_choo_mule": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780816427/luxon_products/udavr0tmoaxjnjgj6jsu.jpg",
+    "hermes_sandals": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780816428/luxon_products/bbj55ikbomngqzqozjpd.jpg"
+}
+
+import json
+
+CATEGORIES = [
+    {"name": "Fashion", "subs": ["Watches", "Bags", "Clothing", "Shoes"]},
+    {"name": "Premium Tech", "subs": ["Smartphones", "Laptops", "Audio", "Smartwatches"]},
+    {"name": "Lifestyle", "subs": ["Home Decor", "Fragrances", "Accessories", "Art"]}
 ]
 
+PRODUCTS_DATA = json.loads('''[
+    {
+        "name": "Rolex Submariner Date 41mm",
+        "brand": "Rolex",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Watches",
+        "price": 850000,
+        "img_key": "rolex_submariner",
+        "desc": "The quintessential divers' watch. Features a unidirectional rotatable bezel and solid-link Oyster bracelet.",
+        "featured": true,
+        "is_cloudinary": true
+    },
+    {
+        "name": "Omega Speedmaster Moonwatch",
+        "brand": "Omega",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Watches",
+        "price": 450000,
+        "img_key": "omega_speedmaster",
+        "desc": "The iconic chronograph that went to the moon. Master Chronometer certified.",
+        "featured": false,
+        "is_cloudinary": true
+    },
+    {
+        "name": "Cartier Tank Must",
+        "brand": "Cartier",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Watches",
+        "price": 280000,
+        "img_key": "cartier_tank",
+        "desc": "A timeless classic with a leather strap and signature Roman numerals.",
+        "featured": true,
+        "is_cloudinary": true
+    },
+    {
+        "name": "Louis Vuitton Neverfull MM",
+        "brand": "Louis Vuitton",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Bags",
+        "price": 145000,
+        "img_key": "louis_vuitton_bag",
+        "desc": "Spacious and elegant, crafted in classic Monogram canvas.",
+        "featured": true,
+        "is_cloudinary": true
+    },
+    {
+        "name": "Chanel Classic Flap Bag",
+        "brand": "Chanel",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Bags",
+        "price": 485000,
+        "img_key": "chanel_flap_bag",
+        "desc": "The iconic quilted leather bag with CC turn-lock and chain strap.",
+        "featured": true,
+        "is_cloudinary": true
+    },
+    {
+        "name": "Hermes Birkin 35 Togo",
+        "brand": "Hermes",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Bags",
+        "price": 850000,
+        "img_key": "hermes_birkin",
+        "desc": "The highly coveted Birkin 35 in gold Togo leather.",
+        "featured": true,
+        "is_cloudinary": true
+    },
+    {
+        "name": "Balenciaga Oversized Hoodie",
+        "brand": "Balenciaga",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Clothing",
+        "price": 65000,
+        "img_key": "balenciaga_hoodie",
+        "desc": "Premium cotton hoodie with signature oversized fit and embroidered logo.",
+        "featured": false,
+        "is_cloudinary": true
+    },
+    {
+        "name": "Tom Ford Slim Fit Wool Suit",
+        "brand": "Tom Ford",
+        "cat": "Fashion",
+        "gender": "Men",
+        "sub": "Clothing",
+        "price": 285000,
+        "img_key": "tom_ford_suit",
+        "desc": "Impeccably tailored two-piece suit in premium Italian wool.",
+        "featured": false,
+        "is_cloudinary": true
+    },
+    {
+        "name": "Christian Louboutin So Kate Pumps",
+        "brand": "Christian Louboutin",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Shoes",
+        "price": 75000,
+        "img_key": "louboutin_pumps",
+        "desc": "Iconic stiletto pumps in patent leather with signature red sole.",
+        "featured": true,
+        "is_cloudinary": true
+    },
+    {
+        "name": "Gucci Ace Leather Sneakers",
+        "brand": "Gucci",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Shoes",
+        "price": 62000,
+        "img_key": "gucci_sneakers",
+        "desc": "Classic low-top leather sneaker with signature Web stripe.",
+        "featured": false,
+        "is_cloudinary": true
+    },
+    {
+        "name": "Caviar iPhone 17 Pro Max Pure Gold",
+        "brand": "Caviar",
+        "cat": "Premium Tech",
+        "sub": "Smartphones",
+        "price": 2500000,
+        "img_key": "iphone_15_pro",
+        "desc": "18-karat solid gold chassis with intricate engravings.",
+        "featured": true,
+        "is_cloudinary": true
+    },
+    {
+        "name": "Samsung Galaxy S26 Ultra 1TB",
+        "brand": "Samsung",
+        "cat": "Premium Tech",
+        "sub": "Smartphones",
+        "price": 159999,
+        "img_key": "samsung_s24",
+        "desc": "The ultimate Android experience with Quantum AI and titanium build.",
+        "featured": false,
+        "is_cloudinary": true
+    },
+    {
+        "name": "MacBook Pro 16 M5 Ultra",
+        "brand": "Apple",
+        "cat": "Premium Tech",
+        "sub": "Laptops",
+        "price": 449900,
+        "img_key": "macbook_pro",
+        "desc": "Unprecedented power with the M5 Ultra chip. 128GB Unified Memory.",
+        "featured": true,
+        "is_cloudinary": true
+    },
+    {
+        "name": "Sony WH-1000XM6 Wireless",
+        "brand": "Sony",
+        "cat": "Premium Tech",
+        "sub": "Audio",
+        "price": 34990,
+        "img_key": "sony_headphones",
+        "desc": "Next-generation spatial audio and noise cancellation.",
+        "featured": false,
+        "is_cloudinary": true
+    },
+    {
+        "name": "Apple Watch Ultra 3",
+        "brand": "Apple",
+        "cat": "Premium Tech",
+        "sub": "Smartwatches",
+        "price": 89900,
+        "img_key": "apple_watch",
+        "desc": "The most rugged and capable Apple Watch. Aerospace-grade titanium.",
+        "featured": false,
+        "is_cloudinary": true
+    },
+    {
+        "name": "Baccarat Harmonie Crystal Vase",
+        "brand": "Baccarat",
+        "cat": "Lifestyle",
+        "sub": "Home Decor",
+        "price": 45000,
+        "img_key": "baccarat_vase",
+        "desc": "Exquisite crystal vase with sweeping vertical lines. Made in France.",
+        "featured": false,
+        "is_cloudinary": true
+    },
+    {
+        "name": "Creed Aventus Eau de Parfum 100ml",
+        "brand": "Creed",
+        "cat": "Lifestyle",
+        "sub": "Fragrances",
+        "price": 35000,
+        "img_key": "creed_aventus",
+        "desc": "A sophisticated blend for individuals who savor a life well-lived.",
+        "featured": true,
+        "is_cloudinary": true
+    },
+    {
+        "name": "Caviar Samsung S26 Ultra Golden Dragon",
+        "brand": "Caviar",
+        "cat": "Premium Tech",
+        "sub": "Smartphones",
+        "price": 1800000,
+        "img_key": "s26_ultra_dragon",
+        "is_cloudinary": true,
+        "desc": "Custom Samsung S26 Ultra featuring 24K gold bas-relief of a dragon and rubies."
+    },
+    {
+        "name": "Caviar Samsung S26 Ultra Golden Dragon (Edition II)",
+        "brand": "Caviar",
+        "cat": "Premium Tech",
+        "sub": "Smartphones",
+        "price": 1850000,
+        "img_key": "s26_ultra_dragon_2",
+        "is_cloudinary": true,
+        "desc": "Second exclusive edition of the Samsung S26 Ultra featuring a distinct 24K gold bas-relief of a dragon."
+    },
+    {
+        "name": "Vertu Signature Touch",
+        "brand": "Vertu",
+        "cat": "Premium Tech",
+        "sub": "Smartphones",
+        "price": 950000,        "img_key": "vertu_signature",
+        "is_cloudinary": true,
 
-def seed_database():
+        "desc": "Handcrafted in England with calf leather, ruby button, and titanium frame."
+    },
+    {
+        "name": "Apple iPhone 17 Pro Max 1TB Titanium",
+        "brand": "Apple",
+        "cat": "Premium Tech",
+        "sub": "Smartphones",
+        "price": 199900,
+        "img_key": "iphone_17_titanium",
+        "is_cloudinary": true,
+        "desc": "Aero-grade titanium, 1TB storage, revolutionary Quantum camera system."
+    },
+    {
+        "name": "Asus ROG Zephyrus G16 (2026)",
+        "brand": "Asus",
+        "cat": "Premium Tech",
+        "sub": "Laptops",
+        "price": 289000,
+        "img_key": "rog_zephyrus",
+        "is_cloudinary": true,
+        "desc": "OLED display, RTX 5090, liquid metal cooling in a CNC-milled chassis."
+    },
+    {
+        "name": "Razer Blade 18 (2026)",
+        "brand": "Razer",
+        "cat": "Premium Tech",
+        "sub": "Laptops",
+        "price": 399000,
+        "img_key": "razer_blade",
+        "is_cloudinary": true,
+        "desc": "The ultimate desktop replacement with Mini-LED and ultra-thin design."
+    },
+    {
+        "name": "Bang & Olufsen Beolab 90",
+        "brand": "Bang & Olufsen",
+        "cat": "Premium Tech",
+        "sub": "Audio",
+        "price": 7500000,
+        "img_key": "beolab_90",
+        "is_cloudinary": true,
+        "desc": "The ultimate home speaker with incredible power and acoustic lens technology."
+    },
+    {
+        "name": "Focal Grande Utopia EM Evo",
+        "brand": "Focal",
+        "cat": "Premium Tech",
+        "sub": "Audio",
+        "price": 15000000,
+        "desc": "Reference high-fidelity loudspeakers. Handcrafted in France."
+    },
+    {
+        "name": "Sennheiser HE 1",
+        "brand": "Sennheiser",
+        "cat": "Premium Tech",
+        "sub": "Audio",
+        "price": 4500000,
+        "img_key": "sennheiser_he1",
+        "is_cloudinary": true,
+        "desc": "The world's most expensive headphones. Electrostatic driver with tube amplifier base."
+    },
+    {
+        "name": "Devialet Phantom I 108 dB",
+        "brand": "Devialet",
+        "cat": "Premium Tech",
+        "sub": "Audio",
+        "price": 289000,
+        "desc": "Implosive sound center. 14k gold-leaf side plates."
+    },
+    {
+        "name": "Tag Heuer Connected Calibre E4",
+        "brand": "Tag Heuer",
+        "cat": "Premium Tech",
+        "sub": "Smartwatches",
+        "price": 145000,
+        "img_key": "tag_heuer_e4",
+        "is_cloudinary": true,
+        "desc": "Luxury smartwatch combining watchmaking elegance with cutting-edge tech."
+    },
+    {
+        "name": "Hublot Big Bang e Gen 3",
+        "brand": "Hublot",
+        "cat": "Premium Tech",
+        "sub": "Smartwatches",
+        "price": 485000,
+        "img_key": "hublot_big_bang",
+        "is_cloudinary": true,
+        "desc": "Black ceramic case smartwatch featuring Wear OS and Hublot's signature design."
+    },
+    {
+        "name": "Montblanc Summit 3",
+        "brand": "Montblanc",
+        "cat": "Premium Tech",
+        "sub": "Smartwatches",
+        "price": 110000,        "img_key": "montblanc_summit",
+        "is_cloudinary": true,
+
+        "desc": "Titanium case with hand-crafted leather strap. The height of Swiss luxury tech."
+    },
+    {
+        "name": "Patek Philippe Nautilus 5711/1A",
+        "brand": "Patek Philippe",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Watches",
+        "price": 9500000,        "img_key": "patek_nautilus",
+        "is_cloudinary": true,
+
+        "desc": "The most sought-after steel sports watch in the world. Blue dial."
+    },
+    {
+        "name": "Audemars Piguet Royal Oak Jumbo",
+        "brand": "Audemars Piguet",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Watches",
+        "price": 6800000,        "img_key": "ap_royal_oak",
+        "is_cloudinary": true,
+
+        "desc": "Extra-thin Royal Oak with the iconic tapisserie dial."
+    },
+    {
+        "name": "Richard Mille RM 65-01",
+        "brand": "Richard Mille",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Watches",
+        "price": 25000000,        "img_key": "richard_mille",
+        "is_cloudinary": true,
+
+        "desc": "Highly complex automatic split-seconds chronograph in Carbon TPT."
+    },
+    {
+        "name": "Vacheron Constantin Overseas",
+        "brand": "Vacheron Constantin",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Watches",
+        "price": 2400000,        "img_key": "vacheron_overseas",
+        "is_cloudinary": true,
+
+        "desc": "Elegant sports watch with blue lacquered dial and interchangeable straps."
+    },
+    {
+        "name": "A. Lange & S\u00f6hne Lange 1",
+        "brand": "A. Lange & S\u00f6hne",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Watches",
+        "price": 3800000,
+        "desc": "German watchmaking masterpiece with outsize date and off-center dial."
+    },
+    {
+        "name": "Jaeger-LeCoultre Reverso Tribute",
+        "brand": "Jaeger-LeCoultre",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Watches",
+        "price": 950000,        "img_key": "jlc_reverso",
+        "is_cloudinary": true,
+
+        "desc": "Iconic Art Deco design with a reversible case mechanism."
+    },
+    {
+        "name": "Rolex Daytona Platinum",
+        "brand": "Rolex",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Watches",
+        "price": 7500000,        "img_key": "rolex_daytona_plat",
+        "is_cloudinary": true,
+
+        "desc": "Cosmograph Daytona in 950 platinum with ice-blue dial and chestnut cerachrom bezel."
+    },
+    {
+        "name": "Hermes Kelly 25 Sellier Epsom",
+        "brand": "Hermes",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Bags",
+        "price": 1200000,        "img_key": "hermes_kelly",
+        "is_cloudinary": true,
+
+        "desc": "Structured and elegant Kelly bag in durable Epsom leather."
+    },
+    {
+        "name": "Bottega Veneta Cassette Bag",
+        "brand": "Bottega Veneta",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Bags",
+        "price": 225000,        "img_key": "bottega_cassette",
+        "is_cloudinary": true,
+
+        "desc": "Padded intrecciato woven leather cross-body bag."
+    },
+    {
+        "name": "Dior Lady Dior Medium",
+        "brand": "Dior",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Bags",
+        "price": 450000,        "img_key": "dior_lady",
+        "is_cloudinary": true,
+
+        "desc": "The iconic bag featuring Cannage stitching and 'D.I.O.R.' charms."
+    },
+    {
+        "name": "Goyard Saint Louis GM",
+        "brand": "Goyard",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Bags",
+        "price": 185000,        "img_key": "goyard_st_louis",
+        "is_cloudinary": true,
+
+        "desc": "Lightweight, reversible tote featuring the classic Goyardine canvas."
+    },
+    {
+        "name": "Fendi Peekaboo ISeeU",
+        "brand": "Fendi",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Bags",
+        "price": 385000,        "img_key": "fendi_peekaboo",
+        "is_cloudinary": true,
+
+        "desc": "Iconic bag with a twist lock and distinctive inner compartment."
+    },
+    {
+        "name": "Prada Galleria Saffiano",
+        "brand": "Prada",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Bags",
+        "price": 310000,        "img_key": "prada_galleria",
+        "is_cloudinary": true,
+
+        "desc": "Classic tote crafted from Prada's signature scratch-resistant Saffiano leather."
+    },
+    {
+        "name": "Celine Triomphe Canvas Bag",
+        "brand": "Celine",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Bags",
+        "price": 240000,        "img_key": "celine_triomphe",
+        "is_cloudinary": true,
+
+        "desc": "Vintage-inspired shoulder bag featuring the Triomphe clasp."
+    },
+    {
+        "name": "Loro Piana Vicu\u00f1a Coat",
+        "brand": "Loro Piana",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Clothing",
+        "price": 1250000,
+        "desc": "Incredibly rare and soft overcoat made entirely from Vicu\u00f1a wool."
+    },
+    {
+        "name": "Brunello Cucinelli Cashmere Sweater",
+        "brand": "Brunello Cucinelli",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Clothing",
+        "price": 145000,        "img_key": "brunello_sweater",
+        "is_cloudinary": true,
+
+        "desc": "Hand-crafted cashmere sweater from the medieval village of Solomeo."
+    },
+    {
+        "name": "Kiton Bespoke Suit",
+        "brand": "Kiton",
+        "cat": "Fashion",
+        "gender": "Men",
+        "sub": "Clothing",
+        "price": 650000,        "img_key": "kiton_suit",
+        "is_cloudinary": true,
+
+        "desc": "The pinnacle of Neapolitan tailoring. Entirely handmade."
+    },
+    {
+        "name": "Brioni Silk Dinner Jacket",
+        "brand": "Brioni",
+        "cat": "Fashion",
+        "gender": "Men",
+        "sub": "Clothing",
+        "price": 420000,        "img_key": "brioni_jacket",
+        "is_cloudinary": true,
+
+        "desc": "Exquisite silk evening jacket tailored to perfection in Rome."
+    },
+    {
+        "name": "Gucci GG Jacquard Cardigan",
+        "brand": "Gucci",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Clothing",
+        "price": 125000,        "img_key": "gucci_cardigan",
+        "is_cloudinary": true,
+
+        "desc": "Wool-blend cardigan featuring the iconic GG monogram pattern."
+    },
+    {
+        "name": "Balenciaga Speedhunters T-Shirt",
+        "brand": "Balenciaga",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Clothing",
+        "price": 55000,        "img_key": "balenciaga_shirt",
+        "is_cloudinary": true,
+
+        "desc": "Oversized graphic tee inspired by vintage concert merchandise."
+    },
+    {
+        "name": "Burberry Heritage Trench Coat",
+        "brand": "Burberry",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Clothing",
+        "price": 185000,        "img_key": "burberry_trench",
+        "is_cloudinary": true,
+
+        "desc": "The iconic waterproof gabardine trench coat crafted in England."
+    },
+    {
+        "name": "John Lobb City II Oxfords",
+        "brand": "John Lobb",
+        "cat": "Fashion",
+        "gender": "Men",
+        "sub": "Shoes",
+        "price": 145000,        "img_key": "john_lobb_oxfords",
+        "is_cloudinary": true,
+
+        "desc": "The benchmark for classic black calf leather Oxford shoes."
+    },
+    {
+        "name": "Berluti Alessandro Galet",
+        "brand": "Berluti",
+        "cat": "Fashion",
+        "gender": "Men",
+        "sub": "Shoes",
+        "price": 185000,        "img_key": "berluti_shoes",
+        "is_cloudinary": true,
+
+        "desc": "Seamless wholecut Oxford featuring Berluti's signature patina."
+    },
+    {
+        "name": "Manolo Blahnik Hangisi Pumps",
+        "brand": "Manolo Blahnik",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Shoes",
+        "price": 85000,        "img_key": "manolo_pumps",
+        "is_cloudinary": true,
+
+        "desc": "Satin almond-toe pump featuring a crystal-embellished buckle."
+    },
+    {
+        "name": "Jimmy Choo Bing 100",
+        "brand": "Jimmy Choo",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Shoes",
+        "price": 75000,        "img_key": "jimmy_choo_mule",
+        "is_cloudinary": true,
+
+        "desc": "Patent leather mule featuring a crystal-embellished strap."
+    },
+    {
+        "name": "Hermes Oran Sandals",
+        "brand": "Hermes",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Shoes",
+        "price": 55000,        "img_key": "hermes_sandals",
+        "is_cloudinary": true,
+
+        "desc": "The iconic flat sandal with the distinctive 'H' cut-out."
+    },
+    {
+        "name": "Balenciaga Track Sneakers",
+        "brand": "Balenciaga",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Shoes",
+        "price": 82000,
+        "desc": "Complex, multi-layered high-performance style sneaker."
+    },
+    {
+        "name": "Alexander McQueen Oversized Sneaker",
+        "brand": "Alexander McQueen",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Shoes",
+        "price": 45000,
+        "desc": "Smooth calf leather lace-up sneaker with oversized rubber sole."
+    },
+    {
+        "name": "Lalique Bacchantes Vase",
+        "brand": "Lalique",
+        "cat": "Lifestyle",
+        "sub": "Home Decor",
+        "price": 280000,
+        "desc": "Iconic crystal vase featuring sculpted priestesses of Bacchus."
+    },
+    {
+        "name": "Christofle Mood Flatware Set",
+        "brand": "Christofle",
+        "cat": "Lifestyle",
+        "sub": "Home Decor",
+        "price": 125000,
+        "desc": "24-piece silver-plated flatware set housed in a decorative egg."
+    },
+    {
+        "name": "Hermes Avalon Throw Blanket",
+        "brand": "Hermes",
+        "cat": "Lifestyle",
+        "sub": "Home Decor",
+        "price": 135000,
+        "desc": "Merino wool and cashmere jacquard woven blanket with 'H' pattern."
+    },
+    {
+        "name": "Fornasetti Profumi Candle",
+        "brand": "Fornasetti",
+        "cat": "Lifestyle",
+        "sub": "Home Decor",
+        "price": 25000,
+        "desc": "Hand-poured candle in a ceramic vessel featuring Piero Fornasetti's art."
+    },
+    {
+        "name": "Roja Parfums Elysium",
+        "brand": "Roja Parfums",
+        "cat": "Lifestyle",
+        "sub": "Fragrances",
+        "price": 45000,
+        "desc": "A bright, refreshing, and incredibly complex luxury parfum."
+    },
+    {
+        "name": "Clive Christian No.1",
+        "brand": "Clive Christian",
+        "cat": "Lifestyle",
+        "sub": "Fragrances",
+        "price": 65000,
+        "desc": "Recognized as the world's most expensive perfume. Pure sophistication."
+    },
+    {
+        "name": "Maison Francis Kurkdjian Baccarat Rouge 540",
+        "brand": "MFK",
+        "cat": "Lifestyle",
+        "sub": "Fragrances",
+        "price": 32000,
+        "desc": "Luminous and sophisticated, laying on the skin like an amber, floral, and woody breeze."
+    },
+    {
+        "name": "Amouage Interlude Man",
+        "brand": "Amouage",
+        "cat": "Lifestyle",
+        "sub": "Fragrances",
+        "price": 28000,
+        "desc": "A spicy and woody fragrance inspired by chaos and disorder."
+    },
+    {
+        "name": "Cartier Love Bracelet",
+        "brand": "Cartier",
+        "cat": "Lifestyle",
+        "sub": "Accessories",
+        "price": 550000,
+        "desc": "Iconic 18K yellow gold bracelet locked with a screwdriver."
+    },
+    {
+        "name": "Van Cleef & Arpels Alhambra Necklace",
+        "brand": "VCA",
+        "cat": "Lifestyle",
+        "sub": "Accessories",
+        "price": 225000,
+        "desc": "Vintage Alhambra pendant featuring the iconic clover motif in onyx."
+    },
+    {
+        "name": "Bulgari B.zero1 Ring",
+        "brand": "Bulgari",
+        "cat": "Lifestyle",
+        "sub": "Accessories",
+        "price": 185000,
+        "desc": "Bold ring inspired by the Colosseum, in 18K rose gold and black ceramic."
+    },
+    {
+        "name": "Tiffany & Co. HardWear Necklace",
+        "brand": "Tiffany & Co.",
+        "cat": "Lifestyle",
+        "sub": "Accessories",
+        "price": 350000,
+        "desc": "Graduated link necklace in 18k gold."
+    },
+    {
+        "name": "Original Abstract Canvas - Azure Depth",
+        "brand": "Luxon Art Gallery",
+        "cat": "Lifestyle",
+        "sub": "Art",
+        "price": 450000,
+        "desc": "Unique 40x40 oil on canvas by emerging contemporary artist."
+    },
+    {
+        "name": "Bronze Panther Sculpture",
+        "brand": "Luxon Art Gallery",
+        "cat": "Lifestyle",
+        "sub": "Art",
+        "price": 280000,
+        "desc": "Art Deco style hand-cast bronze sculpture on marble base."
+    },
+    {
+        "name": "Burberry Kids Trench",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Women",
+        "sub": "Accessories",
+        "price": 50000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Gucci Kids Sneakers",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Kids",
+        "sub": "Bags",
+        "price": 60000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Baby Dior Stroller",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Kids",
+        "sub": "Accessories",
+        "price": 70000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Givenchy Kids Hoodie",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Kids",
+        "sub": "Bags",
+        "price": 80000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 5",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Accessories",
+        "price": 90000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 6",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Bags",
+        "price": 100000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 7",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Accessories",
+        "price": 110000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 8",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Bags",
+        "price": 120000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 9",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Accessories",
+        "price": 130000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 10",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Bags",
+        "price": 140000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 11",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Accessories",
+        "price": 150000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 12",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Bags",
+        "price": 160000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 13",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Accessories",
+        "price": 170000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 14",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Bags",
+        "price": 180000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 15",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Accessories",
+        "price": 190000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 16",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Bags",
+        "price": 200000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 17",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Accessories",
+        "price": 210000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 18",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Bags",
+        "price": 220000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 19",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Accessories",
+        "price": 230000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 20",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Bags",
+        "price": 240000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 21",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Accessories",
+        "price": 250000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 22",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Bags",
+        "price": 260000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 23",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Accessories",
+        "price": 270000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 24",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Bags",
+        "price": 280000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 25",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Accessories",
+        "price": 290000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 26",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Bags",
+        "price": 300000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 27",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Accessories",
+        "price": 310000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 28",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Bags",
+        "price": 320000,
+        "desc": "An exclusive limited edition luxury piece."
+    },
+    {
+        "name": "Limited Edition Item 29",
+        "brand": "Exclusive",
+        "cat": "Fashion",
+        "gender": "Unisex",
+        "sub": "Accessories",
+        "price": 330000,
+        "desc": "An exclusive limited edition luxury piece."
+    }
+]''')
+
+def get_placeholder(name):
+    # Create a luxurious placeholder image
+    encoded_name = urllib.parse.quote(name)
+    return f"https://placehold.co/600x750/0F172A/D4AF37/webp?text={encoded_name}&font=Playfair+Display"
+
+def seed_db():
     with app.app_context():
         print("Clearing database...")
-        CartItem.query.delete()
-        Wishlist.query.delete()
-        OrderItem.query.delete()
-        Product.query.delete()
-        Subcategory.query.delete()
-        Category.query.delete()
+        db.session.query(Product).delete()
+        db.session.query(Subcategory).delete()
+        db.session.query(Category).delete()
         db.session.commit()
-        
-        # Build category map
-        cats = {}
-        subcats = {}
-        
-        print("Creating categories & products...")
-        for p in PRODUCTS_DATA:
-            if p['cat'] not in cats:
-                category = Category(name=p['cat'])
-                db.session.add(category)
-                db.session.flush()
-                cats[p['cat']] = category
-                
-            cat_obj = cats[p['cat']]
-            sub_key = f"{p['cat']}-{p['sub']}"
-            
-            if sub_key not in subcats:
-                sub = Subcategory(name=p['sub'], category_id=cat_obj.id)
-                db.session.add(sub)
-                db.session.flush()
-                subcats[sub_key] = sub
-                
-            sub_obj = subcats[sub_key]
-            
-            product = Product(
-                name=p['name'],
-                description=p['desc'],
-                price=p['price'],
-                stock=random.choices([0, random.randint(1, 15)], weights=[10, 90])[0],
-                brand=p['brand'],
-                image_url=p['img'],
-                category_id=cat_obj.id,
-                subcategory_id=sub_obj.id,
-                is_featured=random.choice([True, False, False])
-            )
-            db.session.add(product)
-            
-        db.session.commit()
-        print(f"Successfully seeded {len(PRODUCTS_DATA)} perfectly matched luxury products without duplicates!")
 
-if __name__ == '__main__':
-    seed_database()
+        # Ensure admin exists
+        admin = User.query.filter_by(email="admin@luxon.com").first()
+        if not admin:
+            admin = User(
+                first_name="Admin",
+                last_name="User",
+                email="admin@luxon.com",
+                password_hash=generate_password_hash("admin"),
+                role="admin"
+            )
+            db.session.add(admin)
+            db.session.commit()
+
+        print("Creating categories & products...")
+        
+        cat_map = {}
+        sub_map = {}
+        
+        for c in CATEGORIES:
+            cat = Category(name=c["name"])
+            db.session.add(cat)
+            db.session.flush()
+            cat_map[c["name"]] = cat.id
+            
+            for sub in c["subs"]:
+                subcategory = Subcategory(name=sub, category_id=cat.id)
+                db.session.add(subcategory)
+                db.session.flush()
+                sub_map[sub] = subcategory.id
+
+        for idx, p in enumerate(PRODUCTS_DATA):
+            is_featured = p.get("featured", idx % 10 == 0) # Feature ~10%
+            
+            discount_pct = random.choice([0, 0, 0, 15, 20, 25]) if is_featured else random.choice([0, 0, 0, 0, 10, 15])
+            
+            price = p["price"]
+            original_price = None
+            if discount_pct > 0:
+                original_price = int(price / (1 - (discount_pct/100.0)))
+                original_price = round(original_price, -3)
+
+            # Determine image URL
+            if p.get("is_cloudinary"):
+                image_url = CLOUDINARY_URLS[p["img_key"]]
+            else:
+                image_url = get_placeholder(p["brand"] + "\n" + p["name"].split(' ')[-1])
+
+            prod = Product(
+                name=p["name"],
+                description=p["desc"],
+                price=price,
+                original_price=original_price,
+                stock=random.randint(2, 25),
+                brand=p["brand"],
+                gender=p.get("gender"),
+                image_url=image_url,
+                category_id=cat_map.get(p["cat"], list(cat_map.values())[0]),
+                subcategory_id=sub_map.get(p["sub"], list(sub_map.values())[0]),
+                is_featured=is_featured
+            )
+            db.session.add(prod)
+
+        db.session.commit()
+        print(f"Successfully seeded {len(PRODUCTS_DATA)} luxury products!")
+
+if __name__ == "__main__":
+    seed_db()

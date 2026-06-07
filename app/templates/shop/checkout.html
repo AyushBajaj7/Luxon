@@ -2,71 +2,182 @@
 {% block title %}Checkout | Luxon{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row g-5">
-        <div class="col-lg-7 checkout-form">
-            <h2 class="fw-bold mb-4" style="font-family: 'Playfair Display', serif;">Checkout</h2>
-            <form method="POST" action="{{ url_for('shop.checkout') }}">
-                <div class="card border-0 shadow-sm rounded-3 mb-4">
-                    <div class="card-body p-4">
-                        <h5 class="fw-bold mb-4"><i class="bi bi-geo-alt me-2 text-gold"></i>Delivery Address</h5>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label text-muted small text-uppercase" style="letter-spacing: 1px;">Full Name</label>
-                                <input type="text" class="form-control bg-light border-0 py-2 rounded-3" value="{{ current_user.full_name }}" readonly>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label text-muted small text-uppercase" style="letter-spacing: 1px;">Email</label>
-                                <input type="email" class="form-control bg-light border-0 py-2 rounded-3" value="{{ current_user.email }}" readonly>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label text-muted small text-uppercase" style="letter-spacing: 1px;">Complete Address</label>
-                                <textarea class="form-control bg-light border-0 rounded-3" name="shipping_address" rows="3" required placeholder="House No, Street, Landmark, City, State, PIN Code"></textarea>
-                            </div>
-                        </div>
-                    </div>
+<div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+
+    <!-- 3-Step Progress Indicator -->
+    <div class="mb-12 progress-bar">
+        <div class="flex items-center justify-center max-w-md mx-auto">
+            <!-- Step 1: Bag (completed) -->
+            <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-full bg-navy/80 border border-gold/50 flex items-center justify-center text-gold text-xs font-bold shadow-md">
+                    <i class="bi bi-check2"></i>
                 </div>
-                <button type="submit" class="btn btn-navy w-100 rounded-pill py-3 fw-bold shadow">Proceed to Payment — ₹{{ "{:,.0f}".format(total) }}</button>
-                <p class="text-center text-muted mt-3 small"><i class="bi bi-shield-lock-fill me-1"></i> Your transaction is secured with Razorpay encryption</p>
-            </form>
-        </div>
-        <div class="col-lg-5 checkout-summary">
-            <div class="card border-0 shadow-sm rounded-3">
-                <div class="card-body p-4">
-                    <h5 class="fw-bold mb-4">Order Summary ({{ cart.items|length }} items)</h5>
-                    <div class="mb-4" style="max-height: 300px; overflow-y: auto;">
-                        {% for item in cart.items %}
-                        <div class="d-flex align-items-center justify-content-between mb-3 pb-3 {% if not loop.last %}border-bottom{% endif %}">
-                            <div class="d-flex align-items-center">
-                                <div class="position-relative me-3">
-                                    <img src="{{ item.product.image_url or 'https://via.placeholder.com/60' }}" class="rounded-3 object-fit-cover" style="width: 56px; height: 56px;">
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-navy" style="font-size: 0.6rem;">{{ item.quantity }}</span>
-                                </div>
-                                <div>
-                                    <p class="fw-semibold mb-0 small text-truncate" style="max-width: 180px;">{{ item.product.name }}</p>
-                                    <p class="text-muted mb-0" style="font-size: 0.7rem;">{{ item.product.brand or 'Luxon' }}</p>
-                                </div>
-                            </div>
-                            <span class="fw-bold small">₹{{ "{:,.0f}".format(item.product.price * item.quantity) }}</span>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between mb-2"><span class="text-muted small">Subtotal</span><span class="fw-bold small">₹{{ "{:,.0f}".format(subtotal) }}</span></div>
-                    <div class="d-flex justify-content-between mb-2"><span class="text-muted small">GST (18%)</span><span class="fw-bold small">₹{{ "{:,.0f}".format(gst) }}</span></div>
-                    <div class="d-flex justify-content-between mb-3"><span class="text-muted small">Delivery</span><span class="fw-bold text-success small">FREE</span></div>
-                    <hr>
-                    <div class="d-flex justify-content-between"><span class="fw-bold">Total</span><span class="fw-bold fs-5 text-gold">₹{{ "{:,.0f}".format(total) }}</span></div>
+                <span class="text-xs font-bold text-slate-300 uppercase tracking-widest hidden sm:inline">Bag</span>
+            </div>
+            <!-- Connector -->
+            <div class="flex-1 h-px bg-gradient-to-r from-gold/50 to-gold mx-3 sm:mx-4"></div>
+            <!-- Step 2: Shipping (active) -->
+            <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-full bg-gold flex items-center justify-center text-navy text-xs font-bold shadow-[0_0_12px_rgba(212,175,55,0.4)] ring-2 ring-gold/30 ring-offset-2 ring-offset-navy">
+                    2
                 </div>
+                <span class="text-xs font-bold text-gold uppercase tracking-widest hidden sm:inline">Shipping</span>
+            </div>
+            <!-- Connector -->
+            <div class="flex-1 h-px bg-white/10 mx-3 sm:mx-4"></div>
+            <!-- Step 3: Payment (upcoming) -->
+            <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-full bg-white/5 border-2 border-white/10 flex items-center justify-center text-slate-500 text-xs font-bold">
+                    3
+                </div>
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-widest hidden sm:inline">Payment</span>
             </div>
         </div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-12">
+        
+        <!-- Checkout Form -->
+        <div class="flex-1 checkout-form">
+            <h2 class="text-4xl font-serif font-bold text-white mb-2">Checkout</h2>
+            <p class="text-sm text-slate-400 mb-8">Please confirm your delivery details below.</p>
+            
+            <form method="POST" action="{{ url_for('shop.checkout') }}">
+                <div class="bg-navy/40 rounded-3xl shadow-xl border border-white/10 p-6 sm:p-8 mb-8 relative overflow-hidden">
+                    <h5 class="text-xl font-bold text-white mb-6 flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center mr-3 border border-gold/20">
+                            <i class="bi bi-geo-alt text-gold text-lg"></i>
+                        </div>
+                        Delivery Address
+                    </h5>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 relative z-10">
+                        <div>
+                            <label class="block text-[10px] font-bold text-gold uppercase tracking-widest mb-2">Full Name</label>
+                            <input type="text" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-300 font-medium focus:outline-none" value="{{ current_user.full_name }}" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gold uppercase tracking-widest mb-2">Email</label>
+                            <input type="email" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-300 font-medium focus:outline-none" value="{{ current_user.email }}" readonly>
+                        </div>
+                    </div>
+                    
+                    <!-- Floating-label-feel Textarea -->
+                    <div class="relative group z-10">
+                        <textarea name="shipping_address" id="shippingAddress" rows="4" required placeholder=" " class="peer w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-5 pt-7 text-sm text-white focus:outline-none focus:ring-1 focus:ring-gold/50 focus:border-gold/50 transition-all duration-300 resize-none placeholder-transparent"></textarea>
+                        <label for="shippingAddress" class="absolute left-5 top-2.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest transition-all duration-300 pointer-events-none peer-placeholder-shown:top-5 peer-placeholder-shown:text-xs peer-placeholder-shown:text-slate-400 peer-placeholder-shown:uppercase peer-placeholder-shown:tracking-widest peer-focus:top-2.5 peer-focus:text-[10px] peer-focus:text-gold peer-focus:uppercase peer-focus:tracking-widest">
+                            Complete Address *
+                        </label>
+                        <p class="mt-2 text-[10px] text-slate-500 ml-1">House No, Street, Landmark, City, State, PIN Code</p>
+                    </div>
+                </div>
+                
+                <button type="submit" class="w-full bg-gold hover:bg-white text-navy py-4 sm:py-5 rounded-full font-bold uppercase tracking-widest text-sm transition-all shadow-[0_0_15px_rgba(212,175,55,0.2)] hover:shadow-[0_0_20px_rgba(255,255,255,0.4)] transform hover:-translate-y-1 mb-6">
+                    Proceed to Payment — ₹{{ "{:,.0f}".format(total) }}
+                </button>
+                
+                <!-- Trust Badges -->
+                <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-8 mb-4 trust-badges">
+                    <div class="flex items-center gap-2 text-slate-300">
+                        <div class="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
+                            <i class="bi bi-shield-lock-fill text-gold text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold uppercase tracking-widest leading-none text-white">SSL Secured</p>
+                            <p class="text-[9px] text-slate-400">256-bit encryption</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 text-slate-300">
+                        <div class="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
+                            <i class="bi bi-patch-check-fill text-gold text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold uppercase tracking-widest leading-none text-white">Authenticity</p>
+                            <p class="text-[9px] text-slate-400">100% guaranteed</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 text-slate-300">
+                        <div class="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
+                            <i class="bi bi-credit-card-2-front-fill text-gold text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold uppercase tracking-widest leading-none text-white">Secure Payment</p>
+                            <p class="text-[9px] text-slate-400">Razorpay protected</p>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Order Summary -->
+        <div class="w-full lg:w-96 flex-shrink-0 checkout-summary">
+            <div class="bg-gradient-to-br from-navyLight to-navy rounded-3xl shadow-xl border border-white/10 p-6 sm:p-8 sticky top-28 relative overflow-hidden">
+                <div class="absolute -top-20 -right-20 w-48 h-48 bg-gold/5 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <h5 class="text-lg font-bold text-white mb-6 relative">Order Summary <span class="text-gold font-medium text-xs ml-1 bg-gold/10 px-2 py-0.5 rounded-full uppercase tracking-widest">{{ cart.items|length }} items</span></h5>
+                
+                <div class="space-y-4 mb-8 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar relative">
+                    {% for item in cart.items %}
+                    <div class="flex items-center gap-4 pb-4 border-b border-white/10 last:border-0 last:pb-0">
+                        <div class="relative flex-shrink-0">
+                            <div class="w-16 h-16 rounded-xl bg-white overflow-hidden border border-white/20">
+                                <img src="{{ item.product.image_url or 'https://via.placeholder.com/60' }}" loading="lazy" class="w-full h-full object-cover mix-blend-multiply" alt="{{ item.product.name }}">
+                            </div>
+                            <span class="absolute -top-2 -right-2 w-5 h-5 bg-gold text-navy text-[10px] font-bold rounded-full flex items-center justify-center border border-navy shadow-sm">
+                                {{ item.quantity }}
+                            </span>
+                        </div>
+                        <div class="flex-grow overflow-hidden">
+                            <h6 class="font-bold text-white text-xs truncate mb-1">{{ item.product.name }}</h6>
+                            <p class="text-[10px] font-bold text-gold uppercase tracking-widest">{{ item.product.brand or 'Luxon' }}</p>
+                        </div>
+                        <div class="text-right flex-shrink-0">
+                            <span class="font-bold text-white text-sm">₹{{ "{:,.0f}".format(item.product.price * item.quantity) }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="space-y-3 mb-6 pt-6 border-t border-white/10 relative">
+                    <div class="flex justify-between text-sm text-slate-300 font-medium">
+                        <span>Subtotal</span>
+                        <span class="text-white font-bold">₹{{ "{:,.0f}".format(subtotal) }}</span>
+                    </div>
+                    {% if discount > 0 %}
+                    <div class="flex justify-between text-sm text-slate-300 font-medium">
+                        <span>Discount</span>
+                        <span class="text-gold font-bold">-₹{{ "{:,.0f}".format(discount) }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="flex justify-between text-sm text-slate-300 font-medium">
+                        <span>White-Glove Delivery</span>
+                        <span class="text-white font-bold">Complimentary</span>
+                    </div>
+                </div>
+                
+                <div class="pt-6 border-t border-white/10 flex justify-between items-center relative">
+                    <span class="font-bold text-white text-lg">Total</span>
+                    <span class="font-extrabold text-gold text-2xl">₹{{ "{:,.0f}".format(total) }}</span>
+                </div>
+                <p class="text-[10px] text-slate-400 mt-2 text-right relative">Inclusive of all taxes</p>
+            </div>
+        </div>
+        
     </div>
 </div>
 
 <script type="module">
-    import { animate } from "https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm";
-    animate(".checkout-form", { opacity: [0, 1], x: [-30, 0] }, { duration: 0.5, easing: "ease-out" });
-    animate(".checkout-summary", { opacity: [0, 1], x: [30, 0] }, { duration: 0.5, delay: 0.1, easing: "ease-out" });
+    import { animate, stagger } from "https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm";
+    animate(".progress-bar", { opacity: [0, 1], y: [-15, 0] }, { duration: 0.5, easing: [0.22, 1, 0.36, 1] });
+    animate(".checkout-form", { opacity: [0, 1], x: [-30, 0] }, { duration: 0.6, delay: 0.15, easing: [0.22, 1, 0.36, 1] });
+    animate(".checkout-summary", { opacity: [0, 1], x: [30, 0] }, { duration: 0.6, delay: 0.3, easing: [0.22, 1, 0.36, 1] });
+    animate(".trust-badges", { opacity: [0, 1], y: [10, 0] }, { duration: 0.5, delay: 0.5, easing: [0.22, 1, 0.36, 1] });
 </script>
-<style>.checkout-form, .checkout-summary { opacity: 0; }</style>
+<style>
+.progress-bar, .checkout-form, .checkout-summary, .trust-badges { opacity: 0; }
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(212, 175, 55, 0.3); }
+</style>
 {% endblock %}

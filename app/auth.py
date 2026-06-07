@@ -1,9 +1,17 @@
+from urllib.parse import urlsplit
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from app import db, bcrypt
 from app.models import User
 from flask_login import login_user, current_user, logout_user, login_required
 
 auth_bp = Blueprint('auth', __name__)
+
+def is_safe_next_url(target):
+    if not target:
+        return False
+    ref_url = urlsplit(request.host_url)
+    test_url = urlsplit(target)
+    return (not test_url.netloc or test_url.netloc == ref_url.netloc) and test_url.scheme in ('', ref_url.scheme)
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -51,7 +59,7 @@ def login():
         if user and bcrypt.check_password_hash(user.password_hash, password):
             login_user(user, remember=remember)
             next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('main.index'))
+            return redirect(next_page) if is_safe_next_url(next_page) else redirect(url_for('main.index'))
         else:
             flash('Login Unsuccessful. Please check email/username and password.', 'danger')
             

@@ -2,40 +2,100 @@
 {% block title %}Wishlist | Luxon{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <h2 class="fw-bold mb-4 page-title" style="font-family: 'Playfair Display', serif;">My Wishlist</h2>
-    
-    {% if not items %}
-    <div class="text-center py-5">
-        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 100px; height: 100px;">
-            <i class="bi bi-heart fs-1 text-muted"></i>
+<div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+
+    <!-- Page Header -->
+    <div class="flex items-center justify-between gap-4 mb-12 pb-6 border-b border-slate-200 page-title">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-gold/20 to-champagne/40 flex items-center justify-center">
+                <i class="bi bi-heart-fill text-gold text-xl"></i>
+            </div>
+            <div>
+                <h2 class="text-3xl sm:text-4xl font-serif font-bold text-navy">My Wishlist</h2>
+                {% if items %}
+                <p class="text-sm text-slate-400 mt-1">{{ items|length }} item{{ 's' if items|length != 1 else '' }} saved</p>
+                {% endif %}
+            </div>
         </div>
-        <h4 class="text-muted mb-2">Your wishlist is empty</h4>
-        <p class="text-muted small mb-4">Save items you love to your wishlist and revisit them anytime.</p>
-        <a href="{{ url_for('main.products') }}" class="btn btn-navy px-5 rounded-pill py-2">Explore Collection</a>
+        {% if items %}
+        <a href="{{ url_for('main.products') }}" class="hidden sm:inline-flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-gold transition-colors">
+            <i class="bi bi-plus-lg"></i> Add More
+        </a>
+        {% endif %}
+    </div>
+
+    {% if not items %}
+    <!-- Enhanced Empty State -->
+    <div class="text-center py-24 bg-gradient-to-b from-slate-50 to-white rounded-3xl border border-slate-100 border-dashed empty-state">
+        <div class="relative w-32 h-32 mx-auto mb-8">
+            <div class="absolute inset-0 bg-gold/10 rounded-full animate-ping" style="animation-duration: 3s;"></div>
+            <div class="relative w-32 h-32 bg-gradient-to-br from-champagne/60 to-gold/20 rounded-full flex items-center justify-center shadow-lg shadow-gold/10">
+                <i class="bi bi-heart text-5xl text-gold/70"></i>
+            </div>
+        </div>
+        <h4 class="text-3xl font-serif font-bold text-navy mb-4">Your wishlist awaits</h4>
+        <p class="text-slate-500 mb-3 max-w-md mx-auto leading-relaxed">Tap the <i class="bi bi-heart text-gold"></i> on any piece that catches your eye. We'll keep it safe here until you're ready to make it yours.</p>
+        <p class="text-xs text-slate-400 mb-10">Your saved items will stay here across sessions.</p>
+        <a href="{{ url_for('main.products') }}" class="inline-flex items-center gap-3 bg-navy hover:bg-gold text-white hover:text-navy px-10 py-4 rounded-full font-bold uppercase tracking-widest text-xs transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+            <i class="bi bi-gem"></i> Explore Collection
+        </a>
     </div>
     {% else %}
-    <div class="row g-4">
+
+    <!-- Wishlist Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {% for item in items %}
-        <div class="col-6 col-md-4 col-lg-3 wishlist-item" id="wishlist-item-{{ item.product.id }}">
-            <div class="card product-card border-0 shadow-sm h-100">
-                <div class="card-img-wrapper position-relative">
-                    <img src="{{ item.product.image_url or 'https://via.placeholder.com/400x500' }}" class="card-img-top object-fit-cover" style="height: 300px;" alt="{{ item.product.name }}">
-                    <button class="btn btn-light rounded-circle position-absolute top-0 end-0 m-3 shadow-sm toggle-wishlist" style="width: 36px; height: 36px;" data-id="{{ item.product.id }}">
-                        <i class="bi bi-heart-fill text-danger"></i>
+        <div class="wishlist-item group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl border border-slate-100 transition-all duration-500 transform hover:-translate-y-2 flex flex-col h-full" id="wishlist-item-{{ item.product.id }}">
+
+            <!-- Product Image -->
+            <div class="relative overflow-hidden bg-slate-50 aspect-[4/5]">
+                <a href="{{ url_for('main.product_detail', id=item.product.id) }}">
+                    <img src="{{ item.product.image_url or 'https://via.placeholder.com/400x500' }}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="{{ item.product.name }}">
+                </a>
+
+                <!-- Remove from Wishlist -->
+                <button class="absolute top-4 right-4 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center shadow-lg text-gold hover:text-red-500 hover:scale-110 hover:bg-white transition-all toggle-wishlist" data-id="{{ item.product.id }}" title="Remove from wishlist">
+                    <i class="bi bi-heart-fill"></i>
+                </button>
+
+                <!-- Status Badges -->
+                {% if item.product.stock <= 0 %}
+                <span class="absolute top-4 left-4 bg-red-500/90 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">Sold Out</span>
+                {% elif item.product.stock == 1 %}
+                <span class="absolute top-4 left-4 bg-orange-500/90 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">Only 1 Left</span>
+                {% elif item.product.is_featured %}
+                <span class="absolute top-4 left-4 bg-navy/90 text-gold text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">Trending</span>
+                {% endif %}
+
+                <!-- Quick View Overlay -->
+                <a href="{{ url_for('main.product_detail', id=item.product.id) }}" class="absolute inset-0 bg-navy/0 group-hover:bg-navy/10 transition-colors duration-500 flex items-center justify-center">
+                    <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/90 text-navy text-xs font-bold uppercase tracking-widest px-5 py-2.5 rounded-full shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-all">
+                        View Details
+                    </span>
+                </a>
+            </div>
+
+            <!-- Product Info -->
+            <div class="p-6 flex flex-col flex-grow">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">{{ item.product.brand or 'Luxon' }}</p>
+                <h6 class="font-bold text-navy text-sm mb-3 group-hover:text-gold transition-colors line-clamp-2">
+                    <a href="{{ url_for('main.product_detail', id=item.product.id) }}">{{ item.product.name }}</a>
+                </h6>
+                <div class="mt-auto pb-4">
+                    <span class="text-lg font-extrabold text-navy">₹{{ "{:,.0f}".format(item.product.price) }}</span>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="pt-4 border-t border-slate-100 flex gap-2">
+                    <button class="flex-1 bg-navy hover:bg-gold text-white hover:text-navy py-3 rounded-xl font-bold uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-2 add-to-cart shadow-sm hover:shadow-md" data-id="{{ item.product.id }}" {% if item.product.stock == 0 %}disabled{% endif %}>
+                        {% if item.product.stock > 0 %}
+                            <i class="bi bi-bag"></i> Add to Bag
+                        {% else %}
+                            <i class="bi bi-x-circle"></i> Sold Out
+                        {% endif %}
                     </button>
-                    {% if item.product.stock == 0 %}
-                        <span class="badge bg-danger position-absolute top-0 start-0 m-3 rounded-pill">Sold Out</span>
-                    {% endif %}
-                </div>
-                <div class="card-body px-3">
-                    <p class="text-muted mb-1" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;">{{ item.product.brand or 'Luxon' }}</p>
-                    <h6 class="fw-semibold mb-2 text-truncate" style="font-size: 0.9rem;"><a href="{{ url_for('main.product_detail', id=item.product.id) }}" class="text-dark text-decoration-none">{{ item.product.name }}</a></h6>
-                    <span class="price-current">₹{{ "{:,.0f}".format(item.product.price) }}</span>
-                </div>
-                <div class="card-footer bg-white border-0 p-3 pt-0">
-                    <button class="btn btn-navy w-100 rounded-pill py-2 add-to-cart" data-id="{{ item.product.id }}" {% if item.product.stock == 0 %}disabled{% endif %}>
-                        {% if item.product.stock > 0 %}<i class="bi bi-bag-plus me-1"></i> Move to Bag{% else %}Out of Stock{% endif %}
+                    <button class="w-12 h-12 flex-shrink-0 bg-slate-50 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-xl flex items-center justify-center transition-all toggle-wishlist border border-slate-100 hover:border-red-200" data-id="{{ item.product.id }}" title="Remove">
+                        <i class="bi bi-trash3 text-sm"></i>
                     </button>
                 </div>
             </div>
@@ -45,42 +105,73 @@
     {% endif %}
 </div>
 
+<!-- Motion One Animations -->
 <script type="module">
-    import { animate, stagger } from "https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm";
-    animate(".page-title", { opacity: [0, 1], x: [-20, 0] }, { duration: 0.5, easing: "ease-out" });
-    animate(".wishlist-item", { opacity: [0, 1], y: [30, 0] }, { duration: 0.4, delay: stagger(0.08), easing: "ease-out" });
-</script>
-<style>.page-title, .wishlist-item { opacity: 0; }</style>
+    import { animate, stagger, inView } from "https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm";
 
+    animate(".page-title", { opacity: [0, 1], y: [-20, 0] }, { duration: 0.6, easing: [0.22, 1, 0.36, 1] });
+
+    const emptyState = document.querySelector(".empty-state");
+    if (emptyState) {
+        animate(".empty-state", { opacity: [0, 1], y: [30, 0] }, { duration: 0.7, delay: 0.2, easing: [0.22, 1, 0.36, 1] });
+    }
+
+    inView(".wishlist-item", (info) => {
+        animate(info.target, { opacity: [0, 1], y: [40, 0] }, { duration: 0.5, easing: [0.22, 1, 0.36, 1] });
+    }, { amount: 0.1 });
+</script>
+<style>.page-title, .wishlist-item, .empty-state { opacity: 0; }</style>
+
+<!-- Wishlist & Cart JavaScript -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Add to cart from wishlist
     document.querySelectorAll('.add-to-cart').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
             const productId = this.getAttribute('data-id');
             const originalText = this.innerHTML;
-            this.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Adding...';
+            this.innerHTML = '<span class="inline-block animate-spin mr-2"><i class="bi bi-arrow-repeat"></i></span> Adding';
             this.disabled = true;
+
             fetch(`/api/cart/add/${productId}`, { method: 'POST', headers: {'Content-Type': 'application/json'} })
             .then(r => r.json()).then(data => {
                 if (data.success) {
                     this.innerHTML = '<i class="bi bi-check2"></i> Added';
-                    this.classList.replace('btn-navy', 'btn-success');
+                    this.classList.replace('bg-navy', 'bg-green-500');
+                    // Automatically remove from wishlist after adding to cart
                     fetch(`/api/wishlist/toggle/${productId}`, { method: 'POST', headers: {'Content-Type': 'application/json'} })
-                    .then(() => { setTimeout(() => { document.getElementById(`wishlist-item-${productId}`).remove(); if(!document.querySelectorAll('.wishlist-item').length) window.location.reload(); }, 1000); });
-                } else { alert(data.error); this.innerHTML = originalText; this.disabled = false; }
+                    .then(() => {
+                        setTimeout(() => {
+                            document.getElementById(`wishlist-item-${productId}`).remove();
+                            if(!document.querySelectorAll('.wishlist-item').length) window.location.reload();
+                        }, 1000);
+                    });
+                } else {
+                    alert(data.error);
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                }
             });
         });
     });
+
+    // Remove from wishlist
     document.querySelectorAll('.toggle-wishlist').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
             const productId = this.getAttribute('data-id');
+
             fetch(`/api/wishlist/toggle/${productId}`, { method: 'POST', headers: {'Content-Type': 'application/json'} })
             .then(r => r.json()).then(data => {
                 if (data.success && !data.added) {
-                    document.getElementById(`wishlist-item-${productId}`).remove();
-                    if(!document.querySelectorAll('.wishlist-item').length) window.location.reload();
+                    const item = document.getElementById(`wishlist-item-${productId}`);
+                    item.style.opacity = '0';
+                    item.style.transform = 'scale(0.9)';
+                    setTimeout(() => {
+                        item.remove();
+                        if(!document.querySelectorAll('.wishlist-item').length) window.location.reload();
+                    }, 300);
                 }
             });
         });

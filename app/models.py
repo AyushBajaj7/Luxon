@@ -31,6 +31,10 @@ class Category(db.Model):
 
 class Subcategory(db.Model):
     __tablename__ = 'subcategories'
+    __table_args__ = (
+        db.UniqueConstraint('category_id', 'name', name='uq_subcategories_category_name'),
+        db.Index('ix_subcategories_category_name', 'category_id', 'name'),
+    )
     id = db.Column(db.Integer, primary_key=True)
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
     name = db.Column(db.String(100), nullable=False)
@@ -38,12 +42,21 @@ class Subcategory(db.Model):
 
 class Product(db.Model):
     __tablename__ = 'products'
+    __table_args__ = (
+        db.Index('ix_products_category_price', 'category_id', 'price'),
+        db.Index('ix_products_subcategory_price', 'subcategory_id', 'price'),
+        db.Index('ix_products_featured_created', 'is_featured', 'created_at'),
+        db.Index('ix_products_brand', 'brand'),
+        db.Index('ix_products_name', 'name'),
+    )
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=True)
     price = db.Column(db.Float, nullable=False)
+    original_price = db.Column(db.Float, nullable=True)
     stock = db.Column(db.Integer, nullable=False, default=0)
     brand = db.Column(db.String(100), nullable=True)
+    gender = db.Column(db.String(20), nullable=True)
     image_url = db.Column(db.String(500), nullable=True)
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
     subcategory_id = db.Column(db.Integer, db.ForeignKey('subcategories.id'), nullable=True)
@@ -59,6 +72,10 @@ class Cart(db.Model):
 
 class CartItem(db.Model):
     __tablename__ = 'cart_items'
+    __table_args__ = (
+        db.UniqueConstraint('cart_id', 'product_id', name='uq_cart_items_cart_product'),
+        db.Index('ix_cart_items_cart_id', 'cart_id'),
+    )
     id = db.Column(db.Integer, primary_key=True)
     cart_id = db.Column(db.Integer, db.ForeignKey('carts.id'), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
@@ -67,6 +84,10 @@ class CartItem(db.Model):
 
 class Wishlist(db.Model):
     __tablename__ = 'wishlists'
+    __table_args__ = (
+        db.UniqueConstraint('user_id', 'product_id', name='uq_wishlists_user_product'),
+        db.Index('ix_wishlists_user_id', 'user_id'),
+    )
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
@@ -74,6 +95,10 @@ class Wishlist(db.Model):
 
 class Order(db.Model):
     __tablename__ = 'orders'
+    __table_args__ = (
+        db.Index('ix_orders_user_id', 'user_id'),
+        db.Index('ix_orders_created_at', 'created_at'),
+    )
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     total_amount = db.Column(db.Float, nullable=False)
@@ -86,6 +111,10 @@ class Order(db.Model):
 
 class OrderItem(db.Model):
     __tablename__ = 'order_items'
+    __table_args__ = (
+        db.Index('ix_order_items_order_id', 'order_id'),
+        db.Index('ix_order_items_product_id', 'product_id'),
+    )
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
@@ -95,6 +124,10 @@ class OrderItem(db.Model):
 
 class Payment(db.Model):
     __tablename__ = 'payments'
+    __table_args__ = (
+        db.Index('ix_payments_order_id', 'order_id'),
+        db.Index('ix_payments_status_created', 'status', 'created_at'),
+    )
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'), nullable=False, unique=True)
     razorpay_order_id = db.Column(db.String(100), nullable=True)
@@ -103,3 +136,15 @@ class Payment(db.Model):
     amount = db.Column(db.Float, nullable=False)
     status = db.Column(db.String(50), nullable=False, default='pending')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class PromoCode(db.Model):
+    __tablename__ = 'promo_codes'
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(50), unique=True, nullable=False)
+    discount_percent = db.Column(db.Float, nullable=False)
+    valid_until = db.Column(db.DateTime, nullable=True)
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
+    usage_limit = db.Column(db.Integer, nullable=True)
+    times_used = db.Column(db.Integer, default=0, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+

@@ -4,7 +4,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'super-secret-key-luxon'
+    # For extreme security, we generate a random key if one is not provided, 
+    # though this will invalidate sessions on server restart unless explicitly set in the environment.
+    SECRET_KEY = os.environ.get('SECRET_KEY') or os.urandom(32).hex()
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     if SQLALCHEMY_DATABASE_URI:
         if SQLALCHEMY_DATABASE_URI.startswith("postgres://"):

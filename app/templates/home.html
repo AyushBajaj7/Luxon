@@ -150,23 +150,41 @@
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8">
             {% for product in featured_products[:8] %}
             <div class="product-item opacity-0 group">
-                <a href="{{ url_for('main.product_detail', id=product.id) }}" class="block">
+                <div class="block">
                     <div class="relative bg-black rounded-2xl overflow-hidden mb-4 aspect-[4/5] border border-slate-100 group-hover:border-gold/30 transition-colors">
-                        <img src="{{ product.image_url or 'https://via.placeholder.com/400x500' }}" loading="lazy" class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105" alt="{{ product.name }}">
+                        <a href="{{ url_for('main.product_detail', id=product.id) }}" class="absolute inset-0 z-0">
+                            <img src="{{ product.image_url or 'https://via.placeholder.com/400x500' }}" loading="lazy" class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105" alt="{{ product.name }}">
+                        </a>
                         {% if product.stock <= 0 %}
-                            <span class="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">Sold Out</span>
+                            <span class="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg z-10 pointer-events-none">Sold Out</span>
                         {% elif product.stock == 1 %}
-                            <span class="absolute top-3 left-3 bg-orange-500 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">Only 1 Left</span>
+                            <span class="absolute top-3 left-3 bg-orange-500 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg z-10 pointer-events-none">Only 1 Left</span>
                         {% elif product.is_featured %}
-                            <span class="absolute top-3 left-3 bg-navy text-gold text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">Trending</span>
+                            <span class="absolute top-3 left-3 bg-navy text-gold text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg z-10 pointer-events-none">Trending</span>
                         {% endif %}
                         {% if product.original_price and product.original_price > product.price %}
-                            <span class="absolute top-3 right-3 bg-red-500 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-full shadow-lg">
+                            <span class="absolute top-3 right-3 bg-red-500 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-full shadow-lg z-10 pointer-events-none">
                                 -{{ "{:.0f}".format(((product.original_price - product.price) / product.original_price) * 100) }}%
                             </span>
                         {% endif %}
+                        
+                        <!-- Quick actions -->
+                        <div class="absolute inset-x-0 bottom-0 p-3 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 z-20">
+                            {% if current_user.is_authenticated %}
+                                <div class="flex gap-2">
+                                    <button class="flex-1 bg-navy hover:bg-gold text-white hover:text-navy py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-lg transition-colors add-to-cart flex items-center justify-center gap-2" data-id="{{ product.id }}" {% if product.stock == 0 %}disabled{% endif %}>
+                                        <i class="bi bi-bag"></i> {% if product.stock == 0 %}Sold Out{% else %}Add{% endif %}
+                                    </button>
+                                </div>
+                            {% else %}
+                                <a href="{{ url_for('auth.login', next=request.full_path) }}" class="block w-full text-center bg-white hover:bg-navy text-navy hover:text-white py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-wider shadow-lg transition-colors">
+                                    Sign in to Buy
+                                </a>
+                            {% endif %}
+                        </div>
                     </div>
-                    <div>
+                    
+                    <a href="{{ url_for('main.product_detail', id=product.id) }}" class="block text-left">
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">{{ product.brand or 'Luxon' }}</p>
                         <h6 class="font-bold text-navy text-sm mb-2 group-hover:text-gold transition-colors truncate">{{ product.name }}</h6>
                         <div class="flex items-center gap-2">
@@ -175,8 +193,8 @@
                                 <span class="text-xs text-slate-400 line-through font-medium">₹{{ "{:,.0f}".format(product.original_price) }}</span>
                             {% endif %}
                         </div>
-                    </div>
-                </a>
+                    </a>
+                </div>
             </div>
             {% else %}
             <div class="col-span-full text-center text-slate-400 py-12">No featured products yet.</div>

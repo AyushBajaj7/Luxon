@@ -1,6 +1,6 @@
 # Luxon - Premium Luxury Shopping Destination
 
-![Luxon](https://luxon-094e.onrender.com/static/img/luxon-dark.svg)
+<img src="https://res.cloudinary.com/drzkhibqf/image/upload/v1780810575/luxon_assets/lzunxlcjo2yish9vjwmq.png" width="80" alt="Luxon Logo">
 
 **Live Demo:** [https://luxon-094e.onrender.com/](https://luxon-094e.onrender.com/)
 

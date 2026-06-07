@@ -33,7 +33,7 @@
                     keyframes: {
                         'marquee': {
                             '0%': { transform: 'translateX(0%)' },
-                            '100%': { transform: 'translateX(-50%)' },
+                            '100%': { transform: 'translateX(-100%)' },
                         },
                         'shimmer': {
                             '0%': { backgroundPosition: '-200% 0' },
@@ -49,7 +49,7 @@
                         },
                     },
                     animation: {
-                        'marquee': 'marquee 15s linear infinite',
+                        'marquee': 'marquee 10s linear infinite',
                         'shimmer': 'shimmer 2.5s ease-in-out infinite',
                         'float': 'float 6s ease-in-out infinite',
                         'checkmark': 'checkmark 0.6s ease-out forwards',
@@ -100,12 +100,14 @@
     <!-- Sticky Header Wrapper -->
     <header class="sticky top-0 z-50 w-full flex flex-col shadow-lg shadow-navy/20">
         <!-- Announcement Bar (Marquee) -->
-        <div class="bg-navy text-champagne/80 py-2 text-xs font-medium tracking-widest uppercase border-b border-white/5 overflow-hidden relative">
-            <div class="flex animate-marquee whitespace-nowrap">
+        <div class="bg-navy text-champagne/80 py-2 text-xs font-medium tracking-widest uppercase border-b border-white/5 overflow-hidden flex relative">
+            <div class="flex animate-marquee whitespace-nowrap shrink-0">
                 <span class="mx-8"><i class="bi bi-truck mr-1 text-gold"></i> Complimentary White-Glove Delivery On All Orders</span>
                 <span class="mx-8"><i class="bi bi-shield-check mr-1 text-gold"></i> 100% Authentic</span>
                 <span class="mx-8"><i class="bi bi-arrow-repeat mr-1 text-gold"></i> 7-Day Replacement</span>
                 <span class="mx-8"><i class="bi bi-gem mr-1 text-gold"></i> Concierge Services</span>
+            </div>
+            <div class="flex animate-marquee whitespace-nowrap shrink-0" aria-hidden="true">
                 <span class="mx-8"><i class="bi bi-truck mr-1 text-gold"></i> Complimentary White-Glove Delivery On All Orders</span>
                 <span class="mx-8"><i class="bi bi-shield-check mr-1 text-gold"></i> 100% Authentic</span>
                 <span class="mx-8"><i class="bi bi-arrow-repeat mr-1 text-gold"></i> 7-Day Replacement</span>

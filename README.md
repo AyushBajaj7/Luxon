@@ -2,7 +2,7 @@
 
 <img src="https://res.cloudinary.com/drzkhibqf/image/upload/v1780810575/luxon_assets/lzunxlcjo2yish9vjwmq.png" width="80" alt="Luxon Logo">
 
-**Live Demo:** [https://luxon-094e.onrender.com/](https://luxon-094e.onrender.com/)
+**Live Demo:** [https://luxon-store.onrender.com/](https://luxon-store.onrender.com/)
 
 Luxon is India's premier luxury shopping destination. It is a full-stack, responsive e-commerce platform designed to offer an elegant and seamless shopping experience for high-end products across various categories, including watches, bags, fashion, tech, and lifestyle.
 

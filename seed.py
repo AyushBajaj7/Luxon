@@ -345,7 +345,9 @@ PRODUCTS_DATA = json.loads('''[
         "cat": "Premium Tech",
         "sub": "Audio",
         "price": 15000000,
-        "desc": "Reference high-fidelity loudspeakers. Handcrafted in France."
+        "desc": "Reference high-fidelity loudspeakers. Handcrafted in France.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826738/luxon_products/qpxmidk2qxmbjempv5oa.png",
+        "is_cloudinary": true
     },
     {
         "name": "Sennheiser HE 1",
@@ -363,7 +365,9 @@ PRODUCTS_DATA = json.loads('''[
         "cat": "Premium Tech",
         "sub": "Audio",
         "price": 289000,
-        "desc": "Implosive sound center. 14k gold-leaf side plates."
+        "desc": "Implosive sound center. 14k gold-leaf side plates.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826739/luxon_products/rbmm56rsb0jueam4ahxt.png",
+        "is_cloudinary": true
     },
     {
         "name": "Tag Heuer Connected Calibre E4",
@@ -446,7 +450,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Unisex",
         "sub": "Watches",
         "price": 3800000,
-        "desc": "German watchmaking masterpiece with outsize date and off-center dial."
+        "desc": "German watchmaking masterpiece with outsize date and off-center dial.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826740/luxon_products/bazjvrpknxd3tz0yzrkk.png",
+        "is_cloudinary": true
     },
     {
         "name": "Jaeger-LeCoultre Reverso Tribute",
@@ -554,7 +560,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Unisex",
         "sub": "Clothing",
         "price": 1250000,
-        "desc": "Incredibly rare and soft overcoat made entirely from Vicu\u00f1a wool."
+        "desc": "Incredibly rare and soft overcoat made entirely from Vicu\u00f1a wool.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826741/luxon_products/hnud31elnqp5znyhvzup.png",
+        "is_cloudinary": true
     },
     {
         "name": "Brunello Cucinelli Cashmere Sweater",
@@ -684,7 +692,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Unisex",
         "sub": "Shoes",
         "price": 82000,
-        "desc": "Complex, multi-layered high-performance style sneaker."
+        "desc": "Complex, multi-layered high-performance style sneaker.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826742/luxon_products/fsty7plretiavsusohuz.png",
+        "is_cloudinary": true
     },
     {
         "name": "Alexander McQueen Oversized Sneaker",
@@ -693,7 +703,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Unisex",
         "sub": "Shoes",
         "price": 45000,
-        "desc": "Smooth calf leather lace-up sneaker with oversized rubber sole."
+        "desc": "Smooth calf leather lace-up sneaker with oversized rubber sole.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826744/luxon_products/apc0gjbwrbefkxgp2lrj.png",
+        "is_cloudinary": true
     },
     {
         "name": "Lalique Bacchantes Vase",
@@ -701,7 +713,9 @@ PRODUCTS_DATA = json.loads('''[
         "cat": "Lifestyle",
         "sub": "Home Decor",
         "price": 280000,
-        "desc": "Iconic crystal vase featuring sculpted priestesses of Bacchus."
+        "desc": "Iconic crystal vase featuring sculpted priestesses of Bacchus.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826745/luxon_products/oajxchqtad9hkj8rmcii.png",
+        "is_cloudinary": true
     },
     {
         "name": "Christofle Mood Flatware Set",
@@ -709,7 +723,9 @@ PRODUCTS_DATA = json.loads('''[
         "cat": "Lifestyle",
         "sub": "Home Decor",
         "price": 125000,
-        "desc": "24-piece silver-plated flatware set housed in a decorative egg."
+        "desc": "24-piece silver-plated flatware set housed in a decorative egg.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826746/luxon_products/tmonumvupihduymxtzsi.png",
+        "is_cloudinary": true
     },
     {
         "name": "Hermes Avalon Throw Blanket",
@@ -717,7 +733,9 @@ PRODUCTS_DATA = json.loads('''[
         "cat": "Lifestyle",
         "sub": "Home Decor",
         "price": 135000,
-        "desc": "Merino wool and cashmere jacquard woven blanket with 'H' pattern."
+        "desc": "Merino wool and cashmere jacquard woven blanket with 'H' pattern.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826747/luxon_products/wghaw40uzfeitjxtkeia.png",
+        "is_cloudinary": true
     },
     {
         "name": "Fornasetti Profumi Candle",
@@ -725,7 +743,9 @@ PRODUCTS_DATA = json.loads('''[
         "cat": "Lifestyle",
         "sub": "Home Decor",
         "price": 25000,
-        "desc": "Hand-poured candle in a ceramic vessel featuring Piero Fornasetti's art."
+        "desc": "Hand-poured candle in a ceramic vessel featuring Piero Fornasetti's art.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826748/luxon_products/f13fyhrojsnku8hp9mdj.png",
+        "is_cloudinary": true
     },
     {
         "name": "Roja Parfums Elysium",
@@ -733,7 +753,9 @@ PRODUCTS_DATA = json.loads('''[
         "cat": "Lifestyle",
         "sub": "Fragrances",
         "price": 45000,
-        "desc": "A bright, refreshing, and incredibly complex luxury parfum."
+        "desc": "A bright, refreshing, and incredibly complex luxury parfum.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826749/luxon_products/tsc12k4jlur5zoiwmsu6.png",
+        "is_cloudinary": true
     },
     {
         "name": "Clive Christian No.1",
@@ -741,7 +763,9 @@ PRODUCTS_DATA = json.loads('''[
         "cat": "Lifestyle",
         "sub": "Fragrances",
         "price": 65000,
-        "desc": "Recognized as the world's most expensive perfume. Pure sophistication."
+        "desc": "Recognized as the world's most expensive perfume. Pure sophistication.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826750/luxon_products/rlqkvgxlexsw5c50ku3w.png",
+        "is_cloudinary": true
     },
     {
         "name": "Maison Francis Kurkdjian Baccarat Rouge 540",
@@ -749,7 +773,9 @@ PRODUCTS_DATA = json.loads('''[
         "cat": "Lifestyle",
         "sub": "Fragrances",
         "price": 32000,
-        "desc": "Luminous and sophisticated, laying on the skin like an amber, floral, and woody breeze."
+        "desc": "Luminous and sophisticated, laying on the skin like an amber, floral, and woody breeze.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826751/luxon_products/hojptildecrj9s2mtwoq.png",
+        "is_cloudinary": true
     },
     {
         "name": "Amouage Interlude Man",
@@ -757,7 +783,9 @@ PRODUCTS_DATA = json.loads('''[
         "cat": "Lifestyle",
         "sub": "Fragrances",
         "price": 28000,
-        "desc": "A spicy and woody fragrance inspired by chaos and disorder."
+        "desc": "A spicy and woody fragrance inspired by chaos and disorder.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826751/luxon_products/hootymq7phi85ie5jre5.png",
+        "is_cloudinary": true
     },
     {
         "name": "Cartier Love Bracelet",
@@ -765,7 +793,9 @@ PRODUCTS_DATA = json.loads('''[
         "cat": "Lifestyle",
         "sub": "Accessories",
         "price": 550000,
-        "desc": "Iconic 18K yellow gold bracelet locked with a screwdriver."
+        "desc": "Iconic 18K yellow gold bracelet locked with a screwdriver.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826752/luxon_products/h6cwvzqwsnd5pnvuawox.png",
+        "is_cloudinary": true
     },
     {
         "name": "Van Cleef & Arpels Alhambra Necklace",
@@ -773,7 +803,9 @@ PRODUCTS_DATA = json.loads('''[
         "cat": "Lifestyle",
         "sub": "Accessories",
         "price": 225000,
-        "desc": "Vintage Alhambra pendant featuring the iconic clover motif in onyx."
+        "desc": "Vintage Alhambra pendant featuring the iconic clover motif in onyx.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826753/luxon_products/r5bvu545th6tjiaif3uh.png",
+        "is_cloudinary": true
     },
     {
         "name": "Bulgari B.zero1 Ring",
@@ -781,7 +813,9 @@ PRODUCTS_DATA = json.loads('''[
         "cat": "Lifestyle",
         "sub": "Accessories",
         "price": 185000,
-        "desc": "Bold ring inspired by the Colosseum, in 18K rose gold and black ceramic."
+        "desc": "Bold ring inspired by the Colosseum, in 18K rose gold and black ceramic.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826754/luxon_products/yzgptkoapsoxvgkhfuiz.png",
+        "is_cloudinary": true
     },
     {
         "name": "Tiffany & Co. HardWear Necklace",
@@ -789,7 +823,9 @@ PRODUCTS_DATA = json.loads('''[
         "cat": "Lifestyle",
         "sub": "Accessories",
         "price": 350000,
-        "desc": "Graduated link necklace in 18k gold."
+        "desc": "Graduated link necklace in 18k gold.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826755/luxon_products/wv6vs1lmxko2ob4xdu4r.png",
+        "is_cloudinary": true
     },
     {
         "name": "Original Abstract Canvas - Azure Depth",
@@ -797,7 +833,9 @@ PRODUCTS_DATA = json.loads('''[
         "cat": "Lifestyle",
         "sub": "Art",
         "price": 450000,
-        "desc": "Unique 40x40 oil on canvas by emerging contemporary artist."
+        "desc": "Unique 40x40 oil on canvas by emerging contemporary artist.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826756/luxon_products/jnawvvsupg6ffemtfeoo.png",
+        "is_cloudinary": true
     },
     {
         "name": "Bronze Panther Sculpture",
@@ -805,7 +843,9 @@ PRODUCTS_DATA = json.loads('''[
         "cat": "Lifestyle",
         "sub": "Art",
         "price": 280000,
-        "desc": "Art Deco style hand-cast bronze sculpture on marble base."
+        "desc": "Art Deco style hand-cast bronze sculpture on marble base.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826757/luxon_products/dwp0i18xulu4vsbglg6c.png",
+        "is_cloudinary": true
     },
     {
         "name": "Burberry Kids Trench",
@@ -814,7 +854,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Women",
         "sub": "Accessories",
         "price": 50000,
-        "desc": "An exclusive limited edition luxury piece."
+        "desc": "An exclusive limited edition luxury piece.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826758/luxon_products/b72pfaj3y4bynw4da6wz.png",
+        "is_cloudinary": true
     },
     {
         "name": "Gucci Kids Sneakers",
@@ -823,7 +865,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Kids",
         "sub": "Bags",
         "price": 60000,
-        "desc": "An exclusive limited edition luxury piece."
+        "desc": "An exclusive limited edition luxury piece.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826759/luxon_products/lrsv7aernuscn2qhsf8h.png",
+        "is_cloudinary": true
     },
     {
         "name": "Baby Dior Stroller",
@@ -832,7 +876,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Kids",
         "sub": "Accessories",
         "price": 70000,
-        "desc": "An exclusive limited edition luxury piece."
+        "desc": "An exclusive limited edition luxury piece.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826760/luxon_products/obfyi01jzdvdp13qsr5n.png",
+        "is_cloudinary": true
     },
     {
         "name": "Givenchy Kids Hoodie",
@@ -841,7 +887,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Kids",
         "sub": "Bags",
         "price": 80000,
-        "desc": "An exclusive limited edition luxury piece."
+        "desc": "An exclusive limited edition luxury piece.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826761/luxon_products/qy80vjg6twykh9cxk7h3.png",
+        "is_cloudinary": true
     },
     {
         "name": "Bvlgari Serpenti Necklace",
@@ -850,7 +898,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Women",
         "sub": "Accessories",
         "price": 450000,
-        "desc": "18k rose gold necklace set with pavé diamonds mimicking a serpent."
+        "desc": "18k rose gold necklace set with pavé diamonds mimicking a serpent.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826763/luxon_products/r8yqx5b5xwdpgss6klcu.png",
+        "is_cloudinary": true
     },
     {
         "name": "Chopard Happy Diamonds Watch",
@@ -859,7 +909,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Women",
         "sub": "Watches",
         "price": 850000,
-        "desc": "Iconic watch featuring dancing diamonds inside the case."
+        "desc": "Iconic watch featuring dancing diamonds inside the case.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826764/luxon_products/suwfu0dqp8go6tnpzjwp.png",
+        "is_cloudinary": true
     },
     {
         "name": "Cartier Panthere Ring",
@@ -868,7 +920,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Women",
         "sub": "Accessories",
         "price": 320000,
-        "desc": "Sculptural panther ring in yellow gold with emerald eyes."
+        "desc": "Sculptural panther ring in yellow gold with emerald eyes.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826765/luxon_products/dopy14wdk0ti4n0v75ev.png",
+        "is_cloudinary": true
     },
     {
         "name": "Rolex Daytona Rose Gold",
@@ -877,7 +931,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Men",
         "sub": "Watches",
         "price": 4200000,
-        "desc": "18ct Everose gold chronograph watch with a black dial."
+        "desc": "18ct Everose gold chronograph watch with a black dial.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826766/luxon_products/nrtobomyp3h0qauopqon.png",
+        "is_cloudinary": true
     },
     {
         "name": "Fendi Baguette Bag",
@@ -886,7 +942,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Women",
         "sub": "Bags",
         "price": 280000,
-        "desc": "Classic FF canvas baguette shoulder bag with gold-tone hardware."
+        "desc": "Classic FF canvas baguette shoulder bag with gold-tone hardware.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826767/luxon_products/cgdepo3wcb4ambyxjwlf.png",
+        "is_cloudinary": true
     },
     {
         "name": "Saint Laurent Tuxedo",
@@ -895,7 +953,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Men",
         "sub": "Clothing",
         "price": 350000,
-        "desc": "Iconic 'Le Smoking' tailored grain de poudre tuxedo."
+        "desc": "Iconic 'Le Smoking' tailored grain de poudre tuxedo.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826768/luxon_products/vjg24zc9tavzxx1hcub3.png",
+        "is_cloudinary": true
     },
     {
         "name": "Prada Cleo Bag",
@@ -904,7 +964,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Women",
         "sub": "Bags",
         "price": 210000,
-        "desc": "Sleek brushed leather hobo bag with a curved silhouette."
+        "desc": "Sleek brushed leather hobo bag with a curved silhouette.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826769/luxon_products/dmvgvg7khluigdgwmlpk.png",
+        "is_cloudinary": true
     },
     {
         "name": "Balmain Blazer",
@@ -913,7 +975,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Women",
         "sub": "Clothing",
         "price": 180000,
-        "desc": "Structured double-breasted wool blazer with embossed gold buttons."
+        "desc": "Structured double-breasted wool blazer with embossed gold buttons.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826770/luxon_products/nqkz4pllnjvsx4j9ujyk.png",
+        "is_cloudinary": true
     },
     {
         "name": "Valentino Rockstud Pumps",
@@ -922,7 +986,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Women",
         "sub": "Shoes",
         "price": 85000,
-        "desc": "Patent leather stiletto heels adorned with signature pyramid studs."
+        "desc": "Patent leather stiletto heels adorned with signature pyramid studs.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826771/luxon_products/bvxtzy8srm9hkhqshr3u.png",
+        "is_cloudinary": true
     },
     {
         "name": "Givenchy Antigona Bag",
@@ -931,7 +997,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Women",
         "sub": "Bags",
         "price": 195000,
-        "desc": "Trapezoid-shaped medium duffel bag in glossy goatskin."
+        "desc": "Trapezoid-shaped medium duffel bag in glossy goatskin.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826773/luxon_products/kkiaufh0jt8qr7330jaw.png",
+        "is_cloudinary": true
     },
     {
         "name": "Versace Medusa Belt",
@@ -940,7 +1008,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Men",
         "sub": "Accessories",
         "price": 45000,
-        "desc": "Smooth calf leather belt featuring the iconic gold Medusa buckle."
+        "desc": "Smooth calf leather belt featuring the iconic gold Medusa buckle.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826773/luxon_products/nv7kgt4jebjo2pl6wgyg.png",
+        "is_cloudinary": true
     },
     {
         "name": "Hermes H Belt",
@@ -949,7 +1019,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Unisex",
         "sub": "Accessories",
         "price": 75000,
-        "desc": "Reversible leather belt strap with the classic H buckle."
+        "desc": "Reversible leather belt strap with the classic H buckle.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826774/luxon_products/rjdvorlqhfrnha8q83pz.png",
+        "is_cloudinary": true
     },
     {
         "name": "Burberry Cashmere Scarf",
@@ -958,7 +1030,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Unisex",
         "sub": "Accessories",
         "price": 42000,
-        "desc": "Classic vintage check scarf made from ultra-soft Scottish cashmere."
+        "desc": "Classic vintage check scarf made from ultra-soft Scottish cashmere.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826775/luxon_products/c9mqghvtlxbf1bq6tucl.png",
+        "is_cloudinary": true
     },
     {
         "name": "Tom Ford Aviator Sunglasses",
@@ -967,7 +1041,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Men",
         "sub": "Accessories",
         "price": 38000,
-        "desc": "Sleek metal aviator sunglasses with the signature T logo hinge."
+        "desc": "Sleek metal aviator sunglasses with the signature T logo hinge.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826776/luxon_products/li5v0pcfsarc8wnxhroo.png",
+        "is_cloudinary": true
     },
     {
         "name": "Louboutin Kate Pumps",
@@ -976,7 +1052,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Women",
         "sub": "Shoes",
         "price": 78000,
-        "desc": "Classic pointed-toe stiletto pumps showcasing the iconic red sole."
+        "desc": "Classic pointed-toe stiletto pumps showcasing the iconic red sole.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826777/luxon_products/rdrxs1o1cnl7ack2cnpe.png",
+        "is_cloudinary": true
     },
     {
         "name": "Maison Margiela Tabi Boots",
@@ -985,7 +1063,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Women",
         "sub": "Shoes",
         "price": 95000,
-        "desc": "Avant-garde split-toe ankle boots in smooth calf leather."
+        "desc": "Avant-garde split-toe ankle boots in smooth calf leather.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826778/luxon_products/s4pkyhoudj2kyfkvxuns.png",
+        "is_cloudinary": true
     },
     {
         "name": "Goyard Belvedere Bag",
@@ -994,7 +1074,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Women",
         "sub": "Bags",
         "price": 260000,
-        "desc": "Saddle-shaped crossbody bag featuring Goyardine canvas."
+        "desc": "Saddle-shaped crossbody bag featuring Goyardine canvas.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826779/luxon_products/a8g2vngvvfx5cea7erha.png",
+        "is_cloudinary": true
     },
     {
         "name": "Louis Vuitton Keepall",
@@ -1003,7 +1085,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Unisex",
         "sub": "Bags",
         "price": 220000,
-        "desc": "Classic monogram canvas duffel bag perfect for weekend travel."
+        "desc": "Classic monogram canvas duffel bag perfect for weekend travel.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826780/luxon_products/pd2ptlzw8coijtfnvbok.png",
+        "is_cloudinary": true
     },
     {
         "name": "Rimowa Cabin Suitcase",
@@ -1012,7 +1096,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Unisex",
         "sub": "Accessories",
         "price": 110000,
-        "desc": "Iconic grooved aluminum hard-shell carry-on luggage."
+        "desc": "Iconic grooved aluminum hard-shell carry-on luggage.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826781/luxon_products/juxetusjw4gobfzbd8qg.png",
+        "is_cloudinary": true
     },
     {
         "name": "Dior Saddle Bag",
@@ -1021,7 +1107,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Women",
         "sub": "Bags",
         "price": 320000,
-        "desc": "Equestrian-inspired handbag in blue Oblique jacquard canvas."
+        "desc": "Equestrian-inspired handbag in blue Oblique jacquard canvas.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826782/luxon_products/pimbbx8zwynuezwbyovx.png",
+        "is_cloudinary": true
     },
     {
         "name": "Bottega Veneta Jodie",
@@ -1030,7 +1118,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Women",
         "sub": "Bags",
         "price": 215000,
-        "desc": "Mini knotted hobo bag crafted in signature Intrecciato leather."
+        "desc": "Mini knotted hobo bag crafted in signature Intrecciato leather.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826783/luxon_products/wjpblpl8zxeu3kr5tlln.png",
+        "is_cloudinary": true
     },
     {
         "name": "Jacquemus Le Chiquito",
@@ -1039,7 +1129,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Women",
         "sub": "Bags",
         "price": 65000,
-        "desc": "Famous micro handbag with a highly exaggerated top handle."
+        "desc": "Famous micro handbag with a highly exaggerated top handle.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826784/luxon_products/qf5omuuooykgiywaumud.png",
+        "is_cloudinary": true
     },
     {
         "name": "Rolex Datejust 41",
@@ -1048,7 +1140,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Men",
         "sub": "Watches",
         "price": 1100000,
-        "desc": "Classic Oystersteel and white gold watch with a fluted bezel."
+        "desc": "Classic Oystersteel and white gold watch with a fluted bezel.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826785/luxon_products/yet95jid2n6ghs8cael3.png",
+        "is_cloudinary": true
     },
     {
         "name": "Patek Philippe Aquanaut",
@@ -1057,7 +1151,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Men",
         "sub": "Watches",
         "price": 5500000,
-        "desc": "Modern luxury sports watch with a rounded octagon steel case."
+        "desc": "Modern luxury sports watch with a rounded octagon steel case.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826786/luxon_products/bov21cv4uifia5dqka4y.png",
+        "is_cloudinary": true
     },
     {
         "name": "Cartier Santos",
@@ -1066,7 +1162,9 @@ PRODUCTS_DATA = json.loads('''[
         "gender": "Men",
         "sub": "Watches",
         "price": 750000,
-        "desc": "Square-faced stainless steel watch with exposed screws on the bezel."
+        "desc": "Square-faced stainless steel watch with exposed screws on the bezel.",
+        "img_key": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780826787/luxon_products/sy2xrr2tlxfhybbjv1rw.png",
+        "is_cloudinary": true
     }
 ]''')
 
@@ -1124,9 +1222,10 @@ def seed_db():
                 original_price = int(price / (1 - (discount_pct/100.0)))
                 original_price = round(original_price, -3)
 
-            # Determine image URL
+            # Check if image is from Cloudinary
             if p.get("is_cloudinary"):
-                image_url = CLOUDINARY_URLS[p["img_key"]]
+                img_val = p.get("img_key")
+                image_url = img_val if img_val.startswith("http") else CLOUDINARY_URLS[img_val]
             else:
                 image_url = get_placeholder(p["brand"] + "\n" + p["name"].split(' ')[-1])
 

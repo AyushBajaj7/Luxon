@@ -13,7 +13,7 @@ def favicon():
 
 @main_bp.route('/')
 def index():
-    featured_products = Product.query.options(joinedload(Product.category)).filter_by(is_featured=True).limit(5).all()
+    featured_products = Product.query.options(joinedload(Product.category)).filter_by(is_featured=True).limit(4).all()
     return render_template('home.html', featured_products=featured_products)
 
 @main_bp.route('/products')

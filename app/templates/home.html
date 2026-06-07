@@ -150,51 +150,53 @@
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8">
             {% for product in featured_products[:8] %}
             <div class="product-item opacity-0 group">
-                <div class="block">
-                    <div class="relative bg-black rounded-2xl overflow-hidden mb-4 aspect-[4/5] border border-slate-100 group-hover:border-gold/30 transition-colors">
-                        <a href="{{ url_for('main.product_detail', id=product.id) }}" class="absolute inset-0 z-0">
-                            <img src="{{ product.image_url or 'https://via.placeholder.com/400x500' }}" loading="lazy" class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105" alt="{{ product.name }}">
-                        </a>
+                <!-- Image Container -->
+                <div class="relative bg-black rounded-2xl overflow-hidden mb-4 aspect-[4/5] border border-slate-100 group-hover:border-gold/30 transition-colors">
+                    <img src="{{ product.image_url or 'https://via.placeholder.com/400x400' }}" loading="lazy" class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105" alt="{{ product.name }}">
+                    
+                    <!-- Clickable link layer (below overlay) -->
+                    <a href="{{ url_for('main.product_detail', id=product.id) }}" class="absolute inset-0 z-0" aria-label="{{ product.name }}"></a>
+                    
+                    <!-- Badges -->
+                    <div class="absolute top-4 left-4 flex flex-col gap-2 z-10 pointer-events-none">
                         {% if product.stock <= 0 %}
-                            <span class="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg z-10 pointer-events-none">Sold Out</span>
+                            <span class="bg-red-500 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">Sold Out</span>
                         {% elif product.stock == 1 %}
-                            <span class="absolute top-3 left-3 bg-orange-500 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg z-10 pointer-events-none">Only 1 Left</span>
+                            <span class="bg-orange-500 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">Only 1 Left</span>
                         {% elif product.is_featured %}
-                            <span class="absolute top-3 left-3 bg-navy text-gold text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg z-10 pointer-events-none">Trending</span>
+                            <span class="bg-navy text-gold text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">Trending</span>
                         {% endif %}
+                    </div>
+
+                    {% if current_user.is_authenticated %}
+                    <!-- Quick actions overlay on hover (only for logged-in users) -->
+                    <div class="absolute inset-x-0 bottom-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+                        <div class="flex gap-2">
+                            <button class="flex-1 bg-navy hover:bg-gold text-white hover:text-navy py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-wider shadow-lg transition-colors add-to-cart flex items-center justify-center gap-1" data-id="{{ product.id }}" {% if product.stock == 0 %}disabled{% endif %}>
+                                {% if product.stock == 0 %}Sold Out{% else %}<i class="bi bi-bag"></i> Add{% endif %}
+                            </button>
+                            <button class="w-10 h-10 bg-white text-navy hover:text-gold rounded-xl flex items-center justify-center shadow-lg transition-colors toggle-wishlist" data-id="{{ product.id }}">
+                                <i class="bi bi-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Product Info -->
+                <a href="{{ url_for('main.product_detail', id=product.id) }}" class="block text-left">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">{{ product.brand or 'Luxon' }}</p>
+                    <h6 class="font-bold text-navy text-sm mb-2 group-hover:text-gold transition-colors truncate">{{ product.name }}</h6>
+                    <div class="flex items-center gap-2">
+                        <span class="font-extrabold text-navy">₹{{ "{:,.0f}".format(product.price) }}</span>
                         {% if product.original_price and product.original_price > product.price %}
-                            <span class="absolute top-3 right-3 bg-red-500 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-full shadow-lg z-10 pointer-events-none">
+                            <span class="text-xs text-slate-400 line-through font-medium">₹{{ "{:,.0f}".format(product.original_price) }}</span>
+                            <span class="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded-md">
                                 -{{ "{:.0f}".format(((product.original_price - product.price) / product.original_price) * 100) }}%
                             </span>
                         {% endif %}
-                        
-                        <!-- Quick actions -->
-                        <div class="absolute inset-x-0 bottom-0 p-3 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 z-20">
-                            {% if current_user.is_authenticated %}
-                                <div class="flex gap-2">
-                                    <button class="flex-1 bg-navy hover:bg-gold text-white hover:text-navy py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-lg transition-colors add-to-cart flex items-center justify-center gap-2" data-id="{{ product.id }}" {% if product.stock == 0 %}disabled{% endif %}>
-                                        <i class="bi bi-bag"></i> {% if product.stock == 0 %}Sold Out{% else %}Add{% endif %}
-                                    </button>
-                                </div>
-                            {% else %}
-                                <a href="{{ url_for('auth.login', next=request.full_path) }}" class="block w-full text-center bg-white hover:bg-navy text-navy hover:text-white py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-wider shadow-lg transition-colors">
-                                    Sign in to Buy
-                                </a>
-                            {% endif %}
-                        </div>
                     </div>
-                    
-                    <a href="{{ url_for('main.product_detail', id=product.id) }}" class="block text-left">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">{{ product.brand or 'Luxon' }}</p>
-                        <h6 class="font-bold text-navy text-sm mb-2 group-hover:text-gold transition-colors truncate">{{ product.name }}</h6>
-                        <div class="flex items-center gap-2">
-                            <span class="font-extrabold text-navy">₹{{ "{:,.0f}".format(product.price) }}</span>
-                            {% if product.original_price and product.original_price > product.price %}
-                                <span class="text-xs text-slate-400 line-through font-medium">₹{{ "{:,.0f}".format(product.original_price) }}</span>
-                            {% endif %}
-                        </div>
-                    </a>
-                </div>
+                </a>
             </div>
             {% else %}
             <div class="col-span-full text-center text-slate-400 py-12">No featured products yet.</div>

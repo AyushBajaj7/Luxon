@@ -17,6 +17,7 @@ CLOUDINARY_URLS = {
     "hermes_birkin": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771415/z7jyyut5lzzgox2lgt7u.jpg",
     "iphone_15_pro": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771416/mmuhiokfyzfztmtewpjl.jpg",
     "caviar_iphone": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780812540/luxon_products/cgrw4yxxjp46frsqys2i.jpg",
+    "louboutin_pumps": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771417/pvr6gfmagngnuowggdrr.jpg",
     "patek_aquanaut": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771416/r9k388vzzoh14zuxb2ce.jpg",
     "louis_vuitton_bag": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771418/anfvlqmnv7rnrzqvdffj.jpg",
     "macbook_pro": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771419/jkuhni1aleri0ktin6ra.jpg",

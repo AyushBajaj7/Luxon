@@ -136,10 +136,12 @@
             <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-8 mb-12">
                 {% for p in pagination.items %}
                 <div class="group product-grid-item bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl border border-slate-100 hover:border-gold/30 transition-all duration-500 transform hover:-translate-y-2 flex flex-col h-full">
-                    <div class="block relative overflow-hidden bg-black aspect-[4/5]">
-                        <a href="{{ url_for('main.product_detail', id=p.id) }}" class="absolute inset-0 z-0">
-                            <img src="{{ p.image_url or 'https://via.placeholder.com/400x400' }}" loading="lazy" class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105" alt="{{ p.name }}">
-                        </a>
+                    <!-- Image Container -->
+                    <div class="relative bg-black aspect-[4/5] overflow-hidden">
+                        <img src="{{ p.image_url or 'https://via.placeholder.com/400x400' }}" loading="lazy" class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105" alt="{{ p.name }}">
+                        
+                        <!-- Clickable link layer (below overlay) -->
+                        <a href="{{ url_for('main.product_detail', id=p.id) }}" class="absolute inset-0 z-0" aria-label="{{ p.name }}"></a>
                         
                         <!-- Badges -->
                         <div class="absolute top-4 left-4 flex flex-col gap-2 z-10 pointer-events-none">
@@ -152,25 +154,22 @@
                             {% endif %}
                         </div>
 
-                        <!-- Quick actions overlay on hover -->
-                        <div class="absolute inset-x-0 bottom-0 p-3 sm:p-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 z-20">
-                            {% if current_user.is_authenticated %}
-                                <div class="flex gap-2">
-                                    <button class="flex-1 bg-navy hover:bg-gold text-white hover:text-navy py-2.5 sm:py-3 rounded-xl font-bold text-[10px] sm:text-xs uppercase tracking-wider shadow-lg transition-colors add-to-cart flex items-center justify-center gap-1 sm:gap-2" data-id="{{ p.id }}" {% if p.stock == 0 %}disabled{% endif %}>
-                                        {% if p.stock == 0 %}Sold Out{% else %}<i class="bi bi-bag"></i> <span class="hidden sm:inline">Add to Bag</span><span class="sm:hidden">Add</span>{% endif %}
-                                    </button>
-                                    <button class="w-10 sm:w-12 h-10 sm:h-12 bg-white text-navy hover:text-gold rounded-xl flex items-center justify-center shadow-lg transition-colors toggle-wishlist" data-id="{{ p.id }}">
-                                        <i class="bi bi-heart text-lg"></i>
-                                    </button>
-                                </div>
-                            {% else %}
-                                <a href="{{ url_for('auth.login', next=request.full_path) }}" class="block w-full text-center bg-white hover:bg-navy text-navy hover:text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider shadow-lg transition-colors">
-                                    Sign in to Buy
-                                </a>
-                            {% endif %}
+                        {% if current_user.is_authenticated %}
+                        <!-- Quick actions overlay on hover (only for logged-in users) -->
+                        <div class="absolute inset-x-0 bottom-0 p-3 sm:p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+                            <div class="flex gap-2">
+                                <button class="flex-1 bg-navy hover:bg-gold text-white hover:text-navy py-2.5 sm:py-3 rounded-xl font-bold text-[10px] sm:text-xs uppercase tracking-wider shadow-lg transition-colors add-to-cart flex items-center justify-center gap-1 sm:gap-2" data-id="{{ p.id }}" {% if p.stock == 0 %}disabled{% endif %}>
+                                    {% if p.stock == 0 %}Sold Out{% else %}<i class="bi bi-bag"></i> <span class="hidden sm:inline">Add to Bag</span><span class="sm:hidden">Add</span>{% endif %}
+                                </button>
+                                <button class="w-10 sm:w-12 h-10 sm:h-12 bg-white text-navy hover:text-gold rounded-xl flex items-center justify-center shadow-lg transition-colors toggle-wishlist" data-id="{{ p.id }}">
+                                    <i class="bi bi-heart text-lg"></i>
+                                </button>
+                            </div>
                         </div>
+                        {% endif %}
                     </div>
                     
+                    <!-- Product Info -->
                     <a href="{{ url_for('main.product_detail', id=p.id) }}" class="p-4 sm:p-6 flex flex-col flex-grow">
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 sm:mb-2">{{ p.brand or 'Luxon' }}</p>
                         <h6 class="font-bold text-navy text-sm sm:text-base mb-2 sm:mb-3 leading-snug group-hover:text-gold transition-colors line-clamp-2">{{ p.name }}</h6>
@@ -183,7 +182,7 @@
                                 </span>
                             {% endif %}
                         </div>
-                    </div>
+                    </a>
                 </div>
                 {% else %}
                 <div class="col-span-full py-20 text-center bg-slate-50 rounded-3xl border border-slate-100 border-dashed">

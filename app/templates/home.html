@@ -18,11 +18,11 @@
             <p class="text-gold uppercase font-bold tracking-[0.3em] text-sm mb-6 hero-tag opacity-0 flex items-center gap-3">
                 <span class="w-8 h-px bg-gold"></span> India's Premier Luxury Destination
             </p>
-            <h1 class="text-5xl md:text-7xl lg:text-8xl font-serif font-bold mb-8 leading-[0.95] hero-title opacity-0">
+            <h1 class="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-serif font-bold mb-8 leading-[0.95] hero-title opacity-0">
                 <span class="text-white">Discover</span><br>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-gold via-champagne to-gold">Timeless Luxury.</span>
             </h1>
-            <p class="text-lg md:text-xl text-slate-300 mb-12 max-w-lg leading-relaxed hero-subtitle opacity-0">Curated collections from the world's most prestigious brands, delivered to your doorstep across India.</p>
+            <p class="text-base sm:text-lg md:text-xl text-slate-300 mb-12 max-w-lg leading-relaxed hero-subtitle opacity-0">Curated collections from the world's most prestigious brands, delivered to your doorstep across India.</p>
             
             <div class="flex flex-wrap gap-4 hero-btns opacity-0">
                 <a href="{{ url_for('main.products') }}" class="btn-shimmer text-navy px-10 py-4 rounded-full font-bold tracking-wider uppercase transition-all shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:shadow-[0_0_40px_rgba(212,175,55,0.5)] flex items-center hover:scale-105">
@@ -47,35 +47,35 @@
 </section>
 
 <!-- Trust Bar -->
-<section class="py-10 bg-white border-b border-slate-100">
+<section class="py-8 sm:py-10 bg-white border-b border-slate-100">
     <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
-            <div class="trust-item opacity-0 flex items-center justify-center gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors group cursor-default">
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold/10 to-gold/5 flex items-center justify-center text-gold text-xl group-hover:scale-110 transition-transform"><i class="bi bi-shield-check"></i></div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-8">
+            <div class="trust-item opacity-0 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 p-2 sm:p-4 rounded-2xl hover:bg-slate-50 transition-colors group cursor-default text-center sm:text-left">
+                <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-gold/10 to-gold/5 flex items-center justify-center text-gold text-lg sm:text-xl group-hover:scale-110 transition-transform flex-shrink-0"><i class="bi bi-shield-check"></i></div>
                 <div>
-                    <p class="font-bold text-navy text-sm mb-0.5">100% Authentic</p>
-                    <p class="text-slate-400 text-xs font-medium">Verified Products</p>
+                    <p class="font-bold text-navy text-xs sm:text-sm mb-0.5">100% Authentic</p>
+                    <p class="text-slate-400 text-[10px] sm:text-xs font-medium">Verified Products</p>
                 </div>
             </div>
-            <div class="trust-item opacity-0 flex items-center justify-center gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors group cursor-default">
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold/10 to-gold/5 flex items-center justify-center text-gold text-xl group-hover:scale-110 transition-transform"><i class="bi bi-truck"></i></div>
+            <div class="trust-item opacity-0 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 p-2 sm:p-4 rounded-2xl hover:bg-slate-50 transition-colors group cursor-default text-center sm:text-left">
+                <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-gold/10 to-gold/5 flex items-center justify-center text-gold text-lg sm:text-xl group-hover:scale-110 transition-transform flex-shrink-0"><i class="bi bi-truck"></i></div>
                 <div>
-                    <p class="font-bold text-navy text-sm mb-0.5">Free Shipping</p>
-                    <p class="text-slate-400 text-xs font-medium">On All Orders</p>
+                    <p class="font-bold text-navy text-xs sm:text-sm mb-0.5">Free Shipping</p>
+                    <p class="text-slate-400 text-[10px] sm:text-xs font-medium">On All Orders</p>
                 </div>
             </div>
-            <div class="trust-item opacity-0 flex items-center justify-center gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors group cursor-default">
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold/10 to-gold/5 flex items-center justify-center text-gold text-xl group-hover:scale-110 transition-transform"><i class="bi bi-arrow-repeat"></i></div>
+            <div class="trust-item opacity-0 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 p-2 sm:p-4 rounded-2xl hover:bg-slate-50 transition-colors group cursor-default text-center sm:text-left">
+                <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-gold/10 to-gold/5 flex items-center justify-center text-gold text-lg sm:text-xl group-hover:scale-110 transition-transform flex-shrink-0"><i class="bi bi-arrow-repeat"></i></div>
                 <div>
-                    <p class="font-bold text-navy text-sm mb-0.5">Easy Returns</p>
-                    <p class="text-slate-400 text-xs font-medium">30-Day Policy</p>
+                    <p class="font-bold text-navy text-xs sm:text-sm mb-0.5">Easy Returns</p>
+                    <p class="text-slate-400 text-[10px] sm:text-xs font-medium">30-Day Policy</p>
                 </div>
             </div>
-            <div class="trust-item opacity-0 flex items-center justify-center gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors group cursor-default">
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold/10 to-gold/5 flex items-center justify-center text-gold text-xl group-hover:scale-110 transition-transform"><i class="bi bi-lock"></i></div>
+            <div class="trust-item opacity-0 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 p-2 sm:p-4 rounded-2xl hover:bg-slate-50 transition-colors group cursor-default text-center sm:text-left">
+                <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-gold/10 to-gold/5 flex items-center justify-center text-gold text-lg sm:text-xl group-hover:scale-110 transition-transform flex-shrink-0"><i class="bi bi-lock"></i></div>
                 <div>
-                    <p class="font-bold text-navy text-sm mb-0.5">Secure Payments</p>
-                    <p class="text-slate-400 text-xs font-medium">UPI, Cards, COD</p>
+                    <p class="font-bold text-navy text-xs sm:text-sm mb-0.5">Secure Payments</p>
+                    <p class="text-slate-400 text-[10px] sm:text-xs font-medium">UPI, Cards, COD</p>
                 </div>
             </div>
         </div>

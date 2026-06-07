@@ -90,7 +90,7 @@ def products():
     else:
         query = query.order_by(Product.created_at.desc(), Product.id.desc())
         
-    pagination = query.paginate(page=page, per_page=21, error_out=False)
+    pagination = query.paginate(page=page, per_page=24, error_out=False)
     
     return render_template('products.html', pagination=pagination, search=search, active_filter=active_filter, sort_by=sort_by, gender=gender)
 

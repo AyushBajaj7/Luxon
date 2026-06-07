@@ -16,7 +16,8 @@ CLOUDINARY_URLS = {
     "gucci_sneakers": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771414/iccavdlxttqx6ceuzsnp.jpg",
     "hermes_birkin": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771415/z7jyyut5lzzgox2lgt7u.jpg",
     "iphone_15_pro": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771416/mmuhiokfyzfztmtewpjl.jpg",
-    "louboutin_pumps": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771417/pvr6gfmagngnuowggdrr.jpg",
+    "caviar_iphone": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780812540/luxon_products/cgrw4yxxjp46frsqys2i.jpg",
+    "patek_aquanaut": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771416/r9k388vzzoh14zuxb2ce.jpg",
     "louis_vuitton_bag": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771418/anfvlqmnv7rnrzqvdffj.jpg",
     "macbook_pro": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771419/jkuhni1aleri0ktin6ra.jpg",
     "omega_speedmaster": "https://res.cloudinary.com/drzkhibqf/image/upload/v1780771420/vtqwlpti8rg2ddphylsp.jpg",
@@ -198,7 +199,7 @@ PRODUCTS_DATA = json.loads('''[
         "cat": "Premium Tech",
         "sub": "Smartphones",
         "price": 2500000,
-        "img_key": "iphone_15_pro",
+        "img_key": "caviar_iphone",
         "desc": "18-karat solid gold chassis with intricate engravings.",
         "featured": true,
         "is_cloudinary": true
